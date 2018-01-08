@@ -1,0 +1,39 @@
+<!--
+  Generated template for the FunctionsPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+
+
+    <button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Functions</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="addFunction()">Add Function</button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+    <ion-list>
+      <ion-item-sliding *ngFor="let function of functions | async">
+
+          <ion-item>
+              <h3>{{function.name}}</h3>
+              <p>{{function.createDate | date:'medium'}}</p>
+          </ion-item>
+       
+          <ion-item-options>
+              <button ion-button color="primary" (click)="functionDetail(function)"><p><ion-icon name="paper"></ion-icon> Edit</p></button>
+              <button ion-button color="danger" (click)="removeFunction(function)"><p><ion-icon name="trash"></ion-icon> Delete</p></button>
+          </ion-item-options>
+        </ion-item-sliding>
+    </ion-list>
+</ion-content>

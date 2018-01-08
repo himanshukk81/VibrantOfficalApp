@@ -1,0 +1,20 @@
+<ion-header>
+
+    <ion-navbar>
+      <ion-title>Manage Functions</ion-title>
+      <ion-buttons end>
+        <button ion-button (click)="closeModal()">Close</button>
+        </ion-buttons>
+    </ion-navbar>
+  
+  </ion-header>
+  
+  
+  <ion-content padding>
+      <ion-item>
+        <ion-label>Name</ion-label>
+        <ion-input type="text" [(ngModel)]="functionInfo.name"></ion-input>
+      </ion-item> 
+      <button ion-button type="submit" block (click)="saveFunctionInfo()" [disabled]="loader" *ngIf="!update">Add Function <ion-spinner name="circles" *ngIf="loader"></ion-spinner></button>
+      <button ion-button type="submit" block (click)="updateFunctionInfo()" [disabled]="loader" *ngIf="update">Update Function <ion-spinner name="circles" *ngIf="loader"></ion-spinner></button>
+  </ion-content>

@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Login</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list *ngIf="userTypeId==1"> 
+    <ion-item>
+      <ion-label floating>Email</ion-label>
+      <ion-input type="email" [(ngModel)]="user.email"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>Password</ion-label>
+      <ion-input type="password" [(ngModel)]="user.password"></ion-input>
+
+      <div padding>
+          <button ion-button block (click)="login()" >Sign In</button>
+      </div>
+    </ion-item>
+  </ion-list>
+
+
+  <ion-list *ngIf="userTypeId==2"> 
+        <ion-item>
+          <ion-label>Choose Name</ion-label>
+          <ion-select [(ngModel)]="guest.mobile">
+            <ion-option *ngFor="let guest of guests" [value]="key">{{guest.name}}</ion-option>
+          </ion-select>
+        </ion-item>
+      <div padding>
+          <button ion-button block (click)="getOtp()" >Get Otp</button>
+      </div>
+  </ion-list>
+
+
+
+
+  
+  <div text-center *ngIf="loader">
+    <ion-spinner name="circles" ></ion-spinner>
+  </div>  
+</ion-content>

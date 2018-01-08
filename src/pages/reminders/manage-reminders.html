@@ -1,0 +1,30 @@
+<ion-header>
+
+    <ion-navbar>
+      <ion-title>Manage Functions</ion-title>
+      <ion-buttons end>
+        <button ion-button (click)="closeModal()">Close</button>
+        </ion-buttons>
+    </ion-navbar>
+  
+  </ion-header>
+  
+  
+  <ion-content padding>
+      <ion-item>
+        <ion-label>Name</ion-label>
+        <ion-input type="text" [(ngModel)]="reminder.name"></ion-input>
+      </ion-item> 
+      
+      <ion-item>
+          <ion-label>Date</ion-label>
+          <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="reminder.date"></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+          <ion-label>Time</ion-label>
+          <ion-datetime pickerFormat="hh:mm A" [(ngModel)]="reminder.time"></ion-datetime>
+      </ion-item>
+      <button ion-button type="submit" block (click)="saveReminderInfo()" [disabled]="loader" *ngIf="!update">Add Reminder <ion-spinner name="circles" *ngIf="loader"></ion-spinner></button>
+      <button ion-button type="submit" block (click)="updateReminderInfo()" [disabled]="loader" *ngIf="update">Update Reminder <ion-spinner name="circles" *ngIf="loader"></ion-spinner></button>
+  </ion-content>
