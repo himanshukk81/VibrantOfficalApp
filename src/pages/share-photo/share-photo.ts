@@ -35,7 +35,10 @@ export class SharePhotoPage {
 
 }
 
-
+@Component({
+  selector: 'page-manage-share-photo',
+  templateUrl: 'manage-share-photo.html',
+})
 export class ManageSharePhotoPage {
   imageOptions:any;
   imagesArray:any=[];
@@ -67,7 +70,7 @@ export class ManageSharePhotoPage {
             alert("Error==="+err);
           }
         );
-        this.imagesArray.push({"imageUrl":base64File});
+        this.imageInfo.imagesArray.push({"imageUrl":base64File});
         console.log('Image URI: ' + base64File);
       }
     }, (err) => { 
@@ -78,7 +81,7 @@ export class ManageSharePhotoPage {
 
   sharePhoto()
   {
-    this.imageInfo.images=this.imagesArray;
+    // this.imageInfo.images=this.imagesArray;
     this.imageService.sharedImages(this.imageInfo);
     this.closeModal();
   }

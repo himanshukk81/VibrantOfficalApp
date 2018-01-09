@@ -409,7 +409,7 @@ export class ReminderService{
 @Injectable()
 export class ShareImageService{
     constructor(public events:Events){}
-    images:any;
+    // images:any=[{"id":1,"message":"New images","imageUrl":["image":]}];
     getSharedImages()
     {
 

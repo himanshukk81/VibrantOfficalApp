@@ -20,6 +20,7 @@ import { EventsPage} from '../pages/events/events';
 import { Places} from '../pages/events/events';
 import { FirstPage} from '../pages/first/first';
 import { GuestInvitationPage} from '../pages/guest-invitation/guest-invitation';
+import { SharePhotoPage,ManageSharePhotoPage} from '../pages/share-photo/share-photo';
 
 @Component({
   templateUrl: 'app.html'
@@ -27,7 +28,7 @@ import { GuestInvitationPage} from '../pages/guest-invitation/guest-invitation';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
   @ViewChild(NavController) navCtrl: NavController;
-  rootPage: any=FirstPage;
+  rootPage: any=SharePhotoPage;
   headers:any;
   pages: Array<{title: string, component: any}>;
 
@@ -38,7 +39,7 @@ export class MyApp {
       {
         this.pages = [
           { title: 'Home', component: HomePage},
-          {title:'Share Photo',component:HomePage},
+          {title:'Share Photo',component:SharePhotoPage},
           {title:'Users',component:UsersPage},
           {title:'Profile',component:profile},
           {title:'Budgets',component:BudgetsPage},

@@ -28,7 +28,7 @@ import { FunctionsPage} from '../pages/functions/functions';
 import { ManageFunctionsPage} from '../pages/functions/functions';
 import { RemindersPage} from '../pages/reminders/reminders';
 import { ManageRemindersPage} from '../pages/reminders/reminders';
-import { SharePhotoPage} from '../pages/share-photo/share-photo';
+import { SharePhotoPage,ManageSharePhotoPage} from '../pages/share-photo/share-photo';
 import { GuestInvitationPage} from '../pages/guest-invitation/guest-invitation';
 import { LocalNotifications } from '@ionic-native/local-notifications';
 import { ImagePicker } from '@ionic-native/image-picker';
@@ -63,7 +63,8 @@ import { FirstPage} from '../pages/first/first';
     ManageEventsPage,
     Places,
     FirstPage,
-    GuestInvitationPage
+    GuestInvitationPage,
+    ManageSharePhotoPage
   ],
   imports: [
     HttpModule,
@@ -90,7 +91,8 @@ import { FirstPage} from '../pages/first/first';
     ManageEventsPage,
     Places,
     FirstPage,
-    GuestInvitationPage
+    GuestInvitationPage,
+    ManageSharePhotoPage
   ],
   providers: [
     StatusBar,
