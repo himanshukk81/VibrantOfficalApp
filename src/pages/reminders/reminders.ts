@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams,ModalController,ViewController,AlertController,Platform  } from 'ionic-angular';
-import { SessionService } from '../../app/sessionservice';
-import { AngularFireDatabase, FirebaseListObservable} from 'angularfire2/database-deprecated';
+import { IonicPage, NavController, NavParams,ModalController,ViewController,AlertController,Platform,Events  } from 'ionic-angular';
+import { SessionService,ReminderService} from '../../app/sessionservice';
 import { LocalNotifications } from '@ionic-native/local-notifications';
+import { Event } from '_debugger';
 
 /**
  * Generated class for the RemindersPage page.
@@ -18,33 +18,32 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
 export class RemindersPage {
   reminder:any={};
   reminderList=[];
-  reminders: FirebaseListObservable<any[]>;
-  constructor(public db: AngularFireDatabase,public modalCtrl:ModalController,public service:SessionService,public navCtrl: NavController, public navParams: NavParams) {
-    this.reminders=this.db.list('/reminders');
-
+  constructor(public events:Events,public reminderService:ReminderService, public modalCtrl:ModalController,public service:SessionService,public navCtrl: NavController, public navParams: NavParams) {
    
   }
 
   ionViewDidLoad() {
+
+    setTimeout(() => {  
+      this.reminderService.getReminders()            
+    },100); 
+      this.events.subscribe('reminder:fetches', reminders=> {
+        this.reminderList=reminders;
+      })
     console.log('ionViewDidLoad RemindersPage');
   }
 
   reminderDetail(reminder)
   {
     this.service.setReminder(reminder);
-    // this.navCtrl.push(ManageBudgetsPage);
     let profileModal = this.modalCtrl.create(ManageRemindersPage);
     profileModal.present();
   }
 
   removeReminder(reminder)
   {
-    // this.db.list('/budget').delete();
-    this.db.object('/reminders/' + reminder.$key).remove().then(()=>{
-      console.log("Successfully deleted");
-    },error=>{
-      console.log("failed to deleted");
-    })
+    this.reminderService.deleteReminder(reminder);     
+    
   }
 
 
@@ -71,16 +70,10 @@ export class ManageRemindersPage {
   // myDate:any=new Date();
   // tzoffset:any = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
   
-  constructor(public platform: Platform,public alertCtrl:AlertController,public localNotifications:
-    LocalNotifications,public viewCtrl:ViewController,public db: AngularFireDatabase,public service:SessionService,public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public reminderService:ReminderService,public platform: Platform,public alertCtrl:AlertController,public localNotifications:
+    LocalNotifications,public viewCtrl:ViewController,public service:SessionService,public navCtrl: NavController, public navParams: NavParams) {
 
-    this.db.list('/reminders', { preserveSnapshot: true})
-    .subscribe(snapshots=>{
-        snapshots.forEach(snapshot => {
-          this.remindersList.push(snapshot.val());
-          // console.log("85 line======"+snapshot.key, snapshot.val());
-        });
-    })
+    
     this.platform.ready().then((readySource) => {
       // this.localNotifications.on('click', (notification, state) => {
       //   // let json = JSON.parse(notification.data);
@@ -125,46 +118,16 @@ export class ManageRemindersPage {
   saveReminderInfo()
   {
 
-
-    // console.log("time===="+JSON.stringify(this.reminder));
-    // console.log("time==="+this.reminder.time);
-
-
-    // console.log("Before update:::"+this.reminder.date)
-    //  console.log("Notifications to be scheduled: ", new Date(this.notifications[0].at));
-
     this.reminder.hour=this.reminder.time.split(":")[0];
     this.reminder.minute=this.reminder.time.split(":")[1];
-
     this.reminder.date=new Date(this.reminder.date).setHours(this.reminder.hour);
     this.reminder.date=new Date(this.reminder.date).setMinutes(this.reminder.minute);
-    this.db.list('/reminders').push(this.reminder).then(({key}) => 
-    {
-      this.reminder.key=key;
-      this.updateKey()
-    },error=>{
-      this.loader=false;
-      this.service.showToast2("Something went wrong please try again");
-      // this.service.showToast2("Something went wrong please try again");
-    })
+    this.reminder.scheduleDate=new Date();
+    this.reminderService.saveReminder(this.reminder);
+    this.closeModal();
+    
   }
   
- 
-  updateKey()
-  {
-      this.db.object('/reminders/'+this.reminder.key).update(this.reminder).then((profile: any) =>{
-            
-            
-
-            this.setNotification();
-            
-            console.log("Successfully updated reminders====");
-        })
-      .catch((err: any) => {
-          this.loader=false;
-          this.service.showToast2("Something went wrong please try again");
-      });
-  }
 
   setNotification()
   {
@@ -206,13 +169,7 @@ export class ManageRemindersPage {
       
   }
 
-  updateReminderInfo()
-  {
-    this.reminder.modifiedDate=new Date();
-    this.loader=true;
-    this.updateKey();
-
-  }
+ 
   closeModal()
   {
     this.viewCtrl.dismiss();

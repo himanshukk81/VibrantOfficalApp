@@ -23,9 +23,27 @@
     </ion-item>
   
     <ion-item>
-      <ion-label>Amount</ion-label>
-      <ion-input type="number" [(ngModel)]="budget.amount"></ion-input>
-    </ion-item>  
+        <ion-label>Select Category</ion-label>
+        <ion-select type="text" [(ngModel)]="budget.categoryId">
+            <ion-option *ngFor="let category of categories"  value="{{category.id}}">{{category.name}}</ion-option> 
+        </ion-select>
+    </ion-item>
+
+    <ion-item>
+        <ion-label>Estimated Cost</ion-label>
+        <ion-input type="number" [(ngModel)]="budget.estimatedCost"></ion-input>
+    </ion-item> 
+
+    <ion-item>
+        <ion-label>Final Cost</ion-label>
+        <ion-input type="number" [(ngModel)]="budget.finalCost"></ion-input>
+    </ion-item> 
+
+    <ion-item>
+        <ion-label>Notes</ion-label>
+        <ion-input type="Text" [(ngModel)]="budget.Notes"></ion-input>
+    </ion-item> 
+
     <button ion-button type="submit" block (click)="saveBudgetInfo()" [disabled]="loader" *ngIf="!update">Add Budget <ion-spinner name="circles" *ngIf="loader"></ion-spinner></button>
     <button ion-button type="submit" block (click)="updateBudget()" [disabled]="loader" *ngIf="update">Update Budget <ion-spinner name="circles" *ngIf="loader"></ion-spinner></button>
 </ion-content>

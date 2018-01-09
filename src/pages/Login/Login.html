@@ -16,23 +16,39 @@
       <ion-label floating>Password</ion-label>
       <ion-input type="password" [(ngModel)]="user.password"></ion-input>
 
-      <div padding>
-          <button ion-button block (click)="login()" >Sign In</button>
-      </div>
+      
     </ion-item>
+    <div padding>
+      <button ion-button block (click)="login()">Sign In</button>
+    </div>
   </ion-list>
 
 
   <ion-list *ngIf="userTypeId==2"> 
-        <ion-item>
+        <!-- <ion-item>
           <ion-label>Choose Name</ion-label>
-          <ion-select [(ngModel)]="guest.mobile">
-            <ion-option *ngFor="let guest of guests" [value]="key">{{guest.name}}</ion-option>
+          <ion-select [(ngModel)]="guestInfo.mobile">
+            <ion-option *ngFor="let guest of guests" [value]="guest.mobile">{{guest.name}}</ion-option>
+          </ion-select>
+        </ion-item> -->
+
+
+        <ion-item>
+          <ion-label>Select Name</ion-label>
+          <ion-select type="text" [(ngModel)]="guestId">
+              <ion-option *ngFor="let guest of guests"  value="{{guest.id}}">{{guest.name}}</ion-option> 
           </ion-select>
         </ion-item>
       <div padding>
           <button ion-button block (click)="getOtp()" >Get Otp</button>
       </div>
+
+      <div padding *ngIf="otpTriggered">
+          <ion-input type="text" [(ngModel)]="guestInfo.otp" placeholder="Enter OTP"></ion-input> <br/><br/><br/>
+          <button ion-button block (click)="verifyOtp()" >Verify</button>
+      </div>
+
+
   </ion-list>
 
 

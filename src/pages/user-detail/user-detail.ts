@@ -6,7 +6,6 @@ import { Camera, CameraOptions } from '@ionic-native/camera';
 import * as firebase from 'firebase';
 import { count } from 'rxjs/operators/count';
 import { Base64 } from '@ionic-native/base64';
-import { AngularFireDatabase, FirebaseListObservable} from 'angularfire2/database-deprecated';
 
 
 import * as base64 from 'base64-img';
@@ -42,13 +41,12 @@ export class UserDetailPage {
   storageRef:any=firebase.storage().ref();
   counter:number=0;
   counterDB:number=0;
-  messages: FirebaseListObservable<any[]>;
   
-  constructor(public db:AngularFireDatabase, public base64:Base64,public camera:Camera,public imagePicker: ImagePicker,public navCtrl: NavController,public service:SessionService) 
+  
+  constructor(public base64:Base64,public camera:Camera,public imagePicker: ImagePicker,public navCtrl: NavController,public service:SessionService) 
   {
     this.messageInfo.editorMsg='';
     this.userInfo=this.service.getOtherUserInfo();
-    this.messages=this.db.list('/messages');
   }
 
 
@@ -163,20 +161,7 @@ export class UserDetailPage {
     {
       this.messageInfo.receiverId=this.userInfo.key;
       this.messageInfo.senderId=this.service.getUser().key;
-      this.db.list('/messages').push(this.messageInfo).then(({key}) => 
-      {
-         if(this.imagesArray.length>0)
-         {
-          this.imagesArray.splice(this.counterDB,1);
-         }
-        console.log("Insert");
-        this.scrollToBottom();
-        this.messageInfo.key=key;
-        this.updateKey(this.messageInfo)
-      },error=>{
-        this.addInDB();
-        this.service.showToast2("Something went wrong please try again");
-      })
+     
 
       
     }
@@ -184,21 +169,7 @@ export class UserDetailPage {
     updateKey(message)
     {
 
-        // alert("Message===="+JSON.stringify(message));
-        this.db.object('/messages/'+message.key).update(message).then((message2: any) =>{
-              console.log("update key===="+this.counterDB);
-              this.messageInfo.editorMsg='';  
-              if(this.imagesArray.length>0)
-              {
-                this.counterDB++;
-                this.uploadInDB();
-              }
-          })
-        .catch((err: any) => {
-            // this.service.showToast2("Failed"+err);
-            console.log("error===="+err);
-            // this.updateKey(message);
-        });
+     
     }
   imageUpload()
   {

@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams,ModalController,ViewController } from 'ionic-angular';
-import { AngularFireDatabase, FirebaseListObservable} from 'angularfire2/database-deprecated';
-import { SessionService } from '../../app/sessionservice';
+import { IonicPage, NavController, NavParams,ModalController,ViewController,Events } from 'ionic-angular';
+import { SessionService,BudgetService,CateogryService } from '../../app/sessionservice';
+
+
+
+
 // import { ManageBudgetsPage } from '../manage-budgets/manage-budgets';
 
 /**
@@ -18,15 +21,24 @@ import { SessionService } from '../../app/sessionservice';
 export class BudgetsPage {
   
   budget:any;
-  budgets: FirebaseListObservable<any[]>;
-  constructor(public modalCtrl:ModalController,public service:SessionService, public db: AngularFireDatabase,public navCtrl: NavController, public navParams: NavParams) {
-
-    this.budgets=this.db.list('/budget')
-  
+  budgets:any;
+  loader:boolean=true;
+  constructor(public events:Events,public budgetservice:BudgetService,public modalCtrl:ModalController,public service:SessionService,public navCtrl: NavController, public navParams: NavParams) {
   }
 
+
+  
+
   ionViewDidLoad() {
-    console.log('ionViewDidLoad BudgetsPage');
+   setTimeout(() => {  
+    this.budgetservice.getBudgets();         
+   },100); 
+
+   this.events.subscribe('budgets:fetch', budgets=> {
+    this.budgets=budgets
+    this.loader=false;
+   })
+    // console.log('ionViewDidLoad BudgetsPage');
   }
 
 
@@ -40,11 +52,7 @@ export class BudgetsPage {
   removeBudget(budget)
   {
     // this.db.list('/budget').delete();
-    this.db.object('/budget/' + budget.$key).remove().then(()=>{
-      console.log("Successfully deleted");
-    },error=>{
-      console.log("failed to deleted");
-    })
+    
   }
 
 
@@ -64,9 +72,12 @@ export class BudgetsPage {
 })
 export class ManageBudgetsPage {
   budget:any={};
-  loader:any;
+  loader:any=true;
   update:boolean;
-  constructor(public viewCtrl:ViewController,public db: AngularFireDatabase,public service:SessionService,public navCtrl: NavController, public navParams: NavParams) {
+  categories:any=[];
+  constructor(public categoryService:CateogryService,public events:Events,public budgetService:BudgetService, public viewCtrl:ViewController,public service:SessionService,public navCtrl: NavController, public navParams: NavParams) {
+ 
+    
   }
 
   ionViewDidLoad() {
@@ -81,6 +92,17 @@ export class ManageBudgetsPage {
       this.budget={};
       this.update=false;
     }
+
+    
+    setTimeout(() => {  
+      this.categoryService.getCategories();            
+    },100); 
+    this.events.subscribe('fetch:categories', categories=> {
+      this.categories=categories
+      this.loader=false;
+    })
+
+    
     console.log('ionViewDidLoad ManageBudgetsPage');
   }
 
@@ -89,46 +111,40 @@ export class ManageBudgetsPage {
 
     if(!this.budget.name)
     {
-      alert("Please enter budget name");
+      this.service.showToast2("Please enter budget name");
       return;
     }
-    if(!this.budget.amount)
+   
+    if(!this.budget.categoryId)
     {
-      alert("Please enter budget amount");
+      this.service.showToast2("Please Choose Category");
+      return;
+    }
+    if(!this.budget.estimatedCost)
+    {
+      this.service.showToast2("Please enter Estimated Cost");
+      return;
+    }
+    if(!this.budget.finalCost)
+    {
+      this.service.showToast2("Please enter Final Cost");
       return;
     }
     this.budget.createDate=new Date();
     this.loader=true;
-    this.db.list('/budget').push(this.budget).then(({key}) => 
-    {
-      this.budget.key=key;
-      this.updateKey()
-    },error=>{
-      this.loader=false;
-      this.service.showToast2("Something went wrong please try again");
-      // this.service.showToast2("Something went wrong please try again");
-    })
+    this.budgetService.saveBudgets(this.budget);
+    this.closeModal();
+    
   }
-  updateKey()
-  {
-      this.db.object('/budget/'+this.budget.key).update(this.budget).then((profile: any) =>{
-            
-            this.loader=false;
-            this.closeModal();
-            console.log("Successfully updated location====");
-        })
-      .catch((err: any) => {
-          this.loader=false;
-          this.service.showToast2("Something went wrong please try again");
-      });
-  }
-
+ 
   updateBudget()
   {
-    this.budget.modifiedDate=new Date();
     this.loader=true;
-    this.updateKey();
-
+    this.budget.modifiedDate=new Date();
+    this.budgetService.updateBudgets(this.budget);
+    this.closeModal();
+    
+   
   }
   closeModal()
   {

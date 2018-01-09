@@ -5,7 +5,6 @@ import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import 'rxjs/add/operator/filter';
 import { Toast } from '@ionic-native/toast';
 import {Events,ToastController } from 'ionic-angular';
-import { AngularFireDatabase, FirebaseListObservable} from 'angularfire2/database-deprecated';
 import { SessionService } from '../app/sessionservice';
 
 @Injectable()
@@ -15,7 +14,7 @@ export class LocationTrackerProvider {
   public lng: number = 0;
   user:any={};
   firstTime:boolean=true;
-  constructor(public service:SessionService,public db:AngularFireDatabase,public backgroundGeolocation:BackgroundGeolocation,public geolocation:Geolocation,public zone:NgZone,public toast:Toast,public events:Events) {
+  constructor(public service:SessionService,public backgroundGeolocation:BackgroundGeolocation,public geolocation:Geolocation,public zone:NgZone,public toast:Toast,public events:Events) {
     console.log('Hello LocationTrackerProvider Provider');
   }
 

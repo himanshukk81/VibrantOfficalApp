@@ -24,12 +24,13 @@
               <h3>{{budget.name}}</h3>
         </ion-item> -->
 
-        <ion-item-sliding *ngFor="let budget of budgets | async">
+        <ion-item-sliding *ngFor="let budget of budgets">
  
             <ion-item>
                 <h3>{{budget.name}}</h3>
-                <h2>{{budget.amount}}</h2>
-                <p>{{budget.createDate | date:'medium'}}</p>
+                <!-- <h2>{{budget.estimatedCost}}</h2>
+                <h2>{{budget.finalCost}}</h2> -->
+                <p>{{budget.Notes}}</p>
             </ion-item>
          
             <ion-item-options>
@@ -37,6 +38,12 @@
               <button ion-button color="danger" (click)="removeBudget(budget)"><p><ion-icon name="trash"></ion-icon> Delete</p></button>
             </ion-item-options>
           </ion-item-sliding>
-        
+          <div text-center *ngIf="loader">
+              <ion-spinner name="circles" ></ion-spinner>
+          </div>  
+    
+          <div text-center *ngIf="!loader && budgets.length==0">
+              <h3>No Budgets Right Now</h3>
+          </div>  
       </ion-list>
 </ion-content>

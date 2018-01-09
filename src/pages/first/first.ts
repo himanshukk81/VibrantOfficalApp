@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import {NavController, NavParams } from 'ionic-angular';
+import { Component,ViewChild } from '@angular/core';
+import {NavController, NavParams,Nav } from 'ionic-angular';
 import { LoginPage } from '../../pages/Login/Login';
 
 /**
@@ -14,7 +14,8 @@ import { LoginPage } from '../../pages/Login/Login';
   templateUrl: 'first.html',
 })
 export class FirstPage {
-
+  @ViewChild(Nav) nav: Nav;
+  
   userButtonColor:any;
   joinneButtonColor:any;
   selectedUserInfo:any;
@@ -51,6 +52,10 @@ export class FirstPage {
       this.userButtonColor="light";
     }
   }
+  // Next()
+  // {
+  //   this.navCtrl.push(LoginPage,this.selectedUserInfo);
+  // }
 
  
 }

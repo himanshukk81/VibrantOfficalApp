@@ -7,12 +7,19 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>share-photo</ion-title>
+    <ion-title>Share Photo</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
+    
 
+
+    <ion-list>
+        <ion-item *ngFor="let image of imagesArray.images">
+            <img src="{{image.imageUrl}}" *ngIf="user.imageUrl">
+        </ion-item>
+      </ion-list>
 </ion-content>

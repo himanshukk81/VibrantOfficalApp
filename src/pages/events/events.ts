@@ -1,7 +1,6 @@
 import { Component,ViewChild,ElementRef } from '@angular/core';
 import { IonicPage, NavController, NavParams,ModalController,ActionSheetController,ViewController,Events,Platform } from 'ionic-angular';
 import { SessionService } from '../../app/sessionservice';
-import { AngularFireDatabase, FirebaseListObservable} from 'angularfire2/database-deprecated';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { Geolocation } from '@ionic-native/geolocation'; // Newly Added
@@ -24,7 +23,7 @@ export class EventsPage {
   
   // cards: any;
   // category: string = 'gear';
-  constructor(public locationTracker:LocationTrackerProvider, public geolocation:Geolocation,public modalCtrl:ModalController,public service:SessionService,public db:AngularFireDatabase,public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public locationTracker:LocationTrackerProvider, public geolocation:Geolocation,public modalCtrl:ModalController,public service:SessionService,public navCtrl: NavController, public navParams: NavParams) {
     // this.events=this.db.list('/events');
 
     this.events=[{id:1,name:"Reception",date:new Date()},{id:2,name:"Wedding",date:new Date()},{id:3,name:"Mehandi",date:new Date()}]
@@ -69,7 +68,7 @@ export class ManageEventsPage {
   map:any;
   marker:any;
   loader:any;
-  constructor(public platform:Platform,public service:SessionService,public db:AngularFireDatabase,  public events:Events,public modalCtrl:ModalController, public viewCtrl:ViewController,public camera: Camera,public actionCtrl:ActionSheetController,public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public platform:Platform,public service:SessionService, public events:Events,public modalCtrl:ModalController, public viewCtrl:ViewController,public camera: Camera,public actionCtrl:ActionSheetController,public navCtrl: NavController, public navParams: NavParams) {
    
     // alert("Call manage events page");
     
@@ -219,31 +218,11 @@ export class ManageEventsPage {
 
   saveEvent()
   {
-    this.db.list('/events/').push(this.event).then(({key}) => 
-    {
-      this.event.key=key;
-      this.updateKey()
-    },error=>{
-      this.loader=false;
-      this.service.showToast2("Something went wrong please try again");
-      // this.service.showToast2("Something went wrong please try again");
-    })
+    
   }
    updateKey()
   {
-      this.db.object('/user_detail/'+this.event.key).update(this.event).then((profile: any) =>{
-            
-            this.service.setUser(this.event);
-            // this.navCtrl.setRoot(HomePage);
-            this.loader=false;
-            this.closeModal();
-            console.log("Successfully updated events====");
-        })
-      .catch((err: any) => {
-          var  error="error=="+err;
-          this.loader=false;
-          this.service.showToast2("Something went wrong please try again");
-      });
+     
   }
 
   

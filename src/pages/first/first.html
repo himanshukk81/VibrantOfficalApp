@@ -31,11 +31,12 @@
     <button ion-button color="{{joinneButtonColor}}" (click)="selectedUser(2)">Joinne</button>
   </div>
   <div text-center style="margin-top:10%"> 
-      <button ion-button [navPush]="pushPage" [navParams]="params" >
+      <button ion-button  [navPush]="pushPage" [navParams]="params">
+        <!-- <button ion-button  (click)="Next()"> -->
           <div>
             <ion-icon name='ios-arrow-dropright'></ion-icon>
             <label>Next</label>
           </div>
-      </button>
+        </button>
   </div>  
 </ion-content>

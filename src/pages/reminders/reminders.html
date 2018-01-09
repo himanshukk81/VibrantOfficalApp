@@ -21,7 +21,7 @@
 
 <ion-content padding>
     <ion-list>
-          <ion-item-sliding *ngFor="let reminder of reminders | async">
+          <ion-item-sliding *ngFor="let reminder of reminderList ">
  
             <ion-item>
                 <h3>{{reminder.name}}</h3>
