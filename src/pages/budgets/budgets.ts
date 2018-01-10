@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams,ModalController,ViewController,Events } from 'ionic-angular';
-import { SessionService,BudgetService,CateogryService } from '../../app/sessionservice';
+import { SessionService,BudgetService,CateogryService,PaymentService } from '../../app/sessionservice';
 
 
 
@@ -23,6 +23,11 @@ export class BudgetsPage {
   budget:any;
   budgets:any;
   loader:boolean=true;
+  totalEstimateCost:number=0;
+  totalFinalCost:number=0;
+  totalPaid:number=0;
+  totalPending:number=0;
+ 
   constructor(public events:Events,public budgetservice:BudgetService,public modalCtrl:ModalController,public service:SessionService,public navCtrl: NavController, public navParams: NavParams) {
   }
 
@@ -36,6 +41,17 @@ export class BudgetsPage {
 
    this.events.subscribe('budgets:fetch', budgets=> {
     this.budgets=budgets
+    this.totalEstimateCost=0;
+    this.totalFinalCost=0;
+    this.totalPaid=0;
+    this.totalPending=0;
+    for(var i=0;i<this.budgets.length;i++)
+    {
+      this.totalEstimateCost+=parseInt(this.budgets[i].estimatedCost);
+      this.totalFinalCost+=parseInt(this.budgets[i].finalCost);
+      this.totalPaid+=parseInt(this.budgets[i].paid);
+    }
+    this.totalPending=this.totalFinalCost-this.totalPaid;
     this.loader=false;
    })
     // console.log('ionViewDidLoad BudgetsPage');
@@ -46,7 +62,10 @@ export class BudgetsPage {
   {
     this.service.setBudget(budget);
     // this.navCtrl.push(ManageBudgetsPage);
-    this.addBudget();
+    
+
+    let profileModal = this.modalCtrl.create(ManageBudgetsPage);
+    profileModal.present();
   }
 
   removeBudget(budget)
@@ -58,6 +77,7 @@ export class BudgetsPage {
 
    addBudget()
    {
+    this.service.setBudget(null); 
     let profileModal = this.modalCtrl.create(ManageBudgetsPage);
     profileModal.present();
    }
@@ -75,7 +95,11 @@ export class ManageBudgetsPage {
   loader:any=true;
   update:boolean;
   categories:any=[];
-  constructor(public categoryService:CateogryService,public events:Events,public budgetService:BudgetService, public viewCtrl:ViewController,public service:SessionService,public navCtrl: NavController, public navParams: NavParams) {
+  budgetType:number=1;
+  payments:any;
+  paymentInfo:any={};
+  paymentPage:boolean=false;
+  constructor(public paymentservice:PaymentService,public categoryService:CateogryService,public events:Events,public budgetService:BudgetService, public viewCtrl:ViewController,public service:SessionService,public navCtrl: NavController, public navParams: NavParams) {
  
     
   }
@@ -86,6 +110,9 @@ export class ManageBudgetsPage {
     {
       this.update=true;
       this.budget=this.service.getBudget();
+
+
+   
     }
     else
     {
@@ -102,10 +129,37 @@ export class ManageBudgetsPage {
       this.loader=false;
     })
 
-    
+    this.events.subscribe('fetch:payments', payments=> {
+      this.payments=payments
+      this.loader=false;
+      this.paymentPage=false;
+    })
     console.log('ionViewDidLoad ManageBudgetsPage');
   }
 
+  getPayments()
+  {
+    this.loader=true;
+    this.paymentservice.getPaymentsOfBudget(this.budget.id)
+  }
+
+  addPayment()
+  {
+    this.paymentPage=true;
+  }
+
+  savePayments()
+  {
+    if(!this.paymentInfo.amount)
+    {
+      this.service.showToast("Please enter amount")
+      return;
+    }
+    this.loader=true;
+    this.paymentInfo.date=new Date();
+    this.paymentInfo.budgetId=this.budget.id;
+    this.paymentservice.savePayments(this.paymentInfo);
+  }
   saveBudgetInfo()
   {
 
@@ -130,6 +184,8 @@ export class ManageBudgetsPage {
       this.service.showToast2("Please enter Final Cost");
       return;
     }
+    this.budget.id=this.service.getRandomString(3);
+    this.budget.paid=0;
     this.budget.createDate=new Date();
     this.loader=true;
     this.budgetService.saveBudgets(this.budget);
@@ -151,3 +207,5 @@ export class ManageBudgetsPage {
     this.viewCtrl.dismiss();
   }
 }
+
+

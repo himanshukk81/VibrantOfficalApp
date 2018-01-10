@@ -3,7 +3,7 @@ import { NavController,ActionSheetController,Platform,ModalController, NavParams
 import {Http, Response,RequestOptions,Headers} from '@angular/http';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { SocialSharing } from '@ionic-native/social-sharing';
-import { SessionService } from '../../app/sessionservice';
+import { SessionService,EventService } from '../../app/sessionservice';
 import { LoginPage } from '../Login/Login';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { map, filter, tap } from 'rxjs/operators';
@@ -19,13 +19,29 @@ declare var navigator: any;
 export class HomePage {
   mobileNo:any;
   otp:any;
-  
-  constructor(public navCtrl: NavController,public http:Http,public camera: Camera,
+  loader:boolean=false;
+  eventList:any;
+  constructor(public eventService:EventService,public navCtrl: NavController,public http:Http,public camera: Camera,
     public actionCtrl:ActionSheetController,public socialSharing: SocialSharing,
     public service:SessionService,public platform:Platform,
-    public native:NativeStorage,public ngZone:NgZone,public modalCtrl: ModalController,public events:Events,public localNotification:LocalNotifications) {
-  }
-
+    public native:NativeStorage,public ngZone:NgZone,public modalCtrl: ModalController,public events:Events,public localNotification:LocalNotifications){
+      setTimeout(() => {  
+        
+                // alert("Get event called")
+                this.eventService.getEvents()            
+              },1000); 
+    
+    }
+    ionViewDidLoad()
+    {
+      // alert("Event calledd");
+      this.loader=true;
+      this.events.subscribe('events:fetch', events => {
+        // alert("Events Fetching.....")
+        this.eventList=events;
+        this.loader=false;
+      })
+    }
 
 
      

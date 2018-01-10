@@ -212,6 +212,18 @@ export class SessionService {
     {
      
     }
+
+    getRandomString(length)
+    {
+            var text = "";
+            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+          
+            for (var i = 0; i <length; i++)
+              text += possible.charAt(Math.floor(Math.random() * possible.length));
+          
+            return text;
+          
+    }
 }
 @Injectable()
 export class GuestService{
@@ -338,8 +350,8 @@ export class BudgetService{
     constructor(public events:Events){
 
     }
-    budgets:any=[{"id":1,"name":"Booking","categoryId":1,"estimatedCost":200,"finalCost":300,"Notes":"this is prebooking"},
-    {"id":2,"name":"Order","categoryId":1,"estimatedCost":300,"finalCost":500,"Notes":"this is test"}];
+    budgets:any=[{"id":1,"name":"Booking","categoryId":1,"estimatedCost":200,"finalCost":300,"Notes":"this is prebooking","paid":0},
+    {"id":2,"name":"Order","categoryId":1,"estimatedCost":300,"finalCost":500,"Notes":"this is test","paid":0}];
     
         
     getBudgets()
@@ -359,6 +371,7 @@ export class BudgetService{
        {
            if(this.budgets[i].id==budget.id)
            {
+            budget.finalCost=parseInt(budget.finalCost);
             this.budgets[i]=budget;
            }
        }
@@ -378,6 +391,39 @@ export class BudgetService{
     }
 
     
+}
+
+
+@Injectable()
+
+export class PaymentService{
+    payments:any=[];
+    budgetPayments:any=[];
+    constructor(public events:Events,public service:SessionService)
+    {
+
+    }
+    getPayments()
+    {
+        this.events.publish('fetch:payments',this.payments);
+    }
+
+    getPaymentsOfBudget(budgetId)
+    {
+        for(var i=0;i<this.payments.length;i++)
+        {
+            if(this.payments[i].budgetId==budgetId)
+            {
+                this.budgetPayments.push(this.payments[i]);
+            }
+        }
+    }
+
+    savePayments(paymentInfo)
+    {
+        this.payments.push(paymentInfo);
+        this.getPaymentsOfBudget(paymentInfo.budgetId)
+    }
 }
 @Injectable()
 export class ToDoService{
@@ -409,17 +455,21 @@ export class ReminderService{
 @Injectable()
 export class ShareImageService{
     constructor(public events:Events){}
-    // images:any=[{"id":1,"message":"New images","imageUrl":["image":]}];
+
+    imageInfo:any={};
+    images:any=[];
+    imageInfos:any=[];
     getSharedImages()
     {
 
-      this.events.publish('fetch:images',this.images);  
+      this.events.publish('fetch:images',this.imageInfos);  
         
     }   
     sharedImages(imageInfo)
-    {
-        this.images.push(imageInfo);
-        this.events.publish('fetch:images',this.images);  
+    {   
+        // this.imageInfo.message=imageInfo.message;
+        this.imageInfos=this.imageInfos.concat(imageInfo);
+        this.events.publish('fetch:images',this.imageInfos);  
     }
 
     deleteImages(imageInfo)
@@ -439,4 +489,26 @@ export class ShareImageService{
 export class MessageService{
     
 }
+
+
+@Injectable()
+export class EventService{
+    eventList:any=[];
+    constructor(public events:Events,public service:SessionService)
+    {
+        this.eventList=[{id:1,name:"Wedding",description:"This is new wedding"},
+                        {id:2,name:"Mehandi",description:"This is mehandi function"},
+                        {id:3,name:"Sanget",description:"This is Sanget function"},
+                        {id:4,name:"Reception",description:"This is Reception function"}
+                       ] 
+    }
+    getEvents()
+    {
+        // alert("event calleddddddddddddddddddd");
+        this.events.publish('events:fetch',this.eventList)
+    }
+    
+}
+
+
     

@@ -12,21 +12,23 @@
       </button>
       <ion-title>Share Photo</ion-title>
       <ion-buttons end>
-        <button ion-button (click)="shareImages()">Share Images</button>
+        <button ion-button (click)="addImages()">Share Images</button>
       </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 
 <ion-content padding>
-
     <ion-list>
         <!-- <ion-input type="text" [(ngModel)]="guestInfo.otp" placeholder="Enter Messages"></ion-input> <br/><br/> -->
-        <ion-item *ngFor="let image of imagesArray.images">
-            <div *ngIf="image.imageUrl">
-              <!-- <img [src]="image.imageUrl" style="width:50px;height:50px"> -->
-            </div>  
-            <!-- <p *ngIf="{{image.message}}">{{image.message}}</p> -->
+        <ion-item *ngFor="let image of images">
+            <p *ngIf="image.message">{{image.message}}</p><br/>
+            <div *ngFor="let obj of image.imagesArray">
+        
+               <img [src]="obj.imageUrl" style="width:100px;height:100px">
+               
+             </div>
+           
         </ion-item>
       </ion-list>
 </ion-content>

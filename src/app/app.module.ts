@@ -9,7 +9,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import {Http, Response} from '@angular/http';
 import { HttpModule }    from '@angular/http';
 import { SessionService,CateogryService,LoginService,GuestService,ApprovePhotoService,
-  BudgetService,ToDoService ,ReminderService,ShareImageService,MessageService} from './sessionservice';
+  BudgetService,ToDoService ,ReminderService,ShareImageService,MessageService,EventService,PaymentService} from './sessionservice';
 import { LoginPage } from '../pages/Login/Login';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { Toast } from '@ionic-native/toast';
@@ -117,7 +117,8 @@ import { FirstPage} from '../pages/first/first';
     ReminderService,
     ToDoService,
     BudgetService,
-    
+    EventService,
+    PaymentService,
     // { provide: ImagePicker, useClass: imagePickerMock },
     // { provide: Base64, useClass: Base64Mock },
     {provide: ErrorHandler, useClass: IonicErrorHandler}
