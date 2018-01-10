@@ -359,6 +359,15 @@ export class BudgetService{
         this.events.publish('budgets:fetch',this.budgets);
         // return this.budgets;    
     }
+
+    setBudgets(budgetList)
+    {
+        this.budgets=budgetList;
+    }
+    getBudgetInfo()
+    {
+        return this.budgets;
+    }
     saveBudgets(budget)
     {
        this.budgets.push(budget); 
@@ -399,7 +408,7 @@ export class BudgetService{
 export class PaymentService{
     payments:any=[];
     budgetPayments:any=[];
-    constructor(public events:Events,public service:SessionService)
+    constructor(public budgetService:BudgetService, public events:Events,public service:SessionService)
     {
 
     }
@@ -421,8 +430,20 @@ export class PaymentService{
 
     savePayments(paymentInfo)
     {
-        this.payments.push(paymentInfo);
-        this.getPaymentsOfBudget(paymentInfo.budgetId)
+
+        var budgetList=this.budgetService.getBudgetInfo();
+
+        for(var i=0;i<budgetList.length;i++)
+        {
+            if(paymentInfo.budgetId==budgetList[i].id)
+            {
+                budgetList[i].paid+=parseInt(paymentInfo.amount);
+            }
+        }
+
+        this.budgetService.setBudgets(budgetList);
+        // this.payments.push(paymentInfo);
+        // this.getPaymentsOfBudget(paymentInfo.budgetId)
     }
 }
 @Injectable()

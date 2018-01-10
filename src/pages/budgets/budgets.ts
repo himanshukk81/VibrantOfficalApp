@@ -139,8 +139,9 @@ export class ManageBudgetsPage {
 
   getPayments()
   {
-    this.loader=true;
-    this.paymentservice.getPaymentsOfBudget(this.budget.id)
+    // this.loader=true;
+    // this.paymentservice.getPaymentsOfBudget(this.budget.id)
+    this.paymentPage=true;
   }
 
   addPayment()

@@ -19,9 +19,9 @@
 <ion-content>
 
         <ion-toolbar *ngIf="update">
-                <ion-segment [(ngModel)]="budgetType" >
+                <ion-segment [(ngModel)]="budgetType"  click="getPayments()" >
                     <ion-segment-button value="1">Expense</ion-segment-button>
-                    <ion-segment-button value="2" click="getPayments()">Payments</ion-segment-button>
+                    <ion-segment-button value="2">Payments</ion-segment-button>
                 </ion-segment>
         </ion-toolbar>
 
@@ -55,25 +55,21 @@
         <button ion-button type="submit" block (click)="saveBudgetInfo()" [disabled]="loader" *ngIf="!update">Add Budget <ion-spinner name="circles" *ngIf="loader"></ion-spinner></button>
         <button ion-button type="submit" block (click)="updateBudget()" [disabled]="loader" *ngIf="update">Update Budget <ion-spinner name="circles" *ngIf="loader"></ion-spinner></button>
    </ion-list>   
-   <ion-list *ngIf="budgetType==2">     
-        <ion-list *ngIf="!paymentPage"> 
-            <ion-item *ngFor="let payment of payments">
-                    <h2>{{payment.amount}}</h2>
-                    <p>{{payment.date | date:'medium'}}</p>              
-            </ion-item>
-            <button ion-button (click)="addPayment()">Add Payment</button>
-        </ion-list>    
-
-
-        <ion-list *ngIf="paymentPage"> 
+   <ion-list *ngIf="budgetType==2">    
+        <ion-list> 
                 <ion-item>
                         <ion-label>Amount</ion-label>
-                        <ion-input type="text" [(ngModel)]="paymentInfo.amount"></ion-input>
+                        <ion-input type="text" [(ngModel)]="paymentInfo.amount"></ion-input><br/><br/>
 
                 </ion-item>
-                <button ion-button type="submit"  (click)="savePayments()" [disabled]="loader">Save<ion-spinner name="circles" *ngIf="loader"></ion-spinner></button>
-        </ion-list>    
-        <h3 *ngIf="payments.length==0 && !loader">No Payment History</h3>
+
+                <div text-center>
+                    <button ion-button type="submit"  (click)="savePayments()" [disabled]="loader">Save<ion-spinner name="circles" *ngIf="loader"></ion-spinner></button>
+        
+                </div>        
+        </ion-list> 
+
+        <!-- <h3 *ngIf="payments.length==0 && !loader">No Payment History</h3> -->
         
          
    </ion-list>        
