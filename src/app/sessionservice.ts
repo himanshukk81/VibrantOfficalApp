@@ -56,10 +56,6 @@ export class SessionService {
 
     }
 
-    getGuests()
-    {
-       
-    }
      showToast2(message)
     {
         let toast = this.toastCtrl.create({
@@ -229,19 +225,19 @@ export class SessionService {
 export class GuestService{
     Guests:any;
     guestInvitation:any;
-
+    guestType:any;
     constructor(public http:Http,public events:Events,public toastCtrl:ToastController,public nativeStorage:NativeStorage,public toast:Toast)
     {}
     getGuests()
     {
         this.Guests=
-        [{"id":1,"name":"Himanshu","mobile":"9971672881"},
-        {"id":2,"name":"Shahid","mobile":"9891914661"},
-        {"id":3,"name":"Manoj","mobile":"98745612312"},
-        {"id":4,"name":"Yash","mobile":"789456123123"},
-        {"id":5,"name":"Rahul","mobile":"78945612354"}];
-    
-        return this.Guests;    
+        [{"id":1,"name":"Himanshu","mobile":"9971672881","guestTypeId":1},
+        {"id":2,"name":"Shahid","mobile":"9891914661","guestTypeId":1},
+        {"id":3,"name":"Manoj","mobile":"98745612312","guestTypeId":2},
+        {"id":4,"name":"Yash","mobile":"789456123123","guestTypeId":3},
+        {"id":5,"name":"Rahul","mobile":"78945612354","guestTypeId":1}];
+        
+        this.events.publish("fetch:guests",this.Guests);
     }
 
     getGuestInvitation(guestId)
@@ -277,6 +273,11 @@ export class GuestService{
             }
         }
         this.events.publish("guestinvitation:removed",invitationList);
+    }
+
+    getGuestType()
+    {
+        this.guestType=[{"id":1,"name":"Family"},{"id":2,"name":"Friends"},{"id":3,"name":"Collegue"}];
     }
     
 }
@@ -363,6 +364,7 @@ export class BudgetService{
     setBudgets(budgetList)
     {
         this.budgets=budgetList;
+        this.getBudgets()
     }
     getBudgetInfo()
     {
@@ -371,7 +373,7 @@ export class BudgetService{
     saveBudgets(budget)
     {
        this.budgets.push(budget); 
-       return this.getBudgets();
+       
     }
 
     updateBudgets(budget)
@@ -430,9 +432,7 @@ export class PaymentService{
 
     savePayments(paymentInfo)
     {
-
         var budgetList=this.budgetService.getBudgetInfo();
-
         for(var i=0;i<budgetList.length;i++)
         {
             if(paymentInfo.budgetId==budgetList[i].id)
@@ -440,7 +440,6 @@ export class PaymentService{
                 budgetList[i].paid+=parseInt(paymentInfo.amount);
             }
         }
-
         this.budgetService.setBudgets(budgetList);
         // this.payments.push(paymentInfo);
         // this.getPaymentsOfBudget(paymentInfo.budgetId)
@@ -475,7 +474,7 @@ export class ReminderService{
 }
 @Injectable()
 export class ShareImageService{
-    constructor(public events:Events){}
+    constructor(public events:Events,public service:SessionService){}
 
     imageInfo:any={};
     images:any=[];
@@ -486,11 +485,91 @@ export class ShareImageService{
       this.events.publish('fetch:images',this.imageInfos);  
         
     }   
+
+    getFilterImages(info)
+    {
+      var imageList=[];
+    //   imageList=this.imageInfos;
+
+
+        if(this.service.getUser().userType==1)
+        {
+            for(var i=0;i<this.imageInfos.length;i++)
+            {
+            if(this.imageInfos[i].userType==1 && info.selectedUserType==1)
+            {
+                imageList.push(this.imageInfos[i]);
+            }  
+            else if(this.imageInfos[i].userType==2 && info.selectedUserType==2)
+            {
+                if(!info.guestId || info.guestId==0)
+                {
+                    imageList.push(this.imageInfos[i]);  
+                }
+                else if(info.guestId==this.imageInfos[i].guestId)
+                {
+                    imageList.push(this.imageInfos[i]); 
+                }
+            }          
+            } 
+        }
+        else if(this.service.getUser().userType==2)
+        {
+            for(var i=0;i<this.imageInfos.length;i++)
+            {
+                if(this.imageInfos[i].userType==1)
+                {
+                    if(this.imageInfos[i].guestId==0)
+                    {
+                        imageList.push(this.imageInfos[i]);   
+                    }
+                    else if(this.service.getUser().id==this.imageInfos[i].guestId)
+                    {
+                        imageList.push(this.imageInfos[i]); 
+                    }
+                }   
+                
+                if(this.imageInfos[i].userType==2)
+                {
+                    if(this.service.getUser().id==this.imageInfos[i].guestId)
+                    {
+                        imageList.push(this.imageInfos[i]); 
+                    }
+
+                    else if(this.imageInfos[i].status=='A')
+                    {
+                        imageList.push(this.imageInfos[i]);   
+                    }
+                } 
+                
+            
+            }
+            
+        }
+         console.log("Publishing==");
+         this.events.publish('fetch:images',imageList);
+
+    }
+
+    approveImage(images)
+    {
+        for(var i=0;i<images.length;i++)
+        {
+            if(images[i].imagesArray[0].selected)
+            {
+                // this.imageInfos[i].imagesArray[0].status='A';
+                this.imageInfos[i].status='A';
+            }
+            
+        }
+        this.events.publish('fetch:images',this.imageInfos);
+    }
     sharedImages(imageInfo)
     {   
         // this.imageInfo.message=imageInfo.message;
         this.imageInfos=this.imageInfos.concat(imageInfo);
-        this.events.publish('fetch:images',this.imageInfos);  
+        this.getFilterImages(imageInfo);
+        // this.events.publish('fetch:images',this.imageInfos);  
     }
 
     deleteImages(imageInfo)

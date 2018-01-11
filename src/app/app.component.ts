@@ -28,7 +28,7 @@ import { SharePhotoPage,ManageSharePhotoPage} from '../pages/share-photo/share-p
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
   @ViewChild(NavController) navCtrl: NavController;
-  rootPage: any=BudgetsPage;
+  rootPage: any=FirstPage;
   headers:any;
   pages: Array<{title: string, component: any}>;
 
@@ -53,7 +53,7 @@ export class MyApp {
       {
         this.pages = [
           {title:'Home',component:GuestInvitationPage},
-          {title:'Users',component:UsersPage},
+          {title:'Share Photo',component:SharePhotoPage},
           {title:'Profile',component:profile},
           {title:'Logout',component:LoginPage}
           
@@ -200,7 +200,7 @@ export class MyApp {
               // .then(()=>{
                 // this.service.setUser(null);
                 // this.nativeStorage.clear();
-                this.nav.setRoot(LoginPage);
+                this.nav.setRoot(FirstPage);
                 this.nav.popToRoot();
               },
         }

@@ -28,7 +28,7 @@ export class BudgetsPage {
   totalPaid:number=0;
   totalPending:number=0;
  
-  constructor(public events:Events,public budgetservice:BudgetService,public modalCtrl:ModalController,public service:SessionService,public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public viewCtrl:ViewController, public events:Events,public budgetservice:BudgetService,public modalCtrl:ModalController,public service:SessionService,public navCtrl: NavController, public navParams: NavParams) {
   }
 
 
@@ -45,13 +45,25 @@ export class BudgetsPage {
     this.totalFinalCost=0;
     this.totalPaid=0;
     this.totalPending=0;
+
+    
+    
     for(var i=0;i<this.budgets.length;i++)
     {
       this.totalEstimateCost+=parseInt(this.budgets[i].estimatedCost);
       this.totalFinalCost+=parseInt(this.budgets[i].finalCost);
       this.totalPaid+=parseInt(this.budgets[i].paid);
     }
-    this.totalPending=this.totalFinalCost-this.totalPaid;
+
+    if(this.totalFinalCost>=this.totalPaid)
+    {
+      this.totalPending=this.totalFinalCost-this.totalPaid;
+    }
+    else
+    {
+      this.totalPending=0;
+    }
+    
     this.loader=false;
    })
     // console.log('ionViewDidLoad BudgetsPage');
@@ -160,6 +172,7 @@ export class ManageBudgetsPage {
     this.paymentInfo.date=new Date();
     this.paymentInfo.budgetId=this.budget.id;
     this.paymentservice.savePayments(this.paymentInfo);
+    this.closeModal();
   }
   saveBudgetInfo()
   {

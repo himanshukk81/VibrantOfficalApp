@@ -13,8 +13,15 @@
             <ion-item end>
                 <button ion-button (click)="sharePhoto()" [disabled]="imageInfo.imagesArray.length==0 || loader">Shared</button>
                 <!-- <button ion-button (click)="sharePhoto()"  [disabled]="loader">Shared</button> -->
+                <!-- <button ion-button (click)="sharePhoto()">Shared</button> -->
             </ion-item> 
-
+            <ion-item *ngIf="userInfo.userType==1">
+                    <ion-label>Select Guest</ion-label>
+                    <ion-select type="text" [(ngModel)]="imageInfo.guestId">
+                        <ion-option  value="0">ALL</ion-option>  
+                        <ion-option *ngFor="let guest of guests"  value="{{guest.id}}">{{guest.name}}</ion-option> 
+                    </ion-select>
+            </ion-item> 
             <div text-center *ngIf="loader">
                 <ion-spinner name="circles" ></ion-spinner>
             </div>

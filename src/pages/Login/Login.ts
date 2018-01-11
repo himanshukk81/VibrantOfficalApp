@@ -5,6 +5,7 @@ import { SessionService } from '../../app/sessionservice';
 import { GuestService } from '../../app/sessionservice';
 
 import { HomePage } from '../home/home';
+import { SharePhotoPage } from '../share-photo/share-photo';
 
 import { GuestInvitationPage } from '../guest-invitation/guest-invitation';
 
@@ -50,16 +51,29 @@ export class LoginPage {
 
     this.service.setUser(null);
     this.nativeStorage.clear();
-    this.guests=this.guest.getGuests();
+
+
+    setTimeout(() => {  
+      this.guest.getGuests();
+    },100);
+    
     
     this.events.subscribe('login:success', user => {
       this.loader=false;
       user.userType=this.userTypeId;
       this.events.publish('menu:load',user);
       this.service.setUser(user)
-      this.navCtrl.setRoot(HomePage);
+      this.navCtrl.setRoot(SharePhotoPage);
       this.navCtrl.popToRoot();
     })
+
+    this.events.subscribe('fetch:guests', guests => {
+      this.guests=guests;
+      this.loader=false;
+      
+    })
+
+    
     
     console.log("Ion view load");
   }
@@ -95,13 +109,17 @@ export class LoginPage {
     }
     this.guestInfo.userType=this.userTypeId;
     this.guestInfo.id=this.guestId;
-    for(var i=0;i<this.guests.length;i++)
-    {
-      if(this.guests[i].id==this.guestInfo.id)
-      {
-        this.guestInfo.mobile=this.guests[i].mobile;
-      }
-    }
+    this.events.publish('login:success',this.guestInfo);
+    this.service.setUser(this.guestInfo);
+    // this.navCtrl.setRoot(GuestInvitationPage);
+    // this.navCtrl.popToRoot()
+    // for(var i=0;i<this.guests.length;i++)
+    // {
+    //   if(this.guests[i].id==this.guestInfo.id)
+    //   {
+    //     this.guestInfo.mobile=this.guests[i].mobile;
+    //   }
+    // }
 
     
     // this.events.publish('login:success',this.guestInfo);
@@ -109,21 +127,21 @@ export class LoginPage {
     // this.navCtrl.setRoot(GuestInvitationPage);
     // this.navCtrl.popToRoot();
     
-      var mobile="91"+this.guestInfo.mobile;
-      var smsUrl="https://control.msg91.com/api/sendotp.php?authkey=169096A9g9vil6eKqv598ab8f0&mobile="+mobile+"&otp_expiry=15"; 
-      this.http.get(smsUrl)
-      .map(val => val.json())
-      .subscribe(data => 
-       {
-         this.otpTriggered=true;
-         this.service.showToast2("Message Successfully sent to your registered number") ;
-         console.log(JSON.stringify(data))
-       })
-      err =>
-       {
-        this.service.showToast2("Message Failed to send please try again"); 
-        alert("Error"+err);
-       } 
+      // var mobile="91"+this.guestInfo.mobile;
+      // var smsUrl="https://control.msg91.com/api/sendotp.php?authkey=169096A9g9vil6eKqv598ab8f0&mobile="+mobile+"&otp_expiry=15"; 
+      // this.http.get(smsUrl)
+      // .map(val => val.json())
+      // .subscribe(data => 
+      //  {
+      //    this.otpTriggered=true;
+      //    this.service.showToast2("Message Successfully sent to your registered number") ;
+      //    console.log(JSON.stringify(data))
+      //  })
+      // err =>
+      //  {
+      //   this.service.showToast2("Message Failed to send please try again"); 
+      //   alert("Error"+err);
+      //  } 
   }
  
   verifyOtp()
@@ -144,6 +162,8 @@ export class LoginPage {
        })
       err =>
        {
+
+
         this.service.showToast2("Failed to verify otp please try again"); 
         alert("Error"+err);
        } 
