@@ -28,7 +28,7 @@ import { SharePhotoPage,ManageSharePhotoPage} from '../pages/share-photo/share-p
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
   @ViewChild(NavController) navCtrl: NavController;
-  rootPage: any=RemindersPage;
+  rootPage: any=FirstPage;
   headers:any;
   pages: Array<{title: string, component: any}>;
 

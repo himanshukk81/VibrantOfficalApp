@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams,ModalController,ViewController,AlertController,Platform,Events  } from 'ionic-angular';
 import { SessionService,ReminderService} from '../../app/sessionservice';
 import { LocalNotifications } from '@ionic-native/local-notifications';
-import { Event } from '_debugger';
+// import { Event } from '_debugger';
 
 /**
  * Generated class for the RemindersPage page.

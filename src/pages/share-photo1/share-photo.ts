@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams,Events,ViewController,ModalControll
 import { ImagePicker } from '@ionic-native/image-picker';
 import { SessionService,ShareImageService,GuestService} from '../../app/sessionservice';
 import { json } from 'body-parser';
+import { ImageViewerController } from "ionic-img-viewer";
 
 /**
  * Generated class for the SharePhotoPage page.
@@ -18,14 +19,14 @@ import { json } from 'body-parser';
 export class SharePhotoPage {
   imageOptions:any;
   imagesArray:any=[];
-  images:any;
+  images:any=[];
   guests:any;
   chooseUserType:any;
   filterInput:any={}; 
   userInfo:any={};
   loader:boolean=false;
   first:boolean=true;
-  constructor(public guestservice:GuestService, public service:SessionService,public modalCtrl:ModalController,public events:Events,public imageService:ShareImageService,public imagePicker: ImagePicker,public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public imageViewerCtrl: ImageViewerController,public guestservice:GuestService, public service:SessionService,public modalCtrl:ModalController,public events:Events,public imageService:ShareImageService,public imagePicker: ImagePicker,public navCtrl: NavController, public navParams: NavParams) {
     this.userInfo=this.service.getUser();
   }
 
@@ -38,7 +39,6 @@ export class SharePhotoPage {
       if(this.userInfo.userType==2)
       {
         this.loader=true;
-        console.log("Calling guest data");
         this.imageService.getFilterImages(null);
       }
       
@@ -49,26 +49,41 @@ export class SharePhotoPage {
     
 
     
-
+    this.events.unsubscribe('fetch:images')
     this.events.subscribe('fetch:guests', guests=> {
       this.guests=guests;
     })
 
-    this.events.unsubscribe('fetch:images');
-    this.events.subscribe('fetch:images', images1=> {
+
+    this.events.subscribe('fetch:images',imageInfo=> {
       // this.service.showToast2("Successfully upload images");
+
         // this.images=[];
-        this.imagesArray=[];
-        this.images=images1;
         
-        this.loader=false;
-        this.first=false;
-        console.log("images ======="+JSON.stringify(this.images));
+        // this.imagesArray=[];
+
+        if(imageInfo.broadcast)
+        {
+          // alert("broadcast==="+imageInfo.broadcast);
+          this.images=imageInfo.imageList;
+          this.loader=false;
+          this.first=false;
+          imageInfo.broadcast=false;
+          console.log("images ======="+JSON.stringify(this.images));
+        }
+        
+        
         // console.log("Images===="+this.images);
-      // this.events.unsubscribe('fetch:images');
+
+        // setTimeout(() => {  
+        //   this.events.unsubscribe('fetch:images');
+        // },200)
+        
     })
+    
     console.log('ionViewDidLoad SharePhotoPage');
   }
+  
 
   filterUser()
   {
@@ -91,35 +106,8 @@ export class SharePhotoPage {
   approveImage()
   {
     this.loader=true;
-    if(!this.filterInput.guestId)
-    {
-      this.filterInput.guestId=0;
-    }
-    for(var i=0;i<this.images.length;i++)
-    {
-      for(var j=0;j<this.images[i].imagesArray.length;j++)
-      {
-        if(this.images[i].imagesArray[j].selected)
-        {
-          if(this.images[i].imagesArray[j].status!="A")
-          {
-            this.images[i].imagesArray[j].guestId=this.filterInput.guestId;
-          }
-          
-          this.images[i].imagesArray[j].status="A";
-
-          
-        }
-        else if(this.images[i].userType==2 && this.images[i].userId==this.service.getUser().id) 
-        {
-          this.images[i].imagesArray[j].status="P";
-          // this.images[i].imagesArray[j].guestId=this.filterInput.guestId;
-        }
-      }
-    }
     this.imageService.approveImage(this.images)
   }
-
 }
 
 @Component({
@@ -185,42 +173,39 @@ export class ManageSharePhotoPage {
   sharePhoto()
   {
     var userInfo=this.service.getUser();
-    
     // this.loader=true;
 
     if(this.service.getUser().userType==1)
     {
-      if(!this.imageInfo.guestId)
+      if(!this.imageInfo. guestId)
       {
         this.imageInfo.guestId=0;
-
       }
-      // this.imageInfo.id=this.service.getUser().id;
-      this.imageInfo.userId=this.service.getUser().id;
-      this.imageInfo.status="A";
+      
     }
     else
     {
       // this.imageInfo.status='P';
       // this.imageInfo.imagesArray.push({"imageUrl":this.service.getRandomString(5)});      
-      // this.imageInfo.id=this.service.getUser().id;
       this.imageInfo.guestId=this.service.getUser().id;
-      this.imageInfo.userId=this.service.getUser().userId;
-      this.imageInfo.status="P";
     }
-    this.imageInfo.id=this.service.getRandomString(4);
-    this.imageInfo.userType=this.service.getUser().userType;
+
+    // this.imageInfo.imagesArray.push({"imageUrl":this.service.getRandomString(5)});
 
     for(var i=0;i<3;i++)
     {
-      this.imageInfo.imagesArray.push({"imageUrl":this.service.getRandomString(5),"status":this.imageInfo.status,"guestId":this.imageInfo.guestId});      
+      this.imageInfo.imagesArray.push({"imageUrl":this.service.getRandomString(5)});
     }
+    this.imageInfo.id=this.service.getRandomString(4);
+    this.imageInfo.userId=this.service.getUser().id;
+    this.imageInfo.userType=this.service.getUser().userType;
     this.imageService.sharedImages(this.imageInfo);
-
     this.closeModal();
+    // this.imageService.sharedImages(this.imageInfo);
     
     console.log("image arrray==="+JSON.stringify(this.imageInfo));
-
+    // alert("Image info==="+JSON.stringify(this.imageInfo));
+    console.log("image info==="+JSON.stringify(this.imageInfo));
     // if(this.imageCounter==this.imageInfo.imagesArray.length)
     // {
     //   console.log("Image counter=="+this.imageCounter);

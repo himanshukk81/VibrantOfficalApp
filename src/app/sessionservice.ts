@@ -489,7 +489,7 @@ export class ReminderService{
    }
 }
 @Injectable()
-export class ShareImageService{
+export class ShareImageService1{
     constructor(public events:Events,public service:SessionService){}
 
     imageInfo:any={};
@@ -625,6 +625,177 @@ export class ShareImageService{
     }
     
 }
+@Injectable()
+export class ShareImageService{
+    imageInfo:any={};
+    images:any=[];
+    imageInfos:any=[];
+    constructor(public events:Events,public service:SessionService){
+    }
+
+
+
+
+ 
+    getSharedImages()
+    {
+
+      this.events.publish('fetch:images',this.imageInfos);  
+        
+    }   
+
+    getFilterImages(info)
+    {
+      console.log("Calling guest data");  
+      var imageList=[];
+    //   imageList=this.imageInfos;
+
+
+        if(this.service.getUser().userType==1)
+        {
+            for(var i=0;i<this.imageInfos.length;i++)
+            {
+            // if(this.imageInfos[i].userType==1 && this.service.getUser().id==this.imageInfos[i].userId)
+            if(this.imageInfos[i].userType==1 && info.selectedUserType==this.imageInfos[i].userType)
+    
+            {
+                imageList.push(this.imageInfos[i]);
+            }  
+            // else if(this.imageInfos[i].userType==2 && this.service.getUser().id==this.imageInfos[i].userId)
+            else if(this.imageInfos[i].userType==2 && info.selectedUserType==this.imageInfos[i].userType)
+            
+            {
+                if(!info.guestId || info.guestId==0)
+                {
+                    imageList.push(this.imageInfos[i]);  
+                }
+                else if(info.guestId==this.imageInfos[i].guestId)
+                {
+                    imageList.push(this.imageInfos[i]); 
+                }
+            }          
+            } 
+        }
+        else if(this.service.getUser().userType==2)
+        {
+            for(var i=0;i<this.imageInfos.length;i++)
+            {
+                if(this.imageInfos[i].userType==1 && this.service.getUser().userId==this.imageInfos[i].userId) 
+                {
+                    if(this.imageInfos[i].guestId==0)
+                    {
+                        imageList.push(this.imageInfos[i]);   
+                    }
+                    else if(this.service.getUser().id==this.imageInfos[i].guestId)
+                    {
+                        imageList.push(this.imageInfos[i]); 
+                    }
+                }   
+                if(this.imageInfos[i].userType==2 && this.service.getUser().userId==this.imageInfos[i].userId)
+                {
+                    if(this.service.getUser().id==this.imageInfos[i].guestId)
+                    {
+                        imageList.push(this.imageInfos[i]); 
+                    }
+                    else 
+                    {
+                    //   imageList.push(this.imageInfos[i]);  
+                    //  var newArray=[];
+                    //  newArray= Object.assign([],this.imageInfos[i]);
+
+                    //  console.log(JSON.stringify(this.imageInfos[i]));
+                    // newArray=this.imageInfos[i];
+
+                      //   imageList= Object.assign([], this.imageInfos[i]);
+                    //   for(var j=0;j<this.imageInfos[i].imagesArray.length;j++)
+                    //   {
+                    //     if(this.imageInfos[i].imagesArray[j].status=='P')
+                    //     {
+                    //         // imageList[i].imagesArray.splice(j,1) 
+                    //         // this.imageInfos[i].imagesArray.push(this.imageInfos[i].imagesArray[j])   
+                    //     }
+                    //   }
+                        // for(var k=0;k<newArray.length;k++)
+                        // {
+                        //   var imageArray=imageList[k].imagesArray;  
+                        // var data=[];
+                        // data=this.imageInfos[i];
+                        let newArray: any = []; 
+                        newArray.push(Object.assign({}, this.imageInfos[i])); 
+                        // data.forEach((item) => 
+                        // { 
+                        //     newArray.push(Object.assign({}, item)); 
+                        
+                        // }); 
+            
+                        console.log("new array before ==="+JSON.stringify(newArray));
+                        newArray[0].imagesArray=[];
+                        console.log("new array==="+JSON.stringify(newArray));
+                        console.log("old array==="+JSON.stringify(this.imageInfos));
+                          for(var l=0;l<this.imageInfos[i].imagesArray.length;l++)
+                            {
+                              if(this.imageInfos[i].imagesArray)
+                              {
+                                if(this.imageInfos[i].imagesArray[l].guestId)
+                                {
+                                   if(this.service.getUser().id==this.imageInfos[i].imagesArray[l].guestId) 
+                                   {
+                                    newArray[0].imagesArray.push(this.imageInfos[i].imagesArray[l]); 
+                                   }
+                                }  
+                                else if(this.imageInfos[i].imagesArray[l].status=='A')
+                                {
+                                    newArray[0].imagesArray.push(this.imageInfos[i].imagesArray[l]);
+                                }
+                              }
+                            }
+                            imageList=imageList.concat(newArray); 
+                        
+                    }
+                } 
+                
+            
+            }
+            
+        }
+         console.log("Publishing==");
+         this.events.publish('fetch:images',imageList);
+
+    }
+
+
+
+ 
+
+    approveImage(images)
+    {
+        this.imageInfos=images;
+        this.events.publish('fetch:images',this.imageInfos);
+
+        this.service.showToast2("Successfully approved");
+    }
+    sharedImages(imageInfo)
+    {   
+        // this.imageInfo.message=imageInfo.message;
+        this.imageInfos=this.imageInfos.concat(imageInfo);
+        // this.getFilterImages(imageInfo);
+        this.events.publish('fetch:images',this.imageInfos);  
+    }
+
+    deleteImages(imageInfo)
+    {
+        for(var i=0;i<this.images.length;i++)
+        {
+            if(this.images[i].id==imageInfo.id)
+            {
+                this.images.splice(i,1)  
+            }
+        }
+        this.events.publish('fetch:images',this.images);  
+    }
+    
+}
+
 @Injectable()
 export class MessageService{
     
