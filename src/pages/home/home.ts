@@ -21,6 +21,7 @@ export class HomePage {
   otp:any;
   loader:boolean=false;
   eventList:any;
+  data:any={};
   constructor(public eventService:EventService,public navCtrl: NavController,public http:Http,public camera: Camera,
     public actionCtrl:ActionSheetController,public socialSharing: SocialSharing,
     public service:SessionService,public platform:Platform,
@@ -41,7 +42,10 @@ export class HomePage {
         this.eventList=events;
         this.loader=false;
       })
+      
     }
+
+
 
 
      

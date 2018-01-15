@@ -34,14 +34,17 @@ export class LoginPage {
     this.user={};
     this.menu.swipeEnable(false);
 
-    if(this.service.getUser())
-    {
-      this.userTypeId=this.service.getUser().userType;
-    }
-    else 
-    {
-      this.userTypeId=this.navParams.get('id');
-    }
+    // if(this.service.getUser())
+    // {
+    //   this.userTypeId=this.service.getUser().userType;
+    // }
+    // else 
+    // {
+    //   this.userTypeId=this.navParams.get('id');
+    // }
+    this.userTypeId=this.navParams.get('id');
+
+    console.log("user type id==="+this.userTypeId);
      
     //  alert("sdfsdf"+this.navParams.get('id'));
   }

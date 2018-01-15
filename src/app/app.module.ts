@@ -40,6 +40,7 @@ import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { FirstPage} from '../pages/first/first';
 
+import { IonicImageViewerModule } from 'ionic-img-viewer';
 
 
 
@@ -69,7 +70,8 @@ import { FirstPage} from '../pages/first/first';
   imports: [
     HttpModule,
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    IonicImageViewerModule
     
   ],
   bootstrap: [IonicApp],

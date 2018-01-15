@@ -18,8 +18,10 @@ import { Event } from '_debugger';
 export class RemindersPage {
   reminder:any={};
   reminderList=[];
-  constructor(public events:Events,public reminderService:ReminderService, public modalCtrl:ModalController,public service:SessionService,public navCtrl: NavController, public navParams: NavParams) {
-   
+  loader:boolean;
+  notifications:any=[];
+  constructor(public platform:Platform, public localNotifications:LocalNotifications, public events:Events,public reminderService:ReminderService, public modalCtrl:ModalController,public service:SessionService,public navCtrl: NavController, public navParams: NavParams) {
+  //  this.loader=true;
   }
 
   ionViewDidLoad() {
@@ -27,10 +29,60 @@ export class RemindersPage {
     setTimeout(() => {  
       this.reminderService.getReminders()            
     },100); 
-      this.events.subscribe('reminder:fetches', reminders=> {
+
+       this.events.unsubscribe('reminder:fetches');
+      this.events.subscribe('reminder:fetches', reminders=> {        
         this.reminderList=reminders;
-      })
-    console.log('ionViewDidLoad RemindersPage');
+
+        this.platform.ready().then(() => {
+          // alert("dssdfsd") ;
+          this.localNotifications.cancelAll().then(() => {   
+              console.log("Reminder list===="+JSON.stringify(this.reminderList));
+              for(var i=0;i<this.reminderList.length;i++)
+              {
+                   this.notifications.push({"id":i,"title":this.reminderList[i].title,"text":this.reminderList[i].name,
+                   "at":new Date(this.reminderList[i].at).getTime()})
+                  console.log("Notify Time===="+i+"  "+new Date(this.reminderList[i].at).getTime());
+              }
+              console.log("Notify Data==="+JSON.stringify(this.notifications));
+              // alert("Notfications=="+JSON.stringify(this.notifications));
+              this.localNotifications.schedule(this.notifications);
+              // alert("Local Notification data=="+JSON.stringify(this.localNotifications));
+              console.log("Local Notify data==="+JSON.stringify(this.localNotifications));
+            })
+          }); 
+        //   this.loader=false;
+        })
+  
+        console.log('ionViewDidLoad RemindersPage');
+  }
+
+  getAll()
+  {
+     console.log("alll===="+JSON.stringify(this.localNotifications.getAllScheduled()));
+  }
+  enableNotification()
+  {
+    this.platform.ready().then(() => { 
+      this.localNotifications.cancelAll().then(() => {   
+
+        // this.notifications.push({"id":this.service.getRandomString(4),"title":"old Data","text":"this is text","at":"Mon Jan 15 2018 15:07:00 GMT+0530"})
+        // this.notifications.push({"id":this.service.getRandomString(4),"title":"New Data","text":"this is new text","at":"Mon Jan 15 2018 15:08:00 GMT+0530"})
+
+
+        
+          for(var i=0;i<3;i++)
+          {
+            this.notifications.push({"id":i,"title":"helloo=="+i,"text":"helllooo==="+i,"at":new Date().getTime() + (10+i*10)*1000})            
+          }
+          // alert("Notfications=="+JSON.stringify(this.notifications));
+          console.log("Notfications=="+JSON.stringify(this.notifications));
+          this.localNotifications.schedule(this.notifications);
+          // alert("Local Notification data=="+JSON.stringify(this.localNotifications));
+          console.log("Local Notify data==="+JSON.stringify(this.localNotifications));
+        })
+      }); 
+      // this.loader=false;
   }
 
   reminderDetail(reminder)
@@ -115,20 +167,66 @@ export class ManageRemindersPage {
     console.log('ionViewDidLoad ManageBudgetsPage');
   }
 
+  // timeChange(time){
+  //   this.reminder.hour = time.hour.value;
+  //   this.reminder.minute = time.minute.value;
+
+  //   console.log("Time===="+JSON.stringify(time));
+
+  
+  // }
+
+
+  // pushData()
+  // {
+  //   this.reminder.hour=this.reminder.time.split(":")[0];
+  //   this.reminder.minute=this.reminder.time.split(":")[1];
+  //   // this.reminder.date=new Date(this.reminder.date).setHours(this.reminder.hour);
+  //   // this.reminder.date=new Date(this.reminder.date).setMinutes(this.reminder.minute);
+  //   let firstNotificationTime = new Date();
+
+  //   console.log("reminder time===="+JSON.stringify(this.reminder));
+  //   firstNotificationTime.setHours(this.reminder.hour);
+  //   firstNotificationTime.setMinutes(this.reminder.minute);
+  //   this.reminder.createDate=new Date();
+  //   this.reminder.id=this.service.getRandomString(4);
+  //   this.reminder.at=firstNotificationTime;
+  //   this.notifications.push(this.reminder);
+  //   this.reminder={};
+
+  //   console.log("Notificatin array===="+JSON.stringify(this.notifications));
+  
+  //   // this.closeModal();
+
+
+  // }
   saveReminderInfo()
   {
-
     this.reminder.hour=this.reminder.time.split(":")[0];
     this.reminder.minute=this.reminder.time.split(":")[1];
-    this.reminder.date=new Date(this.reminder.date).setHours(this.reminder.hour);
-    this.reminder.date=new Date(this.reminder.date).setMinutes(this.reminder.minute);
-    this.reminder.scheduleDate=new Date();
+    let firstNotificationTime = new Date();
+    console.log("reminder time===="+JSON.stringify(this.reminder));
+    firstNotificationTime.setHours(this.reminder.hour);
+    firstNotificationTime.setMinutes(this.reminder.minute);
+    this.reminder.createDate=new Date();
+    this.reminder.id=this.service.getRandomString(4);
+    this.reminder.at=firstNotificationTime;
+    // this.notifications.push(this.reminder);
+   
     this.reminderService.saveReminder(this.reminder);
     this.closeModal();
+
+    // for(var i=0;i<3;i++)
+    // {
+    //   this.notifications.push({"id":i,"title":"helloo=="+i,"text":"helllooo==="+i,"at":new Date(new Date().getTime() + (10+i*10)*1000)}) 
+    // }
+
+    // this.reminderService.saveReminder(this.notifications);
+    // this.closeModal();
     
   }
   
-
+  
   setNotification()
   {
 

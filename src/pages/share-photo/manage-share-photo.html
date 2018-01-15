@@ -11,9 +11,9 @@
 <ion-content>
         <ion-list>
             <ion-item end>
-                <button ion-button (click)="sharePhoto()" [disabled]="imageInfo.imagesArray.length==0 || loader">Shared</button>
+                <!-- <button ion-button (click)="sharePhoto()" [disabled]="imageInfo.imagesArray.length==0 || loader">Shared</button> -->
                 <!-- <button ion-button (click)="sharePhoto()"  [disabled]="loader">Shared</button> -->
-                <!-- <button ion-button (click)="sharePhoto()">Shared</button> -->
+                <button ion-button (click)="sharePhoto()">Shared</button>
             </ion-item> 
             <ion-item *ngIf="userInfo.userType==1">
                     <ion-label>Select Guest</ion-label>

@@ -28,38 +28,40 @@ import { SharePhotoPage,ManageSharePhotoPage} from '../pages/share-photo/share-p
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
   @ViewChild(NavController) navCtrl: NavController;
-  rootPage: any=FirstPage;
+  rootPage: any=RemindersPage;
   headers:any;
   pages: Array<{title: string, component: any}>;
 
   constructor(public events:Events, public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,public service:SessionService,public native:NativeStorage,public sharing:SocialSharing,public alertCtrl:AlertController  
     ,public nativeStorage:NativeStorage,public network:Network,public localNotifications:LocalNotifications,public http:Http) {
-    this.events.subscribe('menu:load', user => {
-      if(user.userType==1)
-      {
-        this.pages = [
-          { title: 'Home', component: HomePage},
-          {title:'Share Photo',component:SharePhotoPage},
-          {title:'Users',component:UsersPage},
-          {title:'Profile',component:profile},
-          {title:'Budgets',component:BudgetsPage},
-          {title:'Functions',component:FunctionsPage},
-          {title:'Reminders',component:RemindersPage},
-          {title:'Logout',component:LoginPage},
-    
-        ];
-      } 
-      else
-      {
-        this.pages = [
-          {title:'Home',component:GuestInvitationPage},
-          {title:'Share Photo',component:SharePhotoPage},
-          {title:'Profile',component:profile},
-          {title:'Logout',component:LoginPage}
-          
-        ];
-      } 
-    })
+      this.events.subscribe('menu:load', user => {
+        if(user.userType==1)
+        {
+          this.pages = [
+            { title: 'Home', component: HomePage},
+            {title:'Share Photo',component:SharePhotoPage},
+            {title:'Users',component:UsersPage},
+            {title:'Profile',component:profile},
+            {title:'Budgets',component:BudgetsPage},
+            {title:'Functions',component:FunctionsPage},
+            {title:'Reminders',component:RemindersPage},
+            {title:'Logout',component:LoginPage},
+      
+          ];
+        } 
+        else
+        {
+          this.pages = [
+            {title:'Home',component:GuestInvitationPage},
+            {title:'Share Photo',component:SharePhotoPage},
+            {title:'Profile',component:profile},
+            {title:'Logout',component:LoginPage}
+            
+          ];
+        } 
+      })
+
+      // this.initializeApp();
 
   }
   
@@ -72,12 +74,12 @@ export class MyApp {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       // this.splashScreen.hide();
-      this.checkUserStatus();
+      // this.checkUserStatus();
       // this.initPushNotification();
-      this.checkNetwork();
+      // this.checkNetwork();
       this.initLocalNotification();
       // this.enableLocation();
-      this.initLocalNotification();
+      // this.initLocalNotification();
     });
   }
  
@@ -129,7 +131,7 @@ export class MyApp {
   initLocalNotification()
   {
     this.localNotifications.on('click', () => {
-
+      alert("Notify======");
       console.log("Notify local notification");
       // alert("Notificy")
       // let json = JSON.parse(notification.data);

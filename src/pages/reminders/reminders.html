@@ -21,6 +21,9 @@
 
 <ion-content padding>
     <ion-list>
+        <button ion-button color="danger" (click)="enableNotification()">Enable</button>   
+        <button ion-button color="danger" (click)="getAll()">Get All</button>   
+        
           <ion-item-sliding *ngFor="let reminder of reminderList ">
  
             <ion-item>
@@ -31,9 +34,13 @@
          
             <ion-item-options>
                 <button ion-button color="primary" (click)="reminderDetail(reminder)"><p><ion-icon name="paper"></ion-icon> Edit</p></button>
-              <button ion-button color="danger" (click)="removeReminder(reminder)"><p><ion-icon name="trash"></ion-icon> Delete</p></button>
+                <button ion-button color="danger" (click)="removeReminder(reminder)"><p><ion-icon name="trash"></ion-icon> Delete</p></button>
             </ion-item-options>
           </ion-item-sliding>
         
     </ion-list>
+
+    <div text-center *ngIf="loader">
+      <ion-spinner name="circles" ></ion-spinner>
+    </div>
 </ion-content>

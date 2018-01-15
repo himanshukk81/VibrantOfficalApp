@@ -4,6 +4,7 @@ import {Events,ToastController } from 'ionic-angular';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { Toast } from '@ionic-native/toast';
 import { HomePage } from '../pages/home/home';
+import { LocalNotifications } from '@ionic-native/local-notifications';
 
 declare var google:any;
 declare var navigator: any;
@@ -42,6 +43,12 @@ export class SessionService {
     {
         return this.token;
     }
+
+    login(loginInfo)
+    {
+        this.events.publish("login:success",loginInfo); 
+    }
+    
 
     getCategories()
     {
@@ -318,6 +325,7 @@ export class LoginService {
     
     login(loginInfo)
     {
+        
         var login=false;
         var loginData;
         for(var i=0;i<this.users.length;i++)
@@ -451,8 +459,8 @@ export class ToDoService{
 }
 @Injectable()
 export class ReminderService{
-   reminders:any=[{"id":1,"name":"Metting","scheduleDate":new Date()}];
-   constructor(public events:Events){}
+   reminders:any=[];
+   constructor(public events:Events,public localNotifications:LocalNotifications){}
 
    getReminders()
    {
@@ -461,7 +469,15 @@ export class ReminderService{
    saveReminder(reminderInfo)
    {
      this.reminders.push(reminderInfo)
-     this.events.publish('reminder:fetches',this.reminders);
+    //  this.localNotifications.schedule(reminderInfo);
+    // this.localNotifications.cancelAll().then(() => {
+    //     // this.loader=false;         
+    //     this.localNotifications.schedule(reminderInfo);
+    //     var message="You have set Reminder";
+    //     // this.closeModal();
+    // });
+    //    saveReminder(reminderInfo)
+    this.events.publish('reminder:fetches',this.reminders);
    }
    deleteReminder(reminder)
    {
@@ -479,16 +495,21 @@ export class ShareImageService{
     imageInfo:any={};
     images:any=[];
     imageInfos:any=[];
+    sessionImages:any=[];
+
     getSharedImages()
     {
-
-      this.events.publish('fetch:images',this.imageInfos);  
+        this.imageInfo.broadcast=true;
+        this.imageInfo.images=this.images;
+        this.events.publish('fetch:images',this.imageInfo);  
+        // this.events.publish('fetch:images',this.imageInfos,broadcast);  
         
     }   
 
     getFilterImages(info)
     {
       var imageList=[];
+      this.imageInfos=this.sessionImages;
     //   imageList=this.imageInfos;
 
 
@@ -496,78 +517,94 @@ export class ShareImageService{
         {
             for(var i=0;i<this.imageInfos.length;i++)
             {
-            if(this.imageInfos[i].userType==1 && info.selectedUserType==1)
-            {
-                imageList.push(this.imageInfos[i]);
-            }  
-            else if(this.imageInfos[i].userType==2 && info.selectedUserType==2)
-            {
-                if(!info.guestId || info.guestId==0)
-                {
-                    imageList.push(this.imageInfos[i]);  
-                }
-                else if(info.guestId==this.imageInfos[i].guestId)
-                {
-                    imageList.push(this.imageInfos[i]); 
-                }
-            }          
+                if(this.imageInfos[i].userType==1 && info.selectedUserType==1)
+                    {
+                        imageList.push(this.imageInfos[i]);
+                    }  
+                else if(this.imageInfos[i].userType==2 && info.selectedUserType==2)
+                    {
+                        if(!info.guestId || info.guestId==0)
+                        {
+                            imageList.push(this.imageInfos[i]);  
+                        }
+                        else if(info.guestId==this.imageInfos[i].guestId)
+                        {
+                            imageList.push(this.imageInfos[i]); 
+                        }
+                    }          
             } 
         }
         else if(this.service.getUser().userType==2)
-        {
+        {      
             for(var i=0;i<this.imageInfos.length;i++)
             {
-                if(this.imageInfos[i].userType==1)
-                {
-                    if(this.imageInfos[i].guestId==0)
-                    {
-                        imageList.push(this.imageInfos[i]);   
-                    }
-                    else if(this.service.getUser().id==this.imageInfos[i].guestId)
-                    {
-                        imageList.push(this.imageInfos[i]); 
-                    }
-                }   
-                
-                if(this.imageInfos[i].userType==2)
-                {
-                    if(this.service.getUser().id==this.imageInfos[i].guestId)
-                    {
-                        imageList.push(this.imageInfos[i]); 
-                    }
+                imageList.push(this.imageInfos[i]);
+                // if(this.imageInfos[i].userType==1)
+                // {
+                //     if(this.imageInfos[i].guestId==0)
+                //     {
+                //         imageList.push(this.imageInfos[i]);   
+                //     }
+                //     else if(this.service.getUser().id==this.imageInfos[i].guestId)
+                //     {
+                //         imageList.push(this.imageInfos[i]); 
+                //     }
+                // }  
+                // if(this.imageInfos[i].userType==2)
+                // {
 
-                    else if(this.imageInfos[i].status=='A')
-                    {
-                        imageList.push(this.imageInfos[i]);   
-                    }
-                } 
-                
-            
+                //     if(this.service.getUser().id==this.imageInfos[i].guestId)
+                //     {
+                //         imageList.push(this.imageInfos[i]); 
+                //     }
+                //     else 
+                //     {
+                //         var selected=false;
+                //         for(var k=0;k<this.imageInfos[i].imagesArray.length;k++)
+                //         {
+                //             if(this.imageInfos[i].imagesArray[k].selected==true)
+                //             {
+                //                   imageList.push(this.imageInfos[i]);
+                //             }
+                //         }
+                //         // if(selected)
+                //         // {
+                //         //     imageList.push(this.imageInfos[i])    
+                //         // }
+                //     }
+                // } 
             }
             
         }
          console.log("Publishing==");
-         this.events.publish('fetch:images',imageList);
+         this.imageInfo.broadcast=true;
+         this.imageInfo.imageList=imageList;
+
+         this.events.publish('fetch:images',this.imageInfo);
 
     }
 
     approveImage(images)
     {
-        for(var i=0;i<images.length;i++)
-        {
-            if(images[i].imagesArray[0].selected)
-            {
-                // this.imageInfos[i].imagesArray[0].status='A';
-                this.imageInfos[i].status='A';
-            }
-            
-        }
-        this.events.publish('fetch:images',this.imageInfos);
+        // for(var i=0;i<images.length;i++)
+        // {
+        //     if(images[i].imagesArray[0].selected)
+        //     {
+        //         // this.imageInfos[i].imagesArray[0].status='A';
+        //         this.imageInfos[i].status='A';
+        //     } 
+        // }
+        this.imageInfo.broadcast=true;
+        this.imageInfo.imageList=images;
+        this.events.publish('fetch:images',this.imageInfo)
+        this.service.showToast2("Image successfully approved");
     }
     sharedImages(imageInfo)
     {   
         // this.imageInfo.message=imageInfo.message;
+        
         this.imageInfos=this.imageInfos.concat(imageInfo);
+        this.sessionImages=this.sessionImages.concat(imageInfo);
         this.getFilterImages(imageInfo);
         // this.events.publish('fetch:images',this.imageInfos);  
     }
@@ -581,7 +618,10 @@ export class ShareImageService{
                 this.images.splice(i,1)  
             }
         }
-        this.events.publish('fetch:images',this.images);  
+        // var broadcast=true;
+        this.imageInfo.broadcast=true;
+        this.imageInfo.images=this.images;
+        this.events.publish('fetch:images',this.imageInfo);  
     }
     
 }
