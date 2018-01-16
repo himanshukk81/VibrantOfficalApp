@@ -908,10 +908,12 @@ export class MessageService{
       {
           if(this.allMessages[i].senderId==this.service.getUser().id)
           {
+              this.allMessages[i].sender=true;    
               if(receiverId)
               {
                 if(this.allMessages[i].receiverId==receiverId)
                 {
+                    
                     this.userMessages.push(this.allMessages[i])  
                 }
                 
@@ -921,6 +923,22 @@ export class MessageService{
                 this.userMessages.push(this.allMessages[i])
               }
 
+          }
+
+          else if(this.allMessages[i].receiverId==this.service.getUser().id)
+          {
+            this.allMessages[i].sender=false;   
+            if(receiverId)
+            {
+              if(this.allMessages[i].senderId==receiverId)
+              {
+                  this.userMessages.push(this.allMessages[i])  
+              }
+            }
+            else
+            {
+              this.userMessages.push(this.allMessages[i])
+            }
           }
       }  
       this.events.publish('messages:fetches',this.userMessages);
