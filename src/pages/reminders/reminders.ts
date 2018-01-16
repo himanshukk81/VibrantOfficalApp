@@ -30,12 +30,11 @@ export class RemindersPage {
       this.reminderService.getReminders()            
     },100); 
 
-       this.events.unsubscribe('reminder:fetches');
+      this.events.unsubscribe('reminder:fetches');
       this.events.subscribe('reminder:fetches', reminders=> {        
         this.reminderList=reminders;
 
         this.platform.ready().then(() => {
-          // alert("dssdfsd") ;
           this.localNotifications.cancelAll().then(() => {   
               console.log("Reminder list===="+JSON.stringify(this.reminderList));
               for(var i=0;i<this.reminderList.length;i++)
@@ -51,34 +50,22 @@ export class RemindersPage {
               console.log("Local Notify data==="+JSON.stringify(this.localNotifications));
             })
           }); 
-        //   this.loader=false;
         })
   
         console.log('ionViewDidLoad RemindersPage');
   }
 
-  getAll()
-  {
-     console.log("alll===="+JSON.stringify(this.localNotifications.getAllScheduled()));
-  }
+  
   enableNotification()
   {
     this.platform.ready().then(() => { 
       this.localNotifications.cancelAll().then(() => {   
-
-        // this.notifications.push({"id":this.service.getRandomString(4),"title":"old Data","text":"this is text","at":"Mon Jan 15 2018 15:07:00 GMT+0530"})
-        // this.notifications.push({"id":this.service.getRandomString(4),"title":"New Data","text":"this is new text","at":"Mon Jan 15 2018 15:08:00 GMT+0530"})
-
-
-        
           for(var i=0;i<3;i++)
           {
             this.notifications.push({"id":i,"title":"helloo=="+i,"text":"helllooo==="+i,"at":new Date().getTime() + (10+i*10)*1000})            
           }
-          // alert("Notfications=="+JSON.stringify(this.notifications));
           console.log("Notfications=="+JSON.stringify(this.notifications));
           this.localNotifications.schedule(this.notifications);
-          // alert("Local Notification data=="+JSON.stringify(this.localNotifications));
           console.log("Local Notify data==="+JSON.stringify(this.localNotifications));
         })
       }); 
@@ -119,8 +106,7 @@ export class ManageRemindersPage {
   update:boolean;
   notifications:any=[];
   remindersList:any=[];
-  // myDate:any=new Date();
-  // tzoffset:any = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+ 
   
   constructor(public reminderService:ReminderService,public platform: Platform,public alertCtrl:AlertController,public localNotifications:
     LocalNotifications,public viewCtrl:ViewController,public service:SessionService,public navCtrl: NavController, public navParams: NavParams) {
@@ -211,48 +197,18 @@ export class ManageRemindersPage {
     this.reminder.createDate=new Date();
     this.reminder.id=this.service.getRandomString(4);
     this.reminder.at=firstNotificationTime;
-    // this.notifications.push(this.reminder);
-   
     this.reminderService.saveReminder(this.reminder);
     this.closeModal();
-
-    // for(var i=0;i<3;i++)
-    // {
-    //   this.notifications.push({"id":i,"title":"helloo=="+i,"text":"helllooo==="+i,"at":new Date(new Date().getTime() + (10+i*10)*1000)}) 
-    // }
-
-    // this.reminderService.saveReminder(this.notifications);
-    // this.closeModal();
-    
   }
   
   
   setNotification()
   {
-
-   
-    // this.reminder.date=new Date(this.reminder.date);
-    console.log("After update:::"+new Date(this.reminder.date));
-
-    // let notification = {
-    //     id: new Date(this.reminder.date).getDay(),
-    //     title: 'Reminder!',
-    //     text: this.reminder.name,
-    //     at: this.reminder.date
-    //     // sound:'file://assets/sounds/sounds.ogg'
-    // };
-    // this.remindersList.forEach(element => {
-
-    //   alert(element);
-    //   console.log(element);
-    //  });
-    
+    console.log("After update:::"+new Date(this.reminder.date));   
     for(var i=0;i<this.remindersList.length;i++)
     {
       this.notifications.push(this.remindersList[i]);
-    }
-    
-                                                                     
+    }                                                                     
       this.localNotifications.cancelAll().then(() => {
                    this.loader=false;         
                    this.localNotifications.schedule(this.notifications);
@@ -260,11 +216,6 @@ export class ManageRemindersPage {
                    var message="You have set Reminder";
                    this.closeModal();
                });
-      
-      
-      
-      // this.service.showToast(message);
-      
   }
 
  

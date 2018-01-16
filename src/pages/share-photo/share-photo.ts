@@ -58,6 +58,12 @@ export class SharePhotoPage {
     this.events.subscribe('fetch:images', images1=> {
       // this.service.showToast2("Successfully upload images");
         // this.images=[];
+
+        // if(this.service.getUser().userType==1)
+        // {
+        //   this.filterInput.selectedUserType="1";
+        // }
+        
         this.imagesArray=[];
         this.images=images1;
         
@@ -88,36 +94,36 @@ export class SharePhotoPage {
     let profileModal = this.modalCtrl.create(ManageSharePhotoPage);
     profileModal.present();
   }
-  approveImage()
+  approveImage1()
   {
     this.loader=true;
     if(!this.filterInput.guestId)
     {
       this.filterInput.guestId=0;
     }
-    for(var i=0;i<this.images.length;i++)
-    {
-      for(var j=0;j<this.images[i].imagesArray.length;j++)
-      {
-        if(this.images[i].imagesArray[j].selected)
-        {
-          if(this.images[i].imagesArray[j].status!="A")
-          {
-            this.images[i].imagesArray[j].guestId=this.filterInput.guestId;
-          }
+    // for(var i=0;i<this.images.length;i++)
+    // {
+    //   for(var j=0;j<this.images[i].imagesArray.length;j++)
+    //   {
+    //     if(this.images[i].imagesArray[j].selected)
+    //     {
+    //       if(this.images[i].imagesArray[j].status!="A")
+    //       {
+    //         this.images[i].imagesArray[j].guestId=this.filterInput.guestId;
+    //       }
           
-          this.images[i].imagesArray[j].status="A";
+    //       this.images[i].imagesArray[j].status="A";
 
           
-        }
-        else if(this.images[i].userType==2 && this.images[i].userId==this.service.getUser().id) 
-        {
-          this.images[i].imagesArray[j].status="P";
-          // this.images[i].imagesArray[j].guestId=this.filterInput.guestId;
-        }
-      }
-    }
-    this.imageService.approveImage(this.images)
+    //     }
+    //     else if(this.images[i].userType==2 && this.images[i].userId==this.service.getUser().id) 
+    //     {
+    //       this.images[i].imagesArray[j].status="P";
+    //       // this.images[i].imagesArray[j].guestId=this.filterInput.guestId;
+    //     }
+    //   }
+    // }
+    this.imageService.approveImage(this.images,this.filterInput)
   }
 
 }
@@ -155,39 +161,9 @@ export class ManageSharePhotoPage {
     this.events.subscribe('fetch:guests', guests=> {
       this.guests=guests;
     })
-    console.log('ionViewDidLoad SharePhotoPage'+this.imageInfo);
-  }
 
 
-
-
-  chooseImages()
-  { 
-    this.imageOptions= {
-      maximumImagesCount:50, 
-      quality: 100, 
-      width: 200, 
-      height: 200
-    };   
-    this.imagePicker.getPictures(this.imageOptions).then((results) => {
-      var base64File;
-      for (var i = 0; i < results.length; i++) {
-        this.imageInfo.imagesArray.push({"imageUrl":results[i]});
-        console.log('Image URI: ' + base64File);
-      }
-    }, (err) => { 
-      alert("Error 68==="+JSON.stringify(err));
-      console.log("Failed to fetch images===="+JSON.stringify(err));
-    });
-  }
-
- 
-  sharePhoto()
-  {
-    var userInfo=this.service.getUser();
     
-    // this.loader=true;
-
     if(this.service.getUser().userType==1)
     {
       if(!this.imageInfo.guestId)
@@ -211,39 +187,84 @@ export class ManageSharePhotoPage {
     this.imageInfo.id=this.service.getRandomString(4);
     this.imageInfo.userType=this.service.getUser().userType;
 
-    for(var i=0;i<3;i++)
-    {
-      this.imageInfo.imagesArray.push({"imageUrl":this.service.getRandomString(5),"status":this.imageInfo.status,"guestId":this.imageInfo.guestId});      
-    }
-    this.imageService.sharedImages(this.imageInfo);
 
-    this.closeModal();
+    console.log('ionViewDidLoad SharePhotoPage'+this.imageInfo);
+
+
+  }
+
+
+
+
+  chooseImages()
+  { 
+    this.imageInfo.imagesArray=[];
+    this.imageOptions= {
+      maximumImagesCount:50, 
+      quality: 100, 
+      width: 200, 
+      height: 200
+    };   
+    this.imagePicker.getPictures(this.imageOptions).then((results) => {
+      var base64File;
+      for (var i = 0; i < results.length; i++) {
+
+        this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"imageUrl":results[i],"status":this.imageInfo.status,"guestId":this.imageInfo.guestId});      
+        // this.imageInfo.imagesArray.push({"imageUrl":results[i]});
+        console.log('Image URI: ' + base64File);
+      }
+    }, (err) => { 
+      alert("Error 68==="+JSON.stringify(err));
+      console.log("Failed to fetch images===="+JSON.stringify(err));
+    });
+  }
+
+ 
+  sharePhoto()
+  {
+    // var userInfo=this.service.getUser();
+    
+    this.loader=true;
+
+
+    // for(var i=0;i<3;i++)
+    // {
+    //   // this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"imageUrl":this.service.getRandomString(5),"status":this.imageInfo.status,"guestId":this.imageInfo.guestId});      
+    //   this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"imageUrl":this.service.getRandomString(5),"status":this.imageInfo.status,"guestId":this.imageInfo.guestId});      
+    // }
+    // this.imageService.sharedImages(this.imageInfo);
+
+    
     
     console.log("image arrray==="+JSON.stringify(this.imageInfo));
 
-    // if(this.imageCounter==this.imageInfo.imagesArray.length)
-    // {
-    //   console.log("Image counter=="+this.imageCounter);
-    //   this.imageService.sharedImages(this.imageInfo);
-    //   this.closeModal();
-    //   this.loader=false;
-    // }
-    // else
-    // {
-    //   console.log("Image counter=="+this.imageCounter);
-    //   this.convertToBase64(this.imageInfo.imagesArray[this.imageCounter].imageUrl, 'image/png').then(
-    //     data => {
-    //       // alert("Base64 image===");
-    //       console.log("Base64 file===="+data.toString());
-    //       this.imageInfo.imagesArray[this.imageCounter].imageUrl=data.toString();
-    //       // alert("Converted successfully=="+JSON.stringify(this.imageInfo.imagesArray));
-    //       this.imageCounter++;
-    //       this.sharePhoto();
-    //     },err=>{
-    //       alert("Error===90"+err);
-    //     }
-    //   ); 
-    // }
+    if(this.imageCounter==this.imageInfo.imagesArray.length)
+    {
+      console.log("Image counter=="+this.imageCounter);
+      this.imageService.sharedImages(this.imageInfo);
+
+      console.log("Sharing.................................");
+      this.closeModal();
+      this.loader=false;
+    }
+    else
+    {
+      console.log("Image counter=="+this.imageCounter);
+      this.convertToBase64(this.imageInfo.imagesArray[this.imageCounter].imageUrl, 'image/png').then(
+        data => {
+          // alert("Base64 image===");
+          console.log("Base64 file===="+data.toString());
+          this.imageInfo.imagesArray[this.imageCounter].imageUrl=data.toString();
+          // alert("Converted successfully=="+JSON.stringify(this.imageInfo.imagesArray));
+          this.imageCounter++;
+          this.sharePhoto();
+        },err=>{
+          alert("Error===90"+err);
+        }
+      ); 
+    }
+
+
   }
   convertToBase64(url, outputFormat) {
     return new Promise((resolve, reject) => {

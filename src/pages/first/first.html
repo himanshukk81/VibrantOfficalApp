@@ -27,6 +27,8 @@
       <h2>Select User Type</h2>
   </div>
   <div text-center style="margin-top:35%"> 
+
+    <input type="checkbox" [(ngModel)]="user.selected" />
     <button ion-button color="{{userButtonColor}}" (click)="selectedUser(1)">User</button> <br/><br/><br/>
     <button ion-button color="{{joinneButtonColor}}" (click)="selectedUser(2)">Joinne</button>
   </div>

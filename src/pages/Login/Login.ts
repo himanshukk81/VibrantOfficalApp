@@ -70,6 +70,17 @@ export class LoginPage {
       this.navCtrl.popToRoot();
     })
 
+
+    this.events.subscribe('guest:login:success', guestInfo => {
+      this.loader=false;
+      guestInfo.userType=this.userTypeId;
+      this.events.publish('menu:load',guestInfo);
+      this.service.setUser(guestInfo)
+      this.navCtrl.setRoot(SharePhotoPage);
+      this.navCtrl.popToRoot();
+    })
+
+    
     this.events.subscribe('fetch:guests', guests => {
       this.guests=guests;
       this.loader=false;
@@ -97,7 +108,7 @@ export class LoginPage {
       return;
      }
      this.loader=true;
-     this.loginservice.login(this.user);
+     this.loginservice.login(this.user,"u");
 
   }
 
@@ -112,8 +123,12 @@ export class LoginPage {
     }
     this.guestInfo.userType=this.userTypeId;
     this.guestInfo.id=this.guestId;
-    this.events.publish('login:success',this.guestInfo);
-    this.service.setUser(this.guestInfo);
+    this.loginservice.login(this.guestInfo,"g");
+    
+    // this.events.publish('login:success',this.guestInfo);
+    // this.service.setUser(this.guestInfo);
+
+
     // this.navCtrl.setRoot(GuestInvitationPage);
     // this.navCtrl.popToRoot()
     // for(var i=0;i<this.guests.length;i++)

@@ -39,6 +39,8 @@ import { LocationTrackerProvider } from '../providers/location-tracker';
 import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { FirstPage} from '../pages/first/first';
+import { MessagesPage} from '../pages/messages/messages';
+
 
 import { IonicImageViewerModule } from 'ionic-img-viewer';
 
@@ -65,7 +67,8 @@ import { IonicImageViewerModule } from 'ionic-img-viewer';
     Places,
     FirstPage,
     GuestInvitationPage,
-    ManageSharePhotoPage
+    ManageSharePhotoPage,
+    MessagesPage
   ],
   imports: [
     HttpModule,
@@ -94,7 +97,8 @@ import { IonicImageViewerModule } from 'ionic-img-viewer';
     Places,
     FirstPage,
     GuestInvitationPage,
-    ManageSharePhotoPage
+    ManageSharePhotoPage,
+    MessagesPage
   ],
   providers: [
     StatusBar,

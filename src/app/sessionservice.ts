@@ -44,11 +44,7 @@ export class SessionService {
         return this.token;
     }
 
-    login(loginInfo)
-    {
-        this.events.publish("login:success",loginInfo); 
-    }
-    
+  
 
     getCategories()
     {
@@ -238,13 +234,24 @@ export class GuestService{
     getGuests()
     {
         this.Guests=
-        [{"id":1,"name":"Himanshu","mobile":"9971672881","guestTypeId":1},
-        {"id":2,"name":"Shahid","mobile":"9891914661","guestTypeId":1},
-        {"id":3,"name":"Manoj","mobile":"98745612312","guestTypeId":2},
-        {"id":4,"name":"Yash","mobile":"789456123123","guestTypeId":3},
-        {"id":5,"name":"Rahul","mobile":"78945612354","guestTypeId":1}];
+        [{"id":1,"name":"Himanshu","mobile":"9971672881","guestTypeId":1,"userId":1},
+        {"id":2,"name":"Shahid","mobile":"9891914661","guestTypeId":1,"userId":1},
+        {"id":3,"name":"Manoj","mobile":"98745612312","guestTypeId":2,"userId":1},
+        {"id":4,"name":"Yash","mobile":"789456123123","guestTypeId":3,"userId":2},
+        {"id":5,"name":"Rahul","mobile":"78945612354","guestTypeId":1,"userId":2}];
         
         this.events.publish("fetch:guests",this.Guests);
+    }
+
+    getGuestLogin(loginInfo)
+    {
+       for(var i=0;i<this.Guests.length;i++)
+       {
+        if(loginInfo.id==this.Guests[i].id)
+        {
+          this.events.publish("guest:login:success",this.Guests[i]);
+        }
+       }
     }
 
     getGuestInvitation(guestId)
@@ -313,7 +320,9 @@ export class CateogryService{
 
 export class LoginService {
     users:any=[];
-    constructor(public events:Events,public service:SessionService)
+    credentialInfo:any={};
+    fetchData:any;
+    constructor(public guestService:GuestService, public events:Events,public service:SessionService)
     {
         this.users=[{id:1,name:"Himanshu",email:"himanshukk81@gmail.com",password:"123"},
                     {id:2,name:"Shahid",email:"shahid@gmail.com",password:"123"},
@@ -322,31 +331,69 @@ export class LoginService {
                     {id:5,name:"Rahul",email:"rahul@gmail.com",password:"123"}
                    ] 
     }
+
+    ionViewDidLoad()
+    {
+        this.events.subscribe('fetch:guests', guests => {
+            var login=false;
+            for(var i=0;i<guests.length;i++)
+            {
+                if(this.credentialInfo.id==guests[i].id)
+                {
+                    this.fetchData=guests[i];
+                    login=true;
+                }
+            }
+            if(!login)
+            {
+                this.service.showToast2("Login failed please try again")
+            }
+            else 
+            {
+                this.events.publish("login:success",this.fetchData); 
+            }
+
+            
+        })    
+            
+    }
     
-    login(loginInfo)
+    login(loginInfo,userType)
     {
         
         var login=false;
-        var loginData;
-        for(var i=0;i<this.users.length;i++)
+        // var loginData;
+
+        if(userType=='u')
         {
-            if(this.users[i].email==loginInfo.email && this.users[i].password==loginInfo.password)
+            for(var i=0;i<this.users.length;i++)
             {
-                login=true;
-                loginData=this.users[i];
+                if(this.users[i].email==loginInfo.email && this.users[i].password==loginInfo.password)
+                {
+                    login=true;
+                    this.fetchData=this.users[i];
+                }
             }
+            if(login)
+            {
+                this.events.publish("login:success",this.fetchData);
+                // this.navCtrl.setRoot(HomePage);
+                // this.navCtrl.popToRoot();
+            }
+            else
+            {
+                this.service.showToast2("Login Failed Please try again");
+            } 
         }
-        if(login)
+        else 
         {
-            this.events.publish("login:success",loginData);
-            // this.navCtrl.setRoot(HomePage);
-            // this.navCtrl.popToRoot();
+            this.guestService.getGuestLogin(loginInfo);
         }
-        else
-        {
-            this.service.showToast2("Login Failed Please try again");
-        }
+        
     }
+
+
+
 }
 @Injectable()
 export class ApprovePhotoService{
@@ -381,6 +428,7 @@ export class BudgetService{
     saveBudgets(budget)
     {
        this.budgets.push(budget); 
+       this.getBudgets();
        
     }
 
@@ -394,7 +442,7 @@ export class BudgetService{
             this.budgets[i]=budget;
            }
        }
-       return this.getBudgets();
+      this.getBudgets();
     }
 
     removeBudget(budget)
@@ -406,7 +454,7 @@ export class BudgetService{
                 this.budgets.splice(i,1);
             }
         }  
-        return this.getBudgets();
+         this.getBudgets();
     }
 
     
@@ -632,37 +680,33 @@ export class ShareImageService{
     imageInfos:any=[];
     constructor(public events:Events,public service:SessionService){
     }
-
-
-
-
- 
     getSharedImages()
     {
-
       this.events.publish('fetch:images',this.imageInfos);  
-        
     }   
-
     getFilterImages(info)
     {
       console.log("Calling guest data");  
       var imageList=[];
-    //   imageList=this.imageInfos;
+        //   imageList=this.imageInfos;
 
+        var user=this.service.getUser();
 
+        console.log("user info==="+JSON.stringify(user));
         if(this.service.getUser().userType==1)
         {
             for(var i=0;i<this.imageInfos.length;i++)
             {
             // if(this.imageInfos[i].userType==1 && this.service.getUser().id==this.imageInfos[i].userId)
             if(this.imageInfos[i].userType==1 && info.selectedUserType==this.imageInfos[i].userType)
+            // if(this.imageInfos[i].userType==1)
     
             {
                 imageList.push(this.imageInfos[i]);
             }  
             // else if(this.imageInfos[i].userType==2 && this.service.getUser().id==this.imageInfos[i].userId)
             else if(this.imageInfos[i].userType==2 && info.selectedUserType==this.imageInfos[i].userType)
+            // else if(this.imageInfos[i].userType==2)
             
             {
                 if(!info.guestId || info.guestId==0)
@@ -691,7 +735,7 @@ export class ShareImageService{
                         imageList.push(this.imageInfos[i]); 
                     }
                 }   
-                if(this.imageInfos[i].userType==2 && this.service.getUser().userId==this.imageInfos[i].userId)
+                else if(this.imageInfos[i].userType==2 && this.service.getUser().userId==this.imageInfos[i].userId)
                 {
                     if(this.service.getUser().id==this.imageInfos[i].guestId)
                     {
@@ -738,15 +782,20 @@ export class ShareImageService{
                               {
                                 if(this.imageInfos[i].imagesArray[l].guestId)
                                 {
-                                   if(this.service.getUser().id==this.imageInfos[i].imagesArray[l].guestId) 
+
+                                   if(this.imageInfos[i].imagesArray[l].sharedGuestId==0)
+                                   {
+                                    newArray[0].imagesArray.push(this.imageInfos[i].imagesArray[l]);
+                                   } 
+                                   else if(this.service.getUser().id==this.imageInfos[i].imagesArray[l].sharedGuestId) 
                                    {
                                     newArray[0].imagesArray.push(this.imageInfos[i].imagesArray[l]); 
                                    }
                                 }  
-                                else if(this.imageInfos[i].imagesArray[l].status=='A')
-                                {
-                                    newArray[0].imagesArray.push(this.imageInfos[i].imagesArray[l]);
-                                }
+                                // else if(this.imageInfos[i].imagesArray[l].status=='A')
+                                // {
+                                //     newArray[0].imagesArray.push(this.imageInfos[i].imagesArray[l]);
+                                // }
                               }
                             }
                             imageList=imageList.concat(newArray); 
@@ -762,24 +811,64 @@ export class ShareImageService{
          this.events.publish('fetch:images',imageList);
 
     }
-
-
-
- 
-
-    approveImage(images)
+    approveImage(images,guestInfo)
     {
-        this.imageInfos=images;
-        this.events.publish('fetch:images',this.imageInfos);
+        // this.imageInfos=images;
+
+
+        // for(var i=0;i<this.imageInfos.length;i++)
+        // {
+        //   for(var j=0;j<this.imageInfos[i].imagesArray.length;j++)
+        //   {
+        //     if(this.imageInfos[i].imagesArray[j].selected)
+        //     {
+        //       if(this.imageInfos[i].imagesArray[j].status!="A")
+        //       {
+        //         this.imageInfos[i].imagesArray[j].guestId=guestInfo.guestId;
+        //       }
+        //       this.imageInfos[i].imagesArray[j].status="A";          
+        //     }
+        //     else if(this.imageInfos[i].userType==2 && this.imageInfos[i].userId==this.service.getUser().id) 
+        //     {
+        //         this.imageInfos[i].imagesArray[j].status="P";
+        //       // this.images[i].imagesArray[j].guestId=this.filterInput.guestId;
+        //     }
+        //   }
+        // }
+
+        for(var i=0;i<images.length;i++)
+        {
+            for(var j=0;j<images[i].imagesArray.length;j++)
+            {
+                if(images[i].imagesArray[j].selected)
+                {
+                    for(var k=0;k<this.imageInfos.length;k++)
+                    {
+                        for(var l=0;l<this.imageInfos[k].imagesArray.length;l++)
+                        {
+                            if(images[i].imagesArray[j].id==this.imageInfos[k].imagesArray[l].id)
+                            {
+                                this.imageInfos[k].imagesArray [l].status="A";
+                                this.imageInfos[k].imagesArray [l].sharedGuestId=guestInfo.guestId;
+                            }
+                        }
+                    }
+                    images[i].imagesArray[j].selected=false;
+                }
+            }
+        }
+        // this.events.publish('fetch:images',this.imageInfos);
 
         this.service.showToast2("Successfully approved");
+        this.getFilterImages(guestInfo); 
     }
     sharedImages(imageInfo)
     {   
         // this.imageInfo.message=imageInfo.message;
         this.imageInfos=this.imageInfos.concat(imageInfo);
-        // this.getFilterImages(imageInfo);
-        this.events.publish('fetch:images',this.imageInfos);  
+        this.getFilterImages(imageInfo); 
+        
+        // this.events.publish('fetch:images',this.imageInfos);  
     }
 
     deleteImages(imageInfo)
@@ -798,7 +887,44 @@ export class ShareImageService{
 
 @Injectable()
 export class MessageService{
-    
+    allMessages:any=[];
+    userMessages:any=[];
+    constructor(public events:Events,public service:SessionService)
+    {
+
+    }
+
+
+    sendMessage(messageInfo)
+    {
+       this.allMessages.push(messageInfo);
+       this.getMessages(null);
+    }
+
+
+    getMessages(receiverId)
+    {
+      for(var i=0;i<this.allMessages.length;i++)
+      {
+          if(this.allMessages[i].senderId==this.service.getUser().id)
+          {
+              if(receiverId)
+              {
+                if(this.allMessages[i].receiverId==receiverId)
+                {
+                    this.userMessages.push(this.allMessages[i])  
+                }
+                
+              }
+              else
+              {
+                this.userMessages.push(this.allMessages[i])
+              }
+
+          }
+      }  
+      this.events.publish('messages:fetches',this.userMessages);
+    }
 }
 
 

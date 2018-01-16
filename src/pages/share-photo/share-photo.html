@@ -36,7 +36,7 @@
         
         <!-- {{userInfo.userType}} -->
         <ion-item *ngIf="filterInput.selectedUserType==2">
-         <button ion-button (click)="approveImage()">ApproveImages</button>
+         <button ion-button (click)="approveImage1()">ApproveImages</button>
         </ion-item> 
         <!-- <ion-list> -->
             <ion-item *ngFor="let image of images">
@@ -46,10 +46,13 @@
                 <!-- <p *ngIf="image.message">{{image.message}}</p><br/> -->
                 <ion-item *ngFor="let obj of image.imagesArray">
                     
-                    {{obj.imageUrl}}
-                    <!-- <span><img [src]="obj.imageUrl" style="width:50px;height:50px"></span>     -->
-                    <span *ngIf="filterInput.selectedUserType==2 && obj.status=='P'"><input type="checkbox" [(ngModel)]="obj.selected" /></span>
-                    <span *ngIf="filterInput.selectedUserType==2 && obj.status=='A'">Already Approved</span>
+                    <!-- <span >{{obj.imageUrl}}</span> -->
+                    
+                    <span><img [src]="obj.imageUrl" style="width:50px;height:50px" imageViewer></span>
+                     <!-- user type {{filterInput.selectedUserType}}   Status {{obj.status}} -->
+                    <!-- <span *ngIf="filterInput.selectedUserType==2 && obj.status=='P'"><ion-checkbox [(ngModel)]="obj.selected"></ion-checkbox></span>   -->
+                    <span *ngIf="filterInput.selectedUserType==2 && obj.status=='P'" style="color:red">Pending <input type="checkbox" [(ngModel)]="obj.selected" /></span>
+                    <span *ngIf="filterInput.selectedUserType==2 && obj.status=='A'" style="color:green">Approved</span>
                 </ion-item>
                 
             </ion-item>

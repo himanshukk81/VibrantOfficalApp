@@ -21,6 +21,7 @@ export class FirstPage {
   selectedUserInfo:any;
   pushPage:any;
   params:any={};
+  user:any={};
   
   constructor(public navCtrl: NavController, public navParams: NavParams) {
    this.userButtonColor="light";

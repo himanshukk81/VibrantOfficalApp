@@ -40,31 +40,29 @@ export class BudgetsPage {
    },100); 
 
    this.events.subscribe('budgets:fetch', budgets=> {
-    this.budgets=budgets
-    this.totalEstimateCost=0;
-    this.totalFinalCost=0;
-    this.totalPaid=0;
-    this.totalPending=0;
+      this.budgets=budgets
+      this.totalEstimateCost=0;
+      this.totalFinalCost=0;
+      this.totalPaid=0;
+      this.totalPending=0;    
+      for(var i=0;i<this.budgets.length;i++)
+      {
+        this.totalEstimateCost+=parseInt(this.budgets[i].estimatedCost);
+        this.totalFinalCost+=parseInt(this.budgets[i].finalCost);
+        this.totalPaid+=parseInt(this.budgets[i].paid);
+      }
 
-    
-    
-    for(var i=0;i<this.budgets.length;i++)
-    {
-      this.totalEstimateCost+=parseInt(this.budgets[i].estimatedCost);
-      this.totalFinalCost+=parseInt(this.budgets[i].finalCost);
-      this.totalPaid+=parseInt(this.budgets[i].paid);
-    }
-
-    if(this.totalFinalCost>=this.totalPaid)
-    {
-      this.totalPending=this.totalFinalCost-this.totalPaid;
-    }
-    else
-    {
-      this.totalPending=0;
-    }
-    
-    this.loader=false;
+      if(this.totalFinalCost>=this.totalPaid)
+      {
+        this.totalPending=this.totalFinalCost-this.totalPaid;
+      }
+      else
+      {
+        this.totalPending=0;
+      }    
+      this.loader=false;
+      // this.closeModal();
+  
    })
     // console.log('ionViewDidLoad BudgetsPage');
   }
@@ -84,6 +82,11 @@ export class BudgetsPage {
   {
     // this.db.list('/budget').delete();
     
+  }
+
+  closeModal()
+  {
+    this.viewCtrl.dismiss();
   }
 
 
