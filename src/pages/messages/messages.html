@@ -1,35 +1,73 @@
 <ion-header>
   <ion-navbar>
+    <button ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+    </button>
+
+
     <ion-title>
-      Messages
-    </ion-title>
+        Message
 
-    
-
-    <ion-buttons end *ngIf="userInfo.userType==1">
-      <ion-select type="text" [(ngModel)]="messageInfo.guestId">
-        <ion-option *ngFor="let guest of guests"  value="{{guest.id}}">{{guest.name}}</ion-option> 
-      </ion-select>
-    </ion-buttons>
+       
+    </ion-title>    
+ 
   </ion-navbar>
+  
 </ion-header>
+
+
 <ion-content>
-   
-        <div class="message-wrap">
+            
+        <!-- <div ion-fixed class="select-fixed" *ngIf="userInfo.userType==1">  -->
+               <ion-list *ngIf="userInfo.userType==1"> 
+                    <ion-item>
+                        <ion-label>Select Guest</ion-label>
+                        
+                        <ion-select type="text" [(ngModel)]="messageInfo.guestId" (ionChange)="getSingleGuestMessage($event)"> 
+                                <ion-option  value="0">ALL</ion-option>
+                                <ion-option *ngFor="let guest of guests"  value="{{guest.id}}">{{guest.name}}</ion-option> 
+                        </ion-select>
+                    </ion-item>    
+                </ion-list>     
+        <!-- </div> -->
+<!-- 
+        <div ion-fixed class="select-fixed" *ngIf="userInfo.userType==2"> 
+                <ion-item>
+                    <ion-label>Message Type</ion-label>
+                     
+                    <input type="radio" [(ngModel)]="messageType" value="user">User
+                    <input type="radio" [(ngModel)]="messageType" value="guests">All Guest
+                </ion-item>    
+        </div> -->
+
+
+
+        <ion-list radio-group [(ngModel)]="messageType" *ngIf="userInfo.userType==2">
+                <ion-item>
+                  <ion-label>User</ion-label>
+                  <ion-radio value="user" checked></ion-radio>
+                </ion-item>
+
+                <ion-item>
+                  <ion-label>Guests</ion-label>
+                  <ion-radio value="guests"></ion-radio>
+                </ion-item>
+        </ion-list>
+
+        
+        <!-- <div class="message-wrap"> -->
                 <div *ngFor="let message of messages">
-                    <div>
-                        <div class="message" [class.left]="!message.sender"
-                        [class.right]="message.sender" >
-                            <div class="msg-detail" > 
-                                <div class="msg-content">                            
-                                    <p class="line-breaker">{{message.editorMsg}}</p>
-                                </div>
-                            </div>
-                        </div>    
-                    </div>
+                        <!-- {{message.editorMsg}} -->
+
+
+                       <div class="item row">
+                                 <span align="right" class="col col-50" *ngIf="message.sender">{{message.editorMsg}}</span>
+                                 <span align="left" class="col col-50" *ngIf="!message.sender"> {{message.editorMsg}}</span>
+                        </div>
+                  
                 </div>   
-        </div>
-  </ion-content>
+        <!-- </div> -->
+</ion-content>
 <ion-footer no-border [style.height]="showEmojiPicker ? '255px' : '55px'">
   <ion-grid class="input-wrap">
       <ion-row>
@@ -48,7 +86,7 @@
           </ion-col>
           <!-- {{messageInfo.editorMsg}} -->
           <ion-col col-2 >
-              <button ion-button clear icon-only item-right (click)="sendMessage()" [disabled]="loader || !messageInfo.text">
+              <button ion-button clear icon-only item-right (click)="sendMessage()" [disabled]="loader || !messageInfo.editorMsg">
                   <ion-icon name="ios-send" ios="ios-send" md="md-send"></ion-icon>
               </button>
           </ion-col>

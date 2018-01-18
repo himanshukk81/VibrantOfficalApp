@@ -1,9 +1,9 @@
-import { Component, ViewChild,ElementRef } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform,AlertController,NavController,NavParams,Events} from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { HomePage } from '../pages/home/home';
-import { SessionService } from './sessionservice';
+import { SessionService,UserService } from './sessionservice';
 import { LoginPage } from '../pages/Login/Login';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { SocialSharing } from '@ionic-native/social-sharing';
@@ -21,6 +21,9 @@ import { Places} from '../pages/events/events';
 import { FirstPage} from '../pages/first/first';
 import { GuestInvitationPage} from '../pages/guest-invitation/guest-invitation';
 import { SharePhotoPage,ManageSharePhotoPage} from '../pages/share-photo/share-photo';
+import { MessagesPage} from '../pages/messages/messages';
+
+
 
 @Component({
   templateUrl: 'app.html'
@@ -28,7 +31,7 @@ import { SharePhotoPage,ManageSharePhotoPage} from '../pages/share-photo/share-p
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
   @ViewChild(NavController) navCtrl: NavController;
-  rootPage: any=FirstPage;
+  rootPage: any=HomePage;
   headers:any;
   pages: Array<{title: string, component: any}>;
 
@@ -38,21 +41,22 @@ export class MyApp {
         if(user.userType==1)
         {
           this.pages = [
-            { title: 'Home', component: HomePage},
+            { title: 'Home',component: HomePage},
+            { title: 'Messages', component: MessagesPage},
             {title:'Share Photo',component:SharePhotoPage},
-            {title:'Users',component:UsersPage},
+            // {title:'Users',component:UsersPage},
             {title:'Profile',component:profile},
             {title:'Budgets',component:BudgetsPage},
-            {title:'Functions',component:FunctionsPage},
+            // {title:'Functions',component:FunctionsPage},
             {title:'Reminders',component:RemindersPage},
             {title:'Logout',component:LoginPage},
-      
           ];
         } 
         else
         {
           this.pages = [
             {title:'Home',component:GuestInvitationPage},
+            { title: 'Messages', component: MessagesPage},
             {title:'Share Photo',component:SharePhotoPage},
             {title:'Profile',component:profile},
             {title:'Logout',component:LoginPage}
@@ -61,7 +65,7 @@ export class MyApp {
         } 
       })
 
-      // this.initializeApp();
+      this.initializeApp();
 
   }
   
@@ -73,11 +77,12 @@ export class MyApp {
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
-      // this.splashScreen.hide();
+      this.splashScreen.hide();
+
       // this.checkUserStatus();
       // this.initPushNotification();
       // this.checkNetwork();
-      this.initLocalNotification();
+      this.initLocalNotification()
       // this.enableLocation();
       // this.initLocalNotification();
     });
@@ -130,9 +135,9 @@ export class MyApp {
 
   initLocalNotification()
   {
-    this.localNotifications.on('click', () => {
-      alert("Notify======");
-      console.log("Notify local notification");
+    this.localNotifications.on('click', (notification, state) => {
+      let json = JSON.parse(notification.data);      
+      console.log("Notify local notification=="+json);
       // alert("Notificy")
       // let json = JSON.parse(notification.data);
       this.rootPage=RemindersPage;
@@ -142,6 +147,7 @@ export class MyApp {
   // {
 
   //   this.fcm.subscribeToTopic('Notification');
+
 
   //   this.fcm.getToken().then(token=>{
   //     // alert("token=="+token);  

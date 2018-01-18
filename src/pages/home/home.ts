@@ -27,8 +27,6 @@ export class HomePage {
     public service:SessionService,public platform:Platform,
     public native:NativeStorage,public ngZone:NgZone,public modalCtrl: ModalController,public events:Events,public localNotification:LocalNotifications){
       setTimeout(() => {  
-        
-                // alert("Get event called")
                 this.eventService.getEvents()            
               },1000); 
     

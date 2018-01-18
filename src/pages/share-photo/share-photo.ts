@@ -49,12 +49,12 @@ export class SharePhotoPage {
     
 
     
-
+    this.events.unsubscribe('fetch:guests')
     this.events.subscribe('fetch:guests', guests=> {
       this.guests=guests;
     })
 
-    this.events.unsubscribe('fetch:images');
+    this.events.unsubscribe('fetch:images')
     this.events.subscribe('fetch:images', images1=> {
       // this.service.showToast2("Successfully upload images");
         // this.images=[];

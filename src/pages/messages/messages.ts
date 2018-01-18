@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams ,Events} from 'ionic-angular';
+import { Component,ViewChild } from '@angular/core';
+import { IonicPage, NavController, NavParams ,Events,Content,TextInput} from 'ionic-angular';
 import { SessionService,MessageService,GuestService} from '../../app/sessionservice';
 
 /**
@@ -14,58 +14,122 @@ import { SessionService,MessageService,GuestService} from '../../app/sessionserv
   templateUrl: 'messages.html',
 })
 export class MessagesPage {
+  @ViewChild(Content) content: Content;
+  @ViewChild('chat_input') messageInput: TextInput;
   messageInfo:any={};
   messages:any=[];
   loader:boolean=true;
   guest:any={};
   guests:any=[];
   userInfo:any={};
+  type:any;
+  messageType:any="user";
   constructor(public service:SessionService,public guestService:GuestService, public messageService:MessageService,public events:Events,public navCtrl: NavController, public navParams: NavParams) {
     this.messageInfo.editorMsg='';
-    this.guestService.getGuests();
-    this.userInfo=this.service.getUser();
+    this.userInfo=this.service.getUser()
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad MessagesPage');
+    console.log("messagess="+JSON.stringify(this.messages));
 
-    this.events.unsubscribe('messages:fetches');
-    this.events.subscribe('messages:fetches', messages=> {        
-      this.messages=messages;
+    setTimeout(() => {  
+      this.guestService.getGuests()       
+    },100); 
+    this.events.unsubscribe('fetch:guests')
+    this.events.unsubscribe('messages:fetches')
+    this.events.subscribe('messages:fetches', messages1=> {        
+      this.messages=messages1;
       this.loader=false;
+      // this.messageInfo.editorMsg='';
     })
 
     this.events.subscribe('fetch:guests', guests=> {        
       this.guests=guests;
-      this.messageService.getMessages(null);
+      this.messageService.getMessages("0");
     })
   }
 
+  onFocus() {
+    this.content.resize();
+    this.scrollToBottom();
+  }
 
-  
+  scrollToBottom() {
+    setTimeout(() => {
+        if (this.content.scrollToBottom) {
+            this.content.scrollToBottom();
+        }
+    }, 400)
+  }
+
+
+  // isYou(message)
+  // {
+  // //  if(message.receiverId==this.userInfo.id)
+  // //  {
+  // //    return true;
+  // //  }
+  //   return false;
+  // //  if(message.receiverId==this.messageInfo.guestId)
+  // //  {
+  // //   return true;
+  // //  }
+    
+  // }
+  // isMe(message)
+  // {
+  //   if(message.senderId==this.userInfo.id)
+  //   {
+  //     return true;
+  //   }
+  // }
 
   sendMessage()
   {
+    var newMessageInfo={};
     this.messageInfo.createDate=new Date();
     this.messageInfo.senderId=this.userInfo.id;
-    this.messageInfo.userType=this.userInfo.userType;
-
+    this.messageInfo.senderType=this.userInfo.userType;
+    this.messageInfo.sender=true;
+    
     if(this.userInfo.userType=="2")
     {
-      this.messageInfo.receiverId=this.userInfo.userId;
+      if(this.messageType=="user")
+      {
+        this.messageInfo.receiverId=this.userInfo.userId;
+        this.messageInfo.receiverType=1;
+      }
+      else 
+      {
+        this.messageInfo.receiverId=0;
+        this.messageInfo.receiverType=2;
+      }
+      
+      
     }
     else
     {
       this.messageInfo.receiverId=this.messageInfo.guestId;
+      this.messageInfo.receiverType=2;
     }
+    this.messages.push(Object.assign({},this.messageInfo));
+    newMessageInfo=Object.assign({},this.messageInfo);
+    this.messageService.sendMessage(newMessageInfo);
+    this.messageInfo.editorMsg='';
+    // this.loader=true;
     
-    this.loader=true;
-    this.messageService.sendMessage(this.messageInfo);
+    
   }
 
-  getSingleGuestMessage()
+  getSingleGuestMessage(guestInfo)
   {
-    this.messageService.getMessages(this.messageInfo.guestId)
+
+    console.log("ng model data==="+guestInfo);
+    console.log("data guest id==="+this.messageInfo.guestId);
+
+
+    this.messageService.getMessages(guestInfo)
   }
 
 }

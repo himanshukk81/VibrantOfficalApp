@@ -229,25 +229,40 @@ export class GuestService{
     Guests:any;
     guestInvitation:any;
     guestType:any;
+    userGuests:any=[];
     constructor(public http:Http,public events:Events,public toastCtrl:ToastController,public nativeStorage:NativeStorage,public toast:Toast)
-    {}
-    getGuests()
     {
         this.Guests=
         [{"id":1,"name":"Himanshu","mobile":"9971672881","guestTypeId":1,"userId":1},
         {"id":2,"name":"Shahid","mobile":"9891914661","guestTypeId":1,"userId":1},
         {"id":3,"name":"Manoj","mobile":"98745612312","guestTypeId":2,"userId":1},
         {"id":4,"name":"Yash","mobile":"789456123123","guestTypeId":3,"userId":2},
-        {"id":5,"name":"Rahul","mobile":"78945612354","guestTypeId":1,"userId":2}];
-        
+        {"id":5,"name":"Rahul","mobile":"78945612354","guestTypeId":1,"userId":2}]
+    }
+    getGuests()
+    {
+
         this.events.publish("fetch:guests",this.Guests);
+    }
+
+    getUserGuests(userId)
+    {
+     this.userGuests=[];
+     for(var i=0;i<this.Guests.length;i++)
+     {
+         if(this.Guests[i].userId==userId)
+         {
+            this.userGuests.push(this.Guests[i])
+         }
+     }
+     this.events.publish("fetch:user:guests",this.userGuests);
     }
 
     getGuestLogin(loginInfo)
     {
        for(var i=0;i<this.Guests.length;i++)
        {
-        if(loginInfo.id==this.Guests[i].id)
+        if(loginInfo.guestId==this.Guests[i].id)
         {
           this.events.publish("guest:login:success",this.Guests[i]);
         }
@@ -394,6 +409,28 @@ export class LoginService {
 
 
 
+}
+
+@Injectable()
+
+export class UserService{
+    users:any=[];
+
+    constructor(public guestService:GuestService, public events:Events,public service:SessionService)
+    {
+        this.users=[{id:1,name:"Himanshu",email:"himanshukk81@gmail.com",password:"123"},
+                    {id:2,name:"Shahid",email:"shahid@gmail.com",password:"123"},
+                    {id:3,name:"Manoj",email:"manoj@gmail.com",password:"123"},
+                    {id:4,name:"Nakul",email:"nakul@gmail.com",password:"123"},
+                    {id:5,name:"Rahul",email:"rahul@gmail.com",password:"123"}
+                   ] 
+    }
+
+    getUsers()
+    {
+        this.events.publish("fetch:users",this.users);  
+    }
+    
 }
 @Injectable()
 export class ApprovePhotoService{
@@ -787,6 +824,7 @@ export class ShareImageService{
                                    {
                                     newArray[0].imagesArray.push(this.imageInfos[i].imagesArray[l]);
                                    } 
+                                   
                                    else if(this.service.getUser().id==this.imageInfos[i].imagesArray[l].sharedGuestId) 
                                    {
                                     newArray[0].imagesArray.push(this.imageInfos[i].imagesArray[l]); 
@@ -897,50 +935,83 @@ export class MessageService{
 
     sendMessage(messageInfo)
     {
+       messageInfo.sender=true; 
        this.allMessages.push(messageInfo);
-       this.getMessages(null);
+    //    this.getMessages(null);
     }
 
 
     getMessages(receiverId)
     {
-      for(var i=0;i<this.allMessages.length;i++)
+      this.userMessages=[];  
+      var user=this.service.getUser();
+
+      if(!user)
       {
-          if(this.allMessages[i].senderId==this.service.getUser().id)
+          return;
+      }
+          console.log("user info==="+JSON.stringify(user))
+          if(this.service.getUser().userType==1)
           {
-              this.allMessages[i].sender=true;    
-              if(receiverId)
-              {
-                if(this.allMessages[i].receiverId==receiverId)
+            for(var i=0;i<this.allMessages.length;i++)
+            {
+                if(this.allMessages[i].senderId==this.service.getUser().id && this.allMessages[i].senderType==1)
                 {
-                    
-                    this.userMessages.push(this.allMessages[i])  
+                    if(receiverId==0)
+                    {
+                        this.userMessages.push(this.allMessages[i]) 
+                        this.allMessages[i].sender=true;
+                    }
+                    else 
+                    {
+                        if(this.allMessages[i].receiverId==receiverId)
+                        {
+                            this.userMessages.push(this.allMessages[i])
+                            this.allMessages[i].sender=true; 
+                        }
+                    }
                 }
-                
-              }
-              else
-              {
-                this.userMessages.push(this.allMessages[i])
-              }
-
+                if(this.allMessages[i].receiverId==this.service.getUser().id && this.allMessages[i].receiverType==1)
+                {
+                    if(receiverId==0)
+                    {
+                        this.userMessages.push(this.allMessages[i])       
+                        this.allMessages[i].sender=false;
+                    }
+                    else
+                    {
+                        if(this.allMessages[i].receiverId==this.service.getUser().id && this.allMessages[i].senderId==receiverId)
+                        {                          
+                          this.userMessages.push(this.allMessages[i])       
+                          this.allMessages[i].sender=false; 
+                        }
+                    }
+                    
+                }
+            }
           }
-
-          else if(this.allMessages[i].receiverId==this.service.getUser().id)
+          else if(this.service.getUser().userType==2)
           {
-            this.allMessages[i].sender=false;   
-            if(receiverId)
+            for(var i=0;i<this.allMessages.length;i++)
             {
-              if(this.allMessages[i].senderId==receiverId)
-              {
-                  this.userMessages.push(this.allMessages[i])  
-              }
-            }
-            else
-            {
-              this.userMessages.push(this.allMessages[i])
-            }
-          }
-      }  
+                if(this.allMessages[i].senderId==this.service.getUser().id && this.allMessages[i].senderType==2)
+                {
+                    this.userMessages.push(this.allMessages[i])   
+                    this.allMessages[i].sender=true;
+                }
+
+                else if(!this.allMessages[i].receiverId || this.allMessages[i].receiverId==0)
+                {
+                    this.userMessages.push(this.allMessages[i]) 
+                    this.allMessages[i].sender=false;
+                }
+                else if(this.allMessages[i].receiverId==this.service.getUser().id && this.allMessages[i].receiverType==2)
+                {
+                    this.userMessages.push(this.allMessages[i])   
+                    this.allMessages[i].sender=false;
+                }
+            }                                                                         
+          } 
       this.events.publish('messages:fetches',this.userMessages);
     }
 }

@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { Component, ViewChild } from '@angular/core';
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { IonicApp, IonicErrorHandler, IonicModule,Content } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -9,7 +9,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import {Http, Response} from '@angular/http';
 import { HttpModule }    from '@angular/http';
 import { SessionService,CateogryService,LoginService,GuestService,ApprovePhotoService,
-  BudgetService,ToDoService ,ReminderService,ShareImageService,MessageService,EventService,PaymentService} from './sessionservice';
+  BudgetService,ToDoService ,ReminderService,ShareImageService,MessageService,EventService,PaymentService,UserService} from './sessionservice';
 import { LoginPage } from '../pages/Login/Login';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { Toast } from '@ionic-native/toast';
@@ -40,8 +40,6 @@ import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { FirstPage} from '../pages/first/first';
 import { MessagesPage} from '../pages/messages/messages';
-
-
 import { IonicImageViewerModule } from 'ionic-img-viewer';
 
 
@@ -125,6 +123,7 @@ import { IonicImageViewerModule } from 'ionic-img-viewer';
     BudgetService,
     EventService,
     PaymentService,
+    UserService,
     // { provide: ImagePicker, useClass: imagePickerMock },
     // { provide: Base64, useClass: Base64Mock },
     {provide: ErrorHandler, useClass: IonicErrorHandler}

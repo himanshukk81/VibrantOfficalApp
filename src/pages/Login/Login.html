@@ -30,11 +30,17 @@
           </ion-select>
         </ion-item> -->
 
-
         <ion-item>
-          <ion-label>Select Name</ion-label>
-          <ion-select type="text" [(ngModel)]="guestId">
-              <ion-option *ngFor="let guest of guests"  value="{{guest.id}}">{{guest.name}}</ion-option> 
+          <ion-label>Select User</ion-label>
+          <ion-select type="text" [(ngModel)]="guestInfo.userId" (ionChange)="getGuestList($event)">
+              <ion-option *ngFor="let user of users"  value="{{user.id}}">{{user.name}}</ion-option> 
+          </ion-select>
+        </ion-item>
+
+        <ion-item *ngIf="guestInfo.userId && userGuests.length>0">
+          <ion-label>Select Guest</ion-label>
+          <ion-select type="text" [(ngModel)]="guestInfo.guestId">
+              <ion-option *ngFor="let guest of userGuests"  value="{{guest.id}}">{{guest.name}}</ion-option> 
           </ion-select>
         </ion-item>
       <div padding>
