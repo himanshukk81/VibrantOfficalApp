@@ -12,12 +12,10 @@
 
     <ion-content padding>
         <ion-list>
-              <ion-item-sliding *ngFor="let event of eventList ">
-     
+              <ion-item-sliding *ngFor="let event of eventList">
                 <ion-item>
                     <h3>{{event.name}}</h3>
-                </ion-item>
-             
+                </ion-item>   
                 <ion-item-options>
                   <button ion-button color="primary" (click)="eventDetail(reminder)"><p><ion-icon name="paper"></ion-icon> Edit</p></button>
                   <button ion-button color="danger" (click)="removeevent(reminder)"><p><ion-icon name="trash"></ion-icon> Delete</p></button>

@@ -92,24 +92,26 @@ export class MessagesPage {
     this.messageInfo.senderId=this.userInfo.id;
     this.messageInfo.senderType=this.userInfo.userType;
     this.messageInfo.sender=true;
-    
+    this.messageInfo.messageStatus=false;
+    this.messageInfo.messageId=this.service.getRandomString(4);
     if(this.userInfo.userType=="2")
     {
       if(this.messageType=="user")
       {
         this.messageInfo.receiverId=this.userInfo.userId;
         this.messageInfo.receiverType=1;
+        this.messageInfo.messageStatus=true;
       }
       else 
       {
         this.messageInfo.receiverId=0;
         this.messageInfo.receiverType=2;
+        this.messageInfo.messageStatus=false;
       }
-      
-      
     }
     else
     {
+      this.messageInfo.messageStatus=true;
       this.messageInfo.receiverId=this.messageInfo.guestId;
       this.messageInfo.receiverType=2;
     }
@@ -118,17 +120,23 @@ export class MessagesPage {
     this.messageService.sendMessage(newMessageInfo);
     this.messageInfo.editorMsg='';
     // this.loader=true;
-    
-    
+  }
+  approveMessage()
+  {
+    for(var i=0;i<this.messages.length;i++)
+    {
+      if(this.messages[i].selected)
+      {
+        this.messages[i].messageStatus=true;
+      }
+    }
+    this.messageService.approveMessage(this.messages)
   }
 
   getSingleGuestMessage(guestInfo)
   {
-
     console.log("ng model data==="+guestInfo);
     console.log("data guest id==="+this.messageInfo.guestId);
-
-
     this.messageService.getMessages(guestInfo)
   }
 

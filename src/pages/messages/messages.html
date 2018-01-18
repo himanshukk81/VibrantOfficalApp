@@ -1,18 +1,15 @@
 <ion-header>
   <ion-navbar>
     <button ion-button menuToggle>
-            <ion-icon name="menu"></ion-icon>
+        <ion-icon name="menu"></ion-icon>
     </button>
-
-
     <ion-title>
-        Message
-
-       
+        Message       
     </ion-title>    
- 
+    <ion-buttons end>
+        <button ion-button (click)="approveMessage()">Approve Message</button>
+    </ion-buttons>
   </ion-navbar>
-  
 </ion-header>
 
 
@@ -22,7 +19,6 @@
                <ion-list *ngIf="userInfo.userType==1"> 
                     <ion-item>
                         <ion-label>Select Guest</ion-label>
-                        
                         <ion-select type="text" [(ngModel)]="messageInfo.guestId" (ionChange)="getSingleGuestMessage($event)"> 
                                 <ion-option  value="0">ALL</ion-option>
                                 <ion-option *ngFor="let guest of guests"  value="{{guest.id}}">{{guest.name}}</ion-option> 
@@ -61,8 +57,12 @@
 
 
                        <div class="item row">
-                                 <span align="right" class="col col-50" *ngIf="message.sender">{{message.editorMsg}}</span>
-                                 <span align="left" class="col col-50" *ngIf="!message.sender"> {{message.editorMsg}}</span>
+                                 <span align="right" class="col col-50" *ngIf="message.sender">{{message.editorMsg}}
+                                     <span *ngIf="!message.messageStatus && userInfo.userType==1"><input type="checkbox" [(ngModel)]="message.selected" /></span>
+                                 </span>
+                                 <span align="left" class="col col-50" *ngIf="!message.sender"> {{message.editorMsg}}
+                                        <input type="checkbox" [(ngModel)]="message.selected" />
+                                 </span>
                         </div>
                   
                 </div>   

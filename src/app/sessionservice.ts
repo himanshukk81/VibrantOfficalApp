@@ -941,6 +941,14 @@ export class MessageService{
     }
 
 
+    approveMessage(userMessages)
+    {
+        for(var i=0;i<this.allMessages.length;i++)
+        {
+            if(this.allMessages[i].id==)
+        }
+    }
+
     getMessages(receiverId)
     {
       this.userMessages=[];  
