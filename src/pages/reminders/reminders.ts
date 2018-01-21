@@ -34,22 +34,22 @@ export class RemindersPage {
       this.events.subscribe('reminder:fetches', reminders=> {        
         this.reminderList=reminders;
 
-        this.platform.ready().then(() => {
-          this.localNotifications.cancelAll().then(() => {   
-              console.log("Reminder list===="+JSON.stringify(this.reminderList));
-              for(var i=0;i<this.reminderList.length;i++)
-              {
-                   this.notifications.push({"id":i,"title":this.reminderList[i].title,"text":this.reminderList[i].name,
-                   "at":new Date(this.reminderList[i].at).getTime()})
-                  console.log("Notify Time===="+i+"  "+new Date(this.reminderList[i].at).getTime());
-              }
-              console.log("Notify Data==="+JSON.stringify(this.notifications));
-              // alert("Notfications=="+JSON.stringify(this.notifications));
-              this.localNotifications.schedule(this.notifications);
-              // alert("Local Notification data=="+JSON.stringify(this.localNotifications));
-              console.log("Local Notify data==="+JSON.stringify(this.localNotifications));
-            })
-          }); 
+        // this.platform.ready().then(() => {
+        //   this.localNotifications.cancelAll().then(() => {   
+        //       console.log("Reminder list===="+JSON.stringify(this.reminderList));
+        //       for(var i=0;i<this.reminderList.length;i++)
+        //       {
+        //            this.notifications.push({"id":i,"title":this.reminderList[i].title,"text":this.reminderList[i].name,
+        //            "at":new Date(this.reminderList[i].at).getTime()})
+        //           console.log("Notify Time===="+i+"  "+new Date(this.reminderList[i].at).getTime());
+        //       }
+        //       console.log("Notify Data==="+JSON.stringify(this.notifications));
+        //       // alert("Notfications=="+JSON.stringify(this.notifications));
+        //       this.localNotifications.schedule(this.notifications);
+        //       // alert("Local Notification data=="+JSON.stringify(this.localNotifications));
+        //       console.log("Local Notify data==="+JSON.stringify(this.localNotifications));
+        //     })
+        //   }); 
         })
   
         console.log('ionViewDidLoad RemindersPage');
@@ -153,14 +153,14 @@ export class ManageRemindersPage {
     console.log('ionViewDidLoad ManageBudgetsPage');
   }
 
-  // timeChange(time){
-  //   this.reminder.hour = time.hour.value;
-  //   this.reminder.minute = time.minute.value;
+  timeChange(time){
+    this.reminder.hour = time.hour.value;
+    this.reminder.minute = time.minute.value;
 
-  //   console.log("Time===="+JSON.stringify(time));
+    console.log("Time===="+JSON.stringify(time));
 
   
-  // }
+  }
 
 
   // pushData()
@@ -190,14 +190,30 @@ export class ManageRemindersPage {
   {
     this.reminder.hour=this.reminder.time.split(":")[0];
     this.reminder.minute=this.reminder.time.split(":")[1];
-    let firstNotificationTime = new Date();
+    let firstNotificationTime = new Date(this.reminder.date);
     console.log("reminder time===="+JSON.stringify(this.reminder));
     firstNotificationTime.setHours(this.reminder.hour);
     firstNotificationTime.setMinutes(this.reminder.minute);
     this.reminder.createDate=new Date();
     this.reminder.id=this.service.getRandomString(4);
     this.reminder.at=firstNotificationTime;
+    this.reminder.status="P";
     this.reminderService.saveReminder(this.reminder);
+    this.closeModal();
+  }
+
+
+  updateReminderInfo()
+  {
+    this.reminder.hour=this.reminder.time.split(":")[0];
+    this.reminder.minute=this.reminder.time.split(":")[1];
+    let firstNotificationTime = new Date(this.reminder.date);
+    console.log("reminder time===="+JSON.stringify(this.reminder));
+    firstNotificationTime.setHours(this.reminder.hour);
+    firstNotificationTime.setMinutes(this.reminder.minute);
+    this.reminder.modifiedDate=new Date();
+    this.reminder.at=firstNotificationTime;
+    this.reminderService.updateReminder(this.reminder);
     this.closeModal();
   }
   

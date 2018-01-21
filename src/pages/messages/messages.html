@@ -56,13 +56,19 @@
 
         
         <!-- <div class="message-wrap"> -->
+
+                <ion-item *ngIf="userInfo.userType==1">
+                        <button ion-button (click)="approveMessage()">ApproveImages</button>
+                </ion-item>    
                 <div *ngFor="let message of messages">
                         <!-- {{message.editorMsg}} -->
 
 
                        <div class="item row">
+
+
                                  <span align="right" class="col col-50" *ngIf="message.sender">{{message.editorMsg}}</span>
-                                 <span align="left" class="col col-50" *ngIf="!message.sender"> {{message.editorMsg}}</span>
+                                 <span align="left" class="col col-50" *ngIf="!message.sender"> {{message.editorMsg}}  <p *ngIf="message.senderType==2 && userInfo.userType==1"> <input type="checkbox" [(ngModel)]="message.selected" /></p></span>
                         </div>
                   
                 </div>   

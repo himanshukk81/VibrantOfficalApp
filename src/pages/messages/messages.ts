@@ -104,9 +104,8 @@ export class MessagesPage {
       {
         this.messageInfo.receiverId=0;
         this.messageInfo.receiverType=2;
+        this.messageInfo.status='P';
       }
-      
-      
     }
     else
     {
@@ -120,6 +119,11 @@ export class MessagesPage {
     // this.loader=true;
     
     
+  }
+
+  approveMessage()
+  {
+    this.messageService.approveMessage(this.messages);
   }
 
   getSingleGuestMessage(guestInfo)

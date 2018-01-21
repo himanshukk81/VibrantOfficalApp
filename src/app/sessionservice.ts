@@ -28,6 +28,7 @@ export class SessionService {
     text:any;
     event:any;
     Categories:any=[];
+    eventInfo:any={};
 
     // Guests:any;
     constructor(public http:Http,public events:Events,public toastCtrl:ToastController,public nativeStorage:NativeStorage,public toast:Toast){
@@ -222,6 +223,16 @@ export class SessionService {
           
             return text;
           
+    }
+
+    setEventInfo(event)
+    {
+        this.eventInfo=event;
+    }
+
+    getEventInfo()
+    {
+       return this.eventInfo;
     }
 }
 @Injectable()
@@ -449,6 +460,7 @@ export class BudgetService{
         
     getBudgets()
     {
+        console.log("Budgets fetch==="+JSON.stringify(this.budgets));    
         this.events.publish('budgets:fetch',this.budgets);
         // return this.budgets;    
     }
@@ -545,7 +557,7 @@ export class ToDoService{
 @Injectable()
 export class ReminderService{
    reminders:any=[];
-   constructor(public events:Events,public localNotifications:LocalNotifications){}
+   constructor(public service:SessionService,public events:Events,public localNotifications:LocalNotifications){}
 
    getReminders()
    {
@@ -562,7 +574,22 @@ export class ReminderService{
     //     // this.closeModal();
     // });
     //    saveReminder(reminderInfo)
-    this.events.publish('reminder:fetches',this.reminders);
+    this.events.publish('reminder:fetches',this.reminders)
+    this.service.showToast2("Successfully saved")
+   }
+
+   updateReminder(reminderInfo)
+   {
+
+        for(var i=0;i<this.reminders.length;i++)
+        {
+            if(this.reminders[i].id==reminderInfo.id)
+            {
+                this.reminders[i]=reminderInfo;
+            }
+        }
+      this.events.publish('reminder:fetches',this.reminders);
+      this.service.showToast2("Successfully updated")
    }
    deleteReminder(reminder)
    {
@@ -851,29 +878,6 @@ export class ShareImageService{
     }
     approveImage(images,guestInfo)
     {
-        // this.imageInfos=images;
-
-
-        // for(var i=0;i<this.imageInfos.length;i++)
-        // {
-        //   for(var j=0;j<this.imageInfos[i].imagesArray.length;j++)
-        //   {
-        //     if(this.imageInfos[i].imagesArray[j].selected)
-        //     {
-        //       if(this.imageInfos[i].imagesArray[j].status!="A")
-        //       {
-        //         this.imageInfos[i].imagesArray[j].guestId=guestInfo.guestId;
-        //       }
-        //       this.imageInfos[i].imagesArray[j].status="A";          
-        //     }
-        //     else if(this.imageInfos[i].userType==2 && this.imageInfos[i].userId==this.service.getUser().id) 
-        //     {
-        //         this.imageInfos[i].imagesArray[j].status="P";
-        //       // this.images[i].imagesArray[j].guestId=this.filterInput.guestId;
-        //     }
-        //   }
-        // }
-
         for(var i=0;i<images.length;i++)
         {
             for(var j=0;j<images[i].imagesArray.length;j++)
@@ -941,6 +945,30 @@ export class MessageService{
     }
 
 
+
+    approveMessage(messages)
+    {
+        for(var i=0;i<this.allMessages.length;i++)
+        {
+            for(var j=0;j<messages.length;j++)
+            {
+                if(messages[j].selected)
+                {
+                    if(this.allMessages[i].id==messages[j].id)
+                    {
+                        this.allMessages[i].status="A";
+                    }
+                    
+                }
+            }
+        }
+        this.events.publish('approve:message',this.allMessages);
+
+        // this.service.showToast2("Successfully approved");
+        // this.getFilterImages(guestInfo); 
+    }
+
+
     getMessages(receiverId)
     {
       this.userMessages=[];  
@@ -1000,7 +1028,7 @@ export class MessageService{
                     this.allMessages[i].sender=true;
                 }
 
-                else if(!this.allMessages[i].receiverId || this.allMessages[i].receiverId==0)
+                else if((!this.allMessages[i].receiverId || this.allMessages[i].receiverId==0)&& this.allMessages[i].status=='A')
                 {
                     this.userMessages.push(this.allMessages[i]) 
                     this.allMessages[i].sender=false;
@@ -1019,20 +1047,45 @@ export class MessageService{
 
 @Injectable()
 export class EventService{
-    eventList:any=[];
+    eventList:any=[{id:1,title:"Wedding", date:new Date(),venueName:"Hilton Prague Old Town",address:"Okhla",city:"New Delhi",
+    State:"Delhi",zipCode:"110020",description:"this is best wedding",lat:28.5609534,lng:77.2748794,member:0},
+    {id:2,title:"Wedding", date:new Date(),venueName:"Card Wala",address:"Lajpat Nagar",city:"New Delhi",
+    State:"Delhi",zipCode:"110024",description:"this is Excellent",lat:28.5697126,lng:77.2326572,member:0},
+    {id:3,title:"Wedding", date:new Date(),venueName:"Delhi Wedding Venue",address:"Malviya Nagar",city:"New Delhi",
+    State:"Delhi",zipCode:"110017",description:"this is best wedding",lat:28.5697078,lng:77.2063924,member:0},
+    {id:4,title:"Wedding", date:new Date(),venueName:"YSD Event Management",address:"Laxmi nagar",city:"New Delhi",
+    State:"Delhi",zipCode:"110092",description:"this is best wedding",lat:28.5696314,lng:77.1013261,member:0},
+    {id:5,title:"Wedding", date:new Date(),venueName:"Khushi Party Hall",address:"Pritam Pura",city:"New Delhi",
+    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.6632901,lng:77.1377298,member:0}];
     constructor(public events:Events,public service:SessionService)
-    {
-        this.eventList=[{id:1,name:"Wedding",description:"This is new wedding"},
-                        {id:2,name:"Mehandi",description:"This is mehandi function"},
-                        {id:3,name:"Sanget",description:"This is Sanget function"},
-                        {id:4,name:"Reception",description:"This is Reception function"}
-                       ] 
-    }
+    {}
     getEvents()
     {
         // alert("event calleddddddddddddddddddd");
-        this.events.publish('events:fetch',this.eventList)
+
+        // alert("event list=="+JSON.stringify(this.eventList));
+
+
+        console.log("Event list==="+JSON.stringify(this.eventList));
+        this.events.publish('events1:fetch',this.eventList);
     }
+
+    updateEvent(eventInfo)
+    {
+        for(var i=0;i<this.eventList.length;i++)
+        {
+            if(this.eventList[i].id==eventInfo.id)
+            {
+
+                this.eventList[i]=eventInfo;
+            }
+        }
+        this.events.publish('event:update')
+    }
+
+   
+
+
     
 }
 

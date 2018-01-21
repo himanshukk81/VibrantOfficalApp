@@ -31,7 +31,7 @@ import { MessagesPage} from '../pages/messages/messages';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
   @ViewChild(NavController) navCtrl: NavController;
-  rootPage: any=HomePage;
+  rootPage: any=FirstPage;
   headers:any;
   pages: Array<{title: string, component: any}>;
 
@@ -47,7 +47,7 @@ export class MyApp {
             // {title:'Users',component:UsersPage},
             {title:'Profile',component:profile},
             {title:'Budgets',component:BudgetsPage},
-            // {title:'Functions',component:FunctionsPage},
+            {title:'Events',component:EventsPage},
             {title:'Reminders',component:RemindersPage},
             {title:'Logout',component:LoginPage},
           ];
@@ -57,6 +57,7 @@ export class MyApp {
           this.pages = [
             {title:'Home',component:GuestInvitationPage},
             { title: 'Messages', component: MessagesPage},
+            {title:'Events',component:EventsPage},
             {title:'Share Photo',component:SharePhotoPage},
             {title:'Profile',component:profile},
             {title:'Logout',component:LoginPage}

@@ -44,7 +44,7 @@
           </ion-select>
         </ion-item>
       <div padding>
-          <button ion-button block (click)="getOtp()" >Get Otp</button>
+          <button ion-button block (click)="getOtp()" [disabled]="userGuests.length==0 || !guestInfo.guestId">Get Otp</button>
       </div>
 
       <div padding *ngIf="otpTriggered">

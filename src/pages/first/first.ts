@@ -27,9 +27,9 @@ export class FirstPage {
    this.userButtonColor="light";
    this.joinneButtonColor="light"; 
    this.pushPage=LoginPage;
-   this.selectedUserInfo="1";
-   this.params={id:this.selectedUserInfo};
-    this.userButtonColor="secondary";
+  // //  this.selectedUserInfo="1";
+  // //  this.params={id:this.selectedUserInfo};
+  //   this.userButtonColor="secondary";
     this.joinneButtonColor="light";
    
   }

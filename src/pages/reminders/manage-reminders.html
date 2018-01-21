@@ -21,18 +21,25 @@
         <ion-input type="text" [(ngModel)]="reminder.name"></ion-input>
       </ion-item> 
       
-      <!-- <ion-item>
+      <ion-item>
           <ion-label>Date</ion-label>
-          <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="reminder.date" (ionChange)="timeChange($event)"></ion-datetime>
-      </ion-item> -->
+          <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="reminder.date"></ion-datetime>
+      </ion-item>
 
       <ion-item>
           <ion-label>Time</ion-label>
           <ion-datetime displayFormat="h:mm A" pickerFormat="h:mm A" [(ngModel)]="reminder.time"></ion-datetime>
       </ion-item>
+      <ion-item *ngIf="update">
+        <ion-label>Select Status</ion-label>
+        <ion-select type="text" [(ngModel)]="reminder.status">
+            <ion-option value="P">Pending</ion-option>
+            <ion-option value="C">Complete</ion-option>
+        </ion-select>
+      </ion-item>
       <button ion-button type="submit" block (click)="saveReminderInfo()" [disabled]="loader" *ngIf="!update">Add Reminder <ion-spinner name="circles" *ngIf="loader"></ion-spinner></button>
       <button ion-button type="submit" block (click)="updateReminderInfo()" [disabled]="loader" *ngIf="update">Update Reminder <ion-spinner name="circles" *ngIf="loader"></ion-spinner></button>
-      <button ion-button type="submit" block (click)="pushData()">Push Data</button>
+      <!-- <button ion-button type="submit" block (click)="pushData()">Push Data</button> -->
       
 
       <div text-center *ngIf="loader">

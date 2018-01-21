@@ -4,26 +4,63 @@
       <ion-icon name="menu"></ion-icon>
     </button>
      
-    <ion-title>Events</ion-title>
+    <ion-title>Home</ion-title>
   </ion-navbar>
   
 </ion-header>
 
 
     <ion-content padding>
-        <ion-list>
-              <ion-item-sliding *ngFor="let event of eventList ">
-     
-                <ion-item>
-                    <h3>{{event.name}}</h3>
-                </ion-item>
-             
-                <ion-item-options>
-                  <button ion-button color="primary" (click)="eventDetail(reminder)"><p><ion-icon name="paper"></ion-icon> Edit</p></button>
-                  <button ion-button color="danger" (click)="removeevent(reminder)"><p><ion-icon name="trash"></ion-icon> Delete</p></button>
-                </ion-item-options>
-              </ion-item-sliding>
-        </ion-list>
+      <h2 text-center> Budget</h2>
+      <ion-card class="row">
+        <ion-card-content class="col-33">
+            Estimated Cost   <br/>
+
+
+           <h3 style="color:green"> {{totalEstimateCost}} </h3> <br/> 
+            Final Cost       <br/> 
+
+            <h3 style="color:red"> {{totalFinalCost}} </h3>
+        </ion-card-content>
+        <ion-card-content class="col-53">
+                Paid   <br/> 
+            <h3 style="color:green">{{totalPaid}}</h3> <br/> 
+
+                Pending <br/> 
+
+            <h3 style="color:red">{{totalPending}}</h3>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-grid>
+        <ion-row>
+          <ion-col col-7>
+              <ion-fab >
+                  <button ion-fab color="primary" (click)="goToSharePhoto()">Share Photo</button>
+              </ion-fab>
+          </ion-col>  
+
+          <ion-col col-5>
+              <ion-fab>
+                  <button ion-fab color="primary" (click)="goToMessage()">Messages</button>
+              </ion-fab>
+          </ion-col>  
+        </ion-row> <br/><br/><br/><br/><br/><br/>
+        <ion-row>
+            <ion-col col-7>
+                <ion-fab>
+                    <button ion-fab color="primary" (click)="goToBudgets()">Budgets</button>
+                </ion-fab>
+            </ion-col>  
+  
+            <ion-col col-5>
+                <ion-fab>
+                    <button ion-fab color="primary" (click)="gotToEvent()">Events</button>
+                </ion-fab>
+            </ion-col>  
+          </ion-row>  
+      </ion-grid>  
+      
     </ion-content>
 
 

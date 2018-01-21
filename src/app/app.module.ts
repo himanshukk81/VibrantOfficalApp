@@ -16,8 +16,7 @@ import { Toast } from '@ionic-native/toast';
 import { UsersPage} from '../pages/users/users';
 import { profile} from '../pages/profile/profile';
 import { UserDetailPage} from '../pages/user-detail/user-detail';
-import { EventsPage} from '../pages/events/events';
-import { Places} from '../pages/events/events';
+import { EventsPage,MemberPage,Places} from '../pages/events/events';
 import { ManageEventsPage} from '../pages/events/events';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { Network } from '@ionic-native/network';
@@ -35,12 +34,12 @@ import { ImagePicker } from '@ionic-native/image-picker';
 // import { ImagePickerMock } from '@ionic-native-mocks/image-picker';
 import { Base64 } from '@ionic-native/base64';
 import { Facebook } from '@ionic-native/facebook';
-import { LocationTrackerProvider } from '../providers/location-tracker';
 import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { FirstPage} from '../pages/first/first';
 import { MessagesPage} from '../pages/messages/messages';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
+import { LocationTrackerProvider } from '../providers/location-tracker';
 
 
 
@@ -66,7 +65,8 @@ import { IonicImageViewerModule } from 'ionic-img-viewer';
     FirstPage,
     GuestInvitationPage,
     ManageSharePhotoPage,
-    MessagesPage
+    MessagesPage,
+    MemberPage
   ],
   imports: [
     HttpModule,
@@ -96,7 +96,8 @@ import { IonicImageViewerModule } from 'ionic-img-viewer';
     FirstPage,
     GuestInvitationPage,
     ManageSharePhotoPage,
-    MessagesPage
+    MessagesPage,
+    MemberPage
   ],
   providers: [
     StatusBar,
@@ -124,6 +125,8 @@ import { IonicImageViewerModule } from 'ionic-img-viewer';
     EventService,
     PaymentService,
     UserService,
+    LocationTrackerProvider,
+    BackgroundGeolocation,
     // { provide: ImagePicker, useClass: imagePickerMock },
     // { provide: Base64, useClass: Base64Mock },
     {provide: ErrorHandler, useClass: IonicErrorHandler}
