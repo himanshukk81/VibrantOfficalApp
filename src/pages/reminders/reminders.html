@@ -21,15 +21,18 @@
 
 <ion-content padding>
     <ion-list>
-        <button ion-button color="danger" (click)="enableNotification()">Enable</button>   
-        <button ion-button color="danger" (click)="getAll()">Get All</button>   
+        <!-- <button ion-button color="danger" (click)="enableNotification()">Enable</button>   
+        <button ion-button color="danger" (click)="getAll()">Get All</button>    -->
         
           <ion-item-sliding *ngFor="let reminder of reminderList ">
  
             <ion-item>
                 <h3>{{reminder.name}}</h3>
+                <h4 *ngIf="reminder.status=='P'" style="color:red"> Pending</h4>
+                <h4 *ngIf="reminder.status=='C'" style="color:green">Completed</h4>
                 <p>{{reminder.scheduleDate | date:'medium'}}</p>
                 <p>{{reminder.scheduleTime}}</p>
+
             </ion-item>
          
             <ion-item-options>

@@ -10,10 +10,12 @@
       <ion-buttons start>
           <button ion-button icon-only (click)="closeModal()" >  <ion-icon name="close" md="md-close"> </ion-icon></button>        
       </ion-buttons>
+    
     <ion-title>Manage Events</ion-title>
     <ion-buttons end>
-        
-          <button ion-button icon-only (click)="saveEvent()"><ion-icon name="create"></ion-icon></button>
+
+          <button ion-button icon-only (click)="updateEventInfo()" *ngIf="userInfo.userType==1"><ion-icon name="create"></ion-icon></button>
+          <button ion-button icon-only (click)="addMember()" *ngIf="userInfo.userType==2">Add Member</button>
         
       </ion-buttons>
   </ion-navbar>
@@ -21,75 +23,63 @@
 </ion-header>
 
 
-<ion-content padding>
+<ion-content >
 
-    <ion-item>
-        <ion-input placeholder="Search Destination" [(ngModel)]="event.destination" (tap)="searchLocation()"></ion-input>
-    </ion-item>
+    <ion-searchbar [(ngModel)]="autocomplete.input" (click)="openPlaces()" *ngIf="userInfo.userType==1"></ion-searchbar>
     
     <div #map id="map"></div>
       <ion-item>
         <ion-label>Title</ion-label>
-        <ion-input type="text" [(ngModel)]="event.title"></ion-input>
+        <ion-input type="text" [(ngModel)]="event.title" [disabled]="userInfo.userType==2"></ion-input>
       </ion-item> 
       
       <ion-item>
           <ion-label>Date</ion-label>
-          <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="event.date"></ion-datetime>
+          <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="event.date" [disabled]="userInfo.userType==2"></ion-datetime>
       </ion-item>
 
       <ion-item>
           <ion-label>Time</ion-label>
-          <ion-datetime pickerFormat="hh:mm A" [(ngModel)]="event.time"></ion-datetime>
+          <ion-datetime pickerFormat="hh:mm A" [(ngModel)]="event.time" [disabled]="userInfo.userType==2" ></ion-datetime>
       </ion-item>
 
         <ion-item>
           <ion-label>Venue Name</ion-label>
-          <ion-input type="text" [(ngModel)]="event.venueName"></ion-input>
+          <ion-input type="text" [(ngModel)]="event.venueName" [disabled]="userInfo.userType==2"></ion-input>
+        </ion-item> 
+
+
+        <ion-item>
+            <ion-label>Member</ion-label>
+            <ion-input type="text" [(ngModel)]="event.member" [disabled]="userInfo.userType==2"></ion-input>
         </ion-item> 
         
         <ion-item>
             <ion-label>Address</ion-label>
-            <ion-input type="text" [(ngModel)]="event.address"></ion-input>
+            <ion-input type="text" [(ngModel)]="event.address" [disabled]="userInfo.userType==2"></ion-input>
         </ion-item>
 
         <ion-item>
             <ion-label>City</ion-label>
-            <ion-input type="text" [(ngModel)]="event.city"></ion-input>
+            <ion-input type="text" [(ngModel)]="event.city" [disabled]="userInfo.userType==2"></ion-input>
         </ion-item>
 
         <ion-item>
             <ion-label>State</ion-label>
-            <ion-input type="text" [(ngModel)]="event.state"></ion-input>
+            <ion-input type="text" [(ngModel)]="event.State" [disabled]="userInfo.userType==2"></ion-input>
         </ion-item>
 
         <ion-item>
             <ion-label>Zip</ion-label>
-            <ion-input type="text" [(ngModel)]="event.zipCode"></ion-input>
+            <ion-input type="text" [(ngModel)]="event.zipCode" [disabled]="userInfo.userType==2"></ion-input>
         </ion-item>
         <ion-item>
             <ion-label>Description</ion-label>
-            <ion-input type="text" [(ngModel)]="event.description"></ion-input>
+            <ion-input type="text" [(ngModel)]="event.description" [disabled]="userInfo.userType==2"></ion-input>
         </ion-item>
-        <!-- <ion-item>
-            <ion-list radio-group [(ngModel)]="event.type">
-                <ion-list-header>
-                  Event Type
-                </ion-list-header>
-              
-                <ion-item>
-                  <ion-label>Private</ion-label>
-                  <ion-radio value="Private"></ion-radio>
-                </ion-item>
-                <ion-item>
-                  <ion-label>Public</ion-label>
-                  <ion-radio value="Public"></ion-radio>
-                </ion-item>
-            </ion-list>
-        </ion-item> -->
-        <ion-item>
+         <!-- <ion-item>
             <ion-icon name="camera" (click)="takePicture()"> Select Image</ion-icon>
             
             <img src="{{capturedImage}}"  style="width:50px;height:50px" *ngIf="capturedImage">
-         </ion-item>
+         </ion-item> -->
 </ion-content>

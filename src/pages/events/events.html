@@ -10,25 +10,17 @@
       <ion-icon name="menu"></ion-icon>
     </button>
    <ion-title>Events</ion-title>
-
-   
-    <ion-buttons end>
-      
-        <button ion-button (click)="addEvent()">  Add Events</button>
-      
-    </ion-buttons>
  </ion-navbar>
 </ion-header>
  
 <ion-content fullscreen parallax-header>
- 
-    <!-- <div class="header-image"></div> -->
- 
     <div class="main-content">
-        <ion-card *ngFor="let event of events">
+        <ion-card *ngFor="let event of eventList" (click)="eventDetail(event)">
           <ion-item>
             <h2>{{event.name}}</h2>
-            <p>{{event.date}}</p>
+            <h3>{{event.venueName}}</h3>
+            
+            <p>{{event.date | date:'medium'}}</p>
           </ion-item>
           <div *ngIf="!event.imageUrl">
             <img src="../../assets/imgs/wedding-icon.png">
@@ -44,5 +36,4 @@
         </ion-card>
  
     </div>
- 
 </ion-content>

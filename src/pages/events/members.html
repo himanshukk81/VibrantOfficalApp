@@ -1,0 +1,28 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>Members</ion-title>
+        <ion-buttons end>
+        <button ion-button (click)="closeModal()">Close</button>
+        </ion-buttons>
+    </ion-navbar>
+    
+    </ion-header>
+    
+    
+    <ion-content padding>
+        
+     
+        <ion-list >
+            <ion-item>
+                <ion-label>Member</ion-label>
+                <ion-input type="number" [(ngModel)]="attende.number"></ion-input>
+            </ion-item> 
+
+
+            <ion-item text-center> 
+                <button ion-button color="primary" (click)="addMember()">Add Member </button> 
+            </ion-item>
+
+
+        </ion-list>
+    </ion-content>

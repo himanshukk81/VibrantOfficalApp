@@ -42,40 +42,40 @@ showToast(message)
 
         // alert("users=="+JSON.stringify(users));
         this.user=users;
-        this.backgroundGeolocation.configure(config).subscribe((location) => {
+        // this.backgroundGeolocation.configure(config).subscribe((location) => {
       
-          console.log('BackgroundGeolocation:  ' + location.latitude + ',' + location.longitude);
-          // this.showToast("background==");
-          // Run update inside of Angular's zone
-          this.zone.run(() => {
+        //   console.log('BackgroundGeolocation:  ' + location.latitude + ',' + location.longitude);
+        //   // this.showToast("background==");
+        //   // Run update inside of Angular's zone
+        //   this.zone.run(() => {
             
             
-            this.lat = location.latitude;
-            this.lng = location.longitude;
-            var message="lat=="+this.lat+"lng=="+this.lng;
+        //     this.lat = location.latitude;
+        //     this.lng = location.longitude;
+        //     var message="lat=="+this.lat+"lng=="+this.lng;
           
-            var userInfo="info==="+JSON.stringify(this.user);
-            this.service.showToast(userInfo);
-            var user:any={};
-            user.latitude=this.lat;
-            user.longitude=this.lng;
-            var message="lat=="+this.lat+"lng=="+this.lng;
-            this.events.publish('fetch:location:success',user); 
-            // alert("Fetch succcess")
-          });
+        //     var userInfo="info==="+JSON.stringify(this.user);
+        //     this.service.showToast(userInfo);
+        //     var user:any={};
+        //     user.latitude=this.lat;
+        //     user.longitude=this.lng;
+        //     var message="lat=="+this.lat+"lng=="+this.lng;
+        //     this.events.publish('fetch:location:success',user); 
+        //     // alert("Fetch succcess")
+        //   });
       
-        }, (err) => {
-           var error;
-           error="Error199=="+err;
-          //  alert(error);
-          console.log(error);
+        // }, (err) => {
+        //    var error;
+        //    error="Error199=="+err;
+        //   //  alert(error);
+        //   console.log(error);
           
-          // this.showToast(error);
+        //   // this.showToast(error);
       
-        });
+        // });
       
-        // Turn ON the background-geolocation system.
-        this.backgroundGeolocation.start();
+        // // Turn ON the background-geolocation system.
+        // this.backgroundGeolocation.start();
       
       
         // Foreground Tracking
@@ -85,15 +85,7 @@ showToast(message)
         enableHighAccuracy: true
       };
       
-      this.watch = this.geolocation.watchPosition(options).filter((p: any) => p.code === undefined).subscribe((position: Geoposition) => {
-      
-        console.log(position);
-
-  
-        var message="lat222=="+this.lat+"lng222=="+this.lng;
-        // this.showToast(message);
-
-        // Run update inside of Angular's zone
+      this.geolocation.getCurrentPosition(options).then((position) => { 
         this.zone.run(() => {
           this.lat = position.coords.latitude;
           this.lng = position.coords.longitude;
@@ -104,7 +96,7 @@ showToast(message)
           user.longitude=this.lng;
           var message="user=="+JSON.stringify(this.user);
 
-          alert("Fetch succcess")
+          // alert("Fetch succcess")
           this.events.publish('fetch:location:success',position.coords); 
             
         });

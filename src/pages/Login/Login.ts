@@ -68,7 +68,7 @@ export class LoginPage {
       user.userType=this.userTypeId;
       this.events.publish('menu:load',user);
       this.service.setUser(user)
-      this.navCtrl.setRoot(MessagesPage);
+      this.navCtrl.setRoot(HomePage);
       this.navCtrl.popToRoot();
     })
 

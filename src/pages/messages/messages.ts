@@ -46,7 +46,7 @@ export class MessagesPage {
 
     this.events.subscribe('fetch:guests', guests=> {        
       this.guests=guests;
-      this.messageService.getMessages("0");
+      this.messageService.getMessages();
     })
   }
 
@@ -62,28 +62,6 @@ export class MessagesPage {
         }
     }, 400)
   }
-
-
-  // isYou(message)
-  // {
-  // //  if(message.receiverId==this.userInfo.id)
-  // //  {
-  // //    return true;
-  // //  }
-  //   return false;
-  // //  if(message.receiverId==this.messageInfo.guestId)
-  // //  {
-  // //   return true;
-  // //  }
-    
-  // }
-  // isMe(message)
-  // {
-  //   if(message.senderId==this.userInfo.id)
-  //   {
-  //     return true;
-  //   }
-  // }
 
   sendMessage()
   {
@@ -101,19 +79,24 @@ export class MessagesPage {
         this.messageInfo.receiverId=this.userInfo.userId;
         this.messageInfo.receiverType=1;
         this.messageInfo.messageStatus=true;
+        this.messageInfo.status='A';
       }
       else 
       {
         this.messageInfo.receiverId=0;
         this.messageInfo.receiverType=2;
         this.messageInfo.messageStatus=false;
+        this.messageInfo.status='P';
       }
+      this.messageInfo.userId=this.userInfo.userId;
     }
     else
     {
       this.messageInfo.messageStatus=true;
       this.messageInfo.receiverId=this.messageInfo.guestId;
+      this.messageInfo.userId=this.userInfo.id;
       this.messageInfo.receiverType=2;
+      this.messageInfo.status='A';
     }
     this.messages.push(Object.assign({},this.messageInfo));
     newMessageInfo=Object.assign({},this.messageInfo);
@@ -121,23 +104,18 @@ export class MessagesPage {
     this.messageInfo.editorMsg='';
     // this.loader=true;
   }
-  approveMessage()
+  approveMessage1()
   {
-    for(var i=0;i<this.messages.length;i++)
-    {
-      if(this.messages[i].selected)
-      {
-        this.messages[i].messageStatus=true;
-      }
-    }
     this.messageService.approveMessage(this.messages)
   }
 
-  getSingleGuestMessage(guestInfo)
-  {
-    console.log("ng model data==="+guestInfo);
-    console.log("data guest id==="+this.messageInfo.guestId);
-    this.messageService.getMessages(guestInfo)
-  }
+
+
+  // getSingleGuestMessage(guestInfo)
+  // {
+  //   console.log("ng model data==="+guestInfo);
+  //   console.log("data guest id==="+this.messageInfo.guestId);
+  //   this.messageService.getMessages()
+  // }
 
 }
