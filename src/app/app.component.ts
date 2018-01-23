@@ -22,6 +22,7 @@ import { FirstPage} from '../pages/first/first';
 import { GuestInvitationPage} from '../pages/guest-invitation/guest-invitation';
 import { SharePhotoPage,ManageSharePhotoPage} from '../pages/share-photo/share-photo';
 import { MessagesPage} from '../pages/messages/messages';
+import { LocationAccuracy } from '@ionic-native/location-accuracy';
 
 
 
@@ -31,11 +32,11 @@ import { MessagesPage} from '../pages/messages/messages';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
   @ViewChild(NavController) navCtrl: NavController;
-  rootPage: any=FirstPage;
+  rootPage: any=EventsPage;
   headers:any;
   pages: Array<{title: string, component: any}>;
 
-  constructor(public events:Events, public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,public service:SessionService,public native:NativeStorage,public sharing:SocialSharing,public alertCtrl:AlertController  
+  constructor(public locationAccuracy: LocationAccuracy,public events:Events, public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,public service:SessionService,public native:NativeStorage,public sharing:SocialSharing,public alertCtrl:AlertController  
     ,public nativeStorage:NativeStorage,public network:Network,public localNotifications:LocalNotifications,public http:Http) {
       this.events.subscribe('menu:load', user => {
         if(user.userType==1)
@@ -84,11 +85,32 @@ export class MyApp {
       // this.initPushNotification();
       // this.checkNetwork();
       this.initLocalNotification()
-      // this.enableLocation();
+      this.enableLocation();
       // this.initLocalNotification();
     });
   }
  
+  enableLocation()
+  {
+      // alert("Calling location");
+      this.locationAccuracy.canRequest().then((canRequest: boolean) => {
+        if(canRequest) {
+                console.log("request"+canRequest); 
+                // the accuracy option will be ignored by iOS
+          this.locationAccuracy.request(this.locationAccuracy.REQUEST_PRIORITY_HIGH_ACCURACY).then(
+            () =>{
+              console.log("Request successful");
+
+              this.events.publish('location:enabled');
+            } ,
+            error =>{
+              console.log("Request failed"+error)
+              this.service.showToast2("Failed to detect location");
+            }) 
+        }
+
+      });
+  }
   checkNetwork()
   {
     let disconnectSubscription = this.network.onDisconnect().subscribe(() => {

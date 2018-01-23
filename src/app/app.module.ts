@@ -40,6 +40,7 @@ import { FirstPage} from '../pages/first/first';
 import { MessagesPage} from '../pages/messages/messages';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
 import { LocationTrackerProvider } from '../providers/location-tracker';
+import { LocationAccuracy } from '@ionic-native/location-accuracy';
 
 
 
@@ -127,6 +128,7 @@ import { LocationTrackerProvider } from '../providers/location-tracker';
     UserService,
     LocationTrackerProvider,
     BackgroundGeolocation,
+    LocationAccuracy,
     // { provide: ImagePicker, useClass: imagePickerMock },
     // { provide: Base64, useClass: Base64Mock },
     {provide: ErrorHandler, useClass: IonicErrorHandler}

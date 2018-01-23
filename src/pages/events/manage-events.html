@@ -14,8 +14,8 @@
     <ion-title>Manage Events</ion-title>
     <ion-buttons end>
 
-          <button ion-button icon-only (click)="updateEventInfo()" *ngIf="userInfo.userType==1"><ion-icon name="create"></ion-icon></button>
-          <button ion-button icon-only (click)="addMember()" *ngIf="userInfo.userType==2">Add Member</button>
+          <!-- <button ion-button icon-only (click)="updateEventInfo()" *ngIf="userInfo.userType==1"><ion-icon name="create"></ion-icon></button>
+          <button ion-button icon-only (click)="addMember()" *ngIf="userInfo.userType==2">Add Member</button> -->
         
       </ion-buttons>
   </ion-navbar>
@@ -25,13 +25,13 @@
 
 <ion-content >
 
+    
     <ion-searchbar [(ngModel)]="autocomplete.input" (click)="openPlaces()" *ngIf="userInfo.userType==1"></ion-searchbar>
     
-    <div  id="map" style="height:40%;width:100%"></div>
+    <div  id="map" style="height:50%;width:100%"></div>
 
-
-
-
+    <h2 text-center>Detail</h2>
+    <ion-scroll scrollY="true" style="overflow: scroll;white-space: nowrap; height:40%" >
       <ion-item>
         <ion-label>Title</ion-label>
         <ion-input type="text" [(ngModel)]="event.title" [disabled]="userInfo.userType==2"></ion-input>
@@ -81,9 +81,7 @@
             <ion-label>Description</ion-label>
             <ion-input type="text" [(ngModel)]="event.description" [disabled]="userInfo.userType==2"></ion-input>
         </ion-item>
-         <!-- <ion-item>
-            <ion-icon name="camera" (click)="takePicture()"> Select Image</ion-icon>
-            
-            <img src="{{capturedImage}}"  style="width:50px;height:50px" *ngIf="capturedImage">
-         </ion-item> -->
+
+    </ion-scroll>    
+   
 </ion-content>
