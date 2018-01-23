@@ -1050,7 +1050,17 @@ export class MessageService{
             {
                 if(this.allMessages[i].userId==this.service.getUser().id)
                 {
-                    this.userMessages.push(this.allMessages[i]);
+                    if(this.allMessages[i].senderId==this.service.getUser().id && this.allMessages[i].senderType==1)
+                    {
+                        this.allMessages[i].sender=true;
+                        this.userMessages.push(this.allMessages[i]);  
+                    }
+                    else
+                    {
+                        this.allMessages[i].sender=false;
+                        this.userMessages.push(this.allMessages[i]);  
+                    }
+                    
                 }
             }
         }
@@ -1060,16 +1070,19 @@ export class MessageService{
             {
                 if(this.allMessages[i].senderId==this.service.getUser().id && this.allMessages[i].senderType==2) 
                 {
+                    this.allMessages[i].sender=true;
                     this.userMessages.push(this.allMessages[i]);
                 }
                 else
                 {
                     if(this.allMessages[i].receiverId==this.service.getUser().id && this.allMessages[i].senderType==1) 
                     {
+                        this.allMessages[i].sender=false;
                         this.userMessages.push(this.allMessages[i]);
                     }  
                     else if((!this.allMessages[i].receiverId || this.allMessages[i].receiverId==0) && this.allMessages[i].status=='A')
                     {
+                        this.allMessages[i].sender=false;
                         this.userMessages.push(this.allMessages[i]);
                     } 
                 }

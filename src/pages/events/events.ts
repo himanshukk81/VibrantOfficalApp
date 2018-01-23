@@ -6,7 +6,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { Geolocation } from '@ionic-native/geolocation'; // Newly Added
 import { Jsonp } from '@angular/http/src/http';
 import { LocationTrackerProvider } from '../../providers/location-tracker';
-import { GoogleMaps, GoogleMap,GoogleMapsEvent,GoogleMapOptions,CameraPosition,MarkerOptions,Marker } from '@ionic-native/google-maps';
+import {LatLngBounds,GoogleMaps,LatLng, GoogleMap,GoogleMapsEvent,GoogleMapOptions,CameraPosition,MarkerOptions,Marker } from '@ionic-native/google-maps';
 
 // import { LocationTrackerProvider } from '../../providers/location-tracker';
 
@@ -50,8 +50,9 @@ export class EventsPage {
   eventDetail(eventInfo)
   {
     this.service.setEventInfo(eventInfo)
-    let profileModal = this.modalCtrl.create(ManageEventsPage);
-    profileModal.present();
+    // let profileModal = this.modalCtrl.create(ManageEventsPage);
+    // profileModal.present();
+    this.navCtrl.push(ManageEventsPage);
   }
 
   
@@ -59,7 +60,7 @@ export class EventsPage {
 }
 
 @Component({
-  selector: 'page-manage-events',
+  selector: 'page-events1',
   templateUrl: 'manage-events.html',
 })
 export class ManageEventsPage {
@@ -77,6 +78,7 @@ export class ManageEventsPage {
   userInfo:any={};
   lat:any;
   lng:any;
+  bounds:any;
   constructor(public locationTracker:LocationTrackerProvider, public eventService:EventService,public platform:Platform,public service:SessionService, public events:Events,public modalCtrl:ModalController, public viewCtrl:ViewController,public camera: Camera,public actionCtrl:ActionSheetController,public navCtrl: NavController, public navParams: NavParams) {
    
     // alert("Call manage events page");
@@ -103,13 +105,20 @@ export class ManageEventsPage {
       })  
       this.events.unsubscribe('destination:changed')
       this.events.subscribe('destination:changed', destination => {
+
+        console.log("Destination changed");
         this.autocomplete.input=destination.address;
         this.event.address=this.autocomplete.input;
         this.event.lat=destination.lat;
         this.event.lng=destination.lng;
         
-        var dest = new google.maps.LatLng(destination.lat,destination.lng);
-        // this.markers[0].setPosition(dest);
+        var dest = new LatLng(destination.lat,destination.lng);
+
+        // console.log("Markers===="+this.markers);
+        console.log("markers====="+JSON.stringify(this.markers));
+        // alert("Markers===="+this.markers);
+        this.markers[0].setPosition(dest);
+        this.fitMarkerOnMap();
         console.log("destinations==="+JSON.stringify(destination));
       })  
       this.events.unsubscribe('fetch:location:success')
@@ -128,7 +137,19 @@ export class ManageEventsPage {
 
   }
 
+  fitMarkerOnMap()
+  {
+    this.bounds = new LatLngBounds();  
+    for(var i=0;i<this.markers.length;i++)
+      {
+        this.bounds.extend(this.markers[i].getPosition());
+      }
 
+      console.log("Fit bounds====="+this.bounds);
+    this.map.fitBounds(this.bounds); 
+
+
+  }
   addMarker(location,title,iconColor)
   {
     this.map.addMarker({
@@ -141,19 +162,29 @@ export class ManageEventsPage {
       }
       
     }).then(marker => {
-        marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
 
-          this.markers.push(marker);
-          setTimeout(() => {  
-            this.locationTracker.startTracking()
-           },200);
-          console.log("markers===="+this.markers);
-        });
+
+        console.log("marker====="+JSON.stringify(marker));
+
+        console.log("marker position==="+marker.getPosition())
+        // var dest = new google.maps.LatLng(location.lat,location.lng);
+        // marker.setPosition(dest)
+        this.markers.push(marker);
+
+        if(this.markers.length==2)
+        {
+          this.fitMarkerOnMap()
+        }
+        // marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
+        //   this.markers.push(marker);
+        //   alert("marker===="+marker)
+        //   console.log("marker===="+marker);
+        // });
 
         }).catch((err: any) => {
           var  error="error marker=="+err;
           console.log("Error==="+error);
-          alert(error);
+          // alert(error);
       });
   }
 
@@ -162,25 +193,19 @@ export class ManageEventsPage {
    {
     this.eventService.updateEvent(this.event)
    } 
-
-
-
-
-
-
   loadMap()
   {    
         console.log("Map loading===");
-        this.lat=28.459497;
-        this.lng=77.026638;
+        // this.lat=28.459497;
+        // this.lng=77.026638;
         // console.log("============> 12"+this.lat+" ---- "+this.lng);
         let mapOptions: GoogleMapOptions = {
           camera: {
             target: {
-              lat:this.lat,
-              lng:this.lng 
+              lat:this.event.lat,
+              lng:this.event.lng
             },
-            zoom: 18,
+            zoom: 9,
             tilt: 30
           }
         };
@@ -189,22 +214,10 @@ export class ManageEventsPage {
         // Wait the MAP_READY before using any methods.
         this.map.one(GoogleMapsEvent.MAP_READY)
           .then(() => {
-            // alert("Map is ready!")
             console.log('Map is ready2222222!');
-              // Now you can use all methods safely.
-            this.map.addMarker({
-                title: 'Ionic',
-                icon: 'blue',
-                animation: 'DROP',
-                position: {
-                  lat: this.lat,
-                  lng: this.lng
-                }
-              }).then(marker => {
-                marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
-                    alert('clicked');
-                  });
-              });
+
+            this.locationTracker.startTracking();
+            this.addMarker(this.event,"Event","blue")
           }).catch((error)=>{
             alert("Map is not ready!="+error);
           });

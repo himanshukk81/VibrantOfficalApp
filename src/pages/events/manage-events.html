@@ -27,7 +27,11 @@
 
     <ion-searchbar [(ngModel)]="autocomplete.input" (click)="openPlaces()" *ngIf="userInfo.userType==1"></ion-searchbar>
     
-    <div #map id="map"></div>
+    <div  id="map" style="height:40%;width:100%"></div>
+
+
+
+
       <ion-item>
         <ion-label>Title</ion-label>
         <ion-input type="text" [(ngModel)]="event.title" [disabled]="userInfo.userType==2"></ion-input>
