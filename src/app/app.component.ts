@@ -16,7 +16,7 @@ import { UsersPage } from '../pages/users/users';
 import { BudgetsPage} from '../pages/budgets/budgets';
 import { FunctionsPage} from '../pages/functions/functions';
 import { RemindersPage} from '../pages/reminders/reminders';
-import { EventsPage} from '../pages/events/events';
+import { EventsPage,ManageEventsPage} from '../pages/events/events';
 import { Places} from '../pages/events/events';
 import { FirstPage} from '../pages/first/first';
 import { GuestInvitationPage} from '../pages/guest-invitation/guest-invitation';
@@ -32,7 +32,7 @@ import { LocationAccuracy } from '@ionic-native/location-accuracy';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
   @ViewChild(NavController) navCtrl: NavController;
-  rootPage: any=EventsPage;
+  rootPage: any=FirstPage;
   headers:any;
   pages: Array<{title: string, component: any}>;
 
@@ -56,7 +56,7 @@ export class MyApp {
         else
         {
           this.pages = [
-            {title:'Home',component:GuestInvitationPage},
+            // {title:'Home',component:GuestInvitationPage},
             { title: 'Messages', component: MessagesPage},
             {title:'Events',component:EventsPage},
             {title:'Share Photo',component:SharePhotoPage},
@@ -67,7 +67,7 @@ export class MyApp {
         } 
       })
 
-      this.initializeApp();
+      // this.initializeApp();
 
   }
   
@@ -83,7 +83,7 @@ export class MyApp {
 
       // this.checkUserStatus();
       // this.initPushNotification();
-      // this.checkNetwork();
+      this.checkNetwork();
       this.initLocalNotification()
       this.enableLocation();
       // this.initLocalNotification();

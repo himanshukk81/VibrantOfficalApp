@@ -41,6 +41,7 @@ import { MessagesPage} from '../pages/messages/messages';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
 import { LocationTrackerProvider } from '../providers/location-tracker';
 import { LocationAccuracy } from '@ionic-native/location-accuracy';
+import { Keyboard } from '@ionic-native/keyboard';
 
 
 
@@ -129,6 +130,7 @@ import { LocationAccuracy } from '@ionic-native/location-accuracy';
     LocationTrackerProvider,
     BackgroundGeolocation,
     LocationAccuracy,
+    Keyboard,
     // { provide: ImagePicker, useClass: imagePickerMock },
     // { provide: Base64, useClass: Base64Mock },
     {provide: ErrorHandler, useClass: IonicErrorHandler}

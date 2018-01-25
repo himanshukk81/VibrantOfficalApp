@@ -30,7 +30,7 @@
           </ion-select>
         </ion-item> -->
 
-        <ion-item>
+        <!-- <ion-item>
           <ion-label>Select User</ion-label>
           <ion-select type="text" [(ngModel)]="guestInfo.userId" (ionChange)="getGuestList($event)">
               <ion-option *ngFor="let user of users"  value="{{user.id}}">{{user.name}}</ion-option> 
@@ -42,17 +42,21 @@
           <ion-select type="text" [(ngModel)]="guestInfo.guestId">
               <ion-option *ngFor="let guest of userGuests"  value="{{guest.id}}">{{guest.name}}</ion-option> 
           </ion-select>
-        </ion-item>
+        </ion-item> -->
+
+
+      <ion-item>
+        <ion-label floating>Unique Id</ion-label>
+        <ion-input type="text" [(ngModel)]="guest.uniqueId"></ion-input>
+      </ion-item>  
       <div padding>
-          <button ion-button block (click)="getOtp()" [disabled]="userGuests.length==0 || !guestInfo.guestId">Get Otp</button>
+          <button ion-button block (click)="getOtp()" [disabled]="!guest.uniqueId">Get Otp</button>
       </div>
 
-      <div padding *ngIf="otpTriggered">
-          <ion-input type="text" [(ngModel)]="guestInfo.otp" placeholder="Enter OTP"></ion-input> <br/><br/><br/>
+      <div padding *ngIf="otpSent">
+          <ion-input type="text" [(ngModel)]="guest.otp" placeholder="Enter OTP"></ion-input> <br/><br/><br/>
           <button ion-button block (click)="verifyOtp()" >Verify</button>
-      </div>
-
-
+      </div> 
   </ion-list>
 
 

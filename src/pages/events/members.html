@@ -12,17 +12,33 @@
     <ion-content padding>
         
      
-        <ion-list >
-            <ion-item>
-                <ion-label>Member</ion-label>
-                <ion-input type="number" [(ngModel)]="attende.number"></ion-input>
-            </ion-item> 
+        <ion-list *ngIf="modifyInvitation">
+            
 
+            <ion-list radio-group [(ngModel)]="userInfo.status">
+                <ion-item>
+                    <ion-label>Accept</ion-label>
+                    <ion-radio value="A" checked></ion-radio>
+                </ion-item>
 
+                <ion-item>
+                    <ion-label>Reject</ion-label>
+                    <ion-radio value="R"></ion-radio>
+                </ion-item>
+            </ion-list>
             <ion-item text-center> 
-                <button ion-button color="primary" (click)="addMember()">Add Member </button> 
+                <button ion-button color="primary" (click)="invitationModify()">Save</button> 
             </ion-item>
-
-
         </ion-list>
+
+
+        <!-- <ion-list *ngIf="!modifyInvitation && eventInfo.guestInfos.length>0">
+                <ion-list *ngFor="let guest for eventInfo.guestInfos">
+                
+                    <ion-item >
+                        <h2>{{guest.guestId}}</h2>
+                        <h3>{{guest.status}}</h3>
+                    </ion-item>    
+                </ion-list>
+        </ion-list>         -->
     </ion-content>

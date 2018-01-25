@@ -7,6 +7,7 @@ import { Geolocation } from '@ionic-native/geolocation'; // Newly Added
 import { Jsonp } from '@angular/http/src/http';
 import { LocationTrackerProvider } from '../../providers/location-tracker';
 import {LatLngBounds,GoogleMaps,LatLng, GoogleMap,GoogleMapsEvent,GoogleMapOptions,CameraPosition,MarkerOptions,Marker } from '@ionic-native/google-maps';
+import { Keyboard } from '@ionic-native/keyboard';
 
 // import { LocationTrackerProvider } from '../../providers/location-tracker';
 
@@ -16,7 +17,7 @@ import {LatLngBounds,GoogleMaps,LatLng, GoogleMap,GoogleMapsEvent,GoogleMapOptio
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
-declare var google:any;
+
 @Component({
   selector: 'page-events',
   templateUrl: 'events.html',
@@ -34,6 +35,8 @@ export class EventsPage {
   ionViewDidEnter()
   {
     setTimeout(() => {  
+
+
       this.eventService.getEvents()   
               
     },100); 
@@ -55,10 +58,12 @@ export class EventsPage {
     this.navCtrl.push(ManageEventsPage);
   }
 
+
+
   
 
 }
-
+declare var google:any;
 @Component({
   selector: 'page-events1',
   templateUrl: 'manage-events.html',
@@ -79,12 +84,18 @@ export class ManageEventsPage {
   lat:any;
   lng:any;
   bounds:any;
-  constructor(public locationTracker:LocationTrackerProvider, public eventService:EventService,public platform:Platform,public service:SessionService, public events:Events,public modalCtrl:ModalController, public viewCtrl:ViewController,public camera: Camera,public actionCtrl:ActionSheetController,public navCtrl: NavController, public navParams: NavParams) {
-   
-    // alert("Call manage events page");
+  destination:any={};
+  // autocomplete:any={};
+  autocompleteItems: any=[];
+  // GoogleAutocomplete:any;
+  geocoder:any;
+  constructor(public keyboard:Keyboard,public zone:NgZone,public locationTracker:LocationTrackerProvider, public eventService:EventService,public platform:Platform,public service:SessionService, public events:Events,public modalCtrl:ModalController, public viewCtrl:ViewController,public camera: Camera,public actionCtrl:ActionSheetController,public navCtrl: NavController, public navParams: NavParams) {
     this.event=this.service.getEventInfo();
-    this.userInfo=this.service.getUser();
-    
+    // this.event.lat=28.459497;
+    // this.event.lng=77.026638;
+    this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
+    this.userInfo=this.service.getUser();    
+    // this.userInfo.userType=1;
   }
 
 
@@ -94,10 +105,20 @@ export class ManageEventsPage {
     this.events.publish('event:updated')
   }
 
+
+  keyboardCheck() {
+    return ! this.keyboard.onKeyboardShow();
+   }
   ionViewDidLoad() {
     console.log('ionViewDidLoad ManageEventsPage');   
     this.platform.ready().then(() => {
-      this.loadMap();
+      this.loadMap()
+
+      setTimeout(() => {  
+        this.locationTracker.startTracking()
+      },100);
+
+      
 
        this.events.unsubscribe('member:updated')
       this.events.subscribe('member:updated', member => {
@@ -122,6 +143,13 @@ export class ManageEventsPage {
         console.log("destinations==="+JSON.stringify(destination));
       })  
       this.events.unsubscribe('fetch:location:success')
+
+      this.events.unsubscribe('location:enabled')
+
+      this.events.subscribe('location:enabled', location => {
+        this.locationTracker.startTracking()
+      })
+      
       this.events.subscribe('fetch:location:success', location => {
         console.log("Current location fetch===="+JSON.stringify(this.currentLocation));
         this.currentLocation.lat=location.latitude;
@@ -146,7 +174,7 @@ export class ManageEventsPage {
       }
 
       console.log("Fit bounds====="+this.bounds);
-    this.map.fitBounds(this.bounds); 
+    this.map.setBounds(this.bounds); 
 
 
   }
@@ -169,12 +197,27 @@ export class ManageEventsPage {
         console.log("marker position==="+marker.getPosition())
         // var dest = new google.maps.LatLng(location.lat,location.lng);
         // marker.setPosition(dest)
-        this.markers.push(marker);
 
-        if(this.markers.length==2)
+        if(this.markers.length<3)
         {
-          this.fitMarkerOnMap()
+          this.markers.push(marker);
+          this.fitMarkerOnMap();
+
+          console.log("Working");
         }
+
+        else
+        {
+          console.log("Not working");
+        }
+        
+
+
+        
+        // if(this.markers.length==2)
+        // {
+        //   this.fitMarkerOnMap()
+        // }
         // marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
         //   this.markers.push(marker);
         //   alert("marker===="+marker)
@@ -215,13 +258,60 @@ export class ManageEventsPage {
         this.map.one(GoogleMapsEvent.MAP_READY)
           .then(() => {
             console.log('Map is ready2222222!');
-
-            this.locationTracker.startTracking();
             this.addMarker(this.event,"Event","blue")
           }).catch((error)=>{
             alert("Map is not ready!="+error);
           });
   }
+
+
+
+  // updateSearch(){
+  //   // this.autocomplete.input='';
+
+  //   console.log("Input====="+this.autocomplete.input);
+  //   console.log("auto complete data====="+this.autocomplete.input);
+  //   if (this.autocomplete.input == '') {
+  //     this.autocompleteItems = [];
+  //     return;
+  //   }
+  //   this.GoogleAutocomplete.getPlacePredictions({ input: this.autocomplete.input },
+  //   (predictions, status) => {
+  //     this.autocompleteItems = [];
+  //     this.zone.run(() => {
+  //       predictions.forEach((prediction) => {
+  //         this.autocompleteItems.push(prediction);
+  //       });
+  //     });
+  //   });
+  // }
+
+  // selectSearchResult(item){
+  //   // this.clearMarkers();
+  //   this.autocompleteItems = [];
+  
+  //   this.geocoder.geocode({'placeId': item.place_id}, (results, status) => {
+  //     if(status === 'OK' && results[0]){
+  //       let position = {
+  //           lat: results[0].geometry.location.lat,
+  //           lng: results[0].geometry.location.lng
+  //       };
+
+  //       this.destination.lat=results[0].geometry.location.lat();
+  //       this.destination.lng=results[0].geometry.location.lng();
+  //       this.destination.address=results[0].formatted_address;
+     
+        
+  //       this.closeModal()
+  //       this.events.publish('destination:changed',this.destination);
+  //       console.log("position===="+position);
+  //     }
+  //     else
+  //     {
+  //       alert("Not ok");
+  //     }
+  //   })
+  // }
 
  
   openPlaces()
@@ -235,10 +325,17 @@ export class ManageEventsPage {
      this.viewCtrl.dismiss()
    }
 
-   addMember()
+   updateInvitationStatus()
    {
-    let profileModal = this.modalCtrl.create(MemberPage);
+
+    let profileModal = this.modalCtrl.create(MemberPage,{modify:true});
     profileModal.present();   
+   }
+
+   viewInvitation()
+   {
+     let profileModal = this.modalCtrl.create(MemberPage,{modify:false});
+     profileModal.present();   
    }
 }
 
@@ -249,9 +346,12 @@ export class ManageEventsPage {
 
 export class MemberPage {
   eventInfo:any;
-  attende:any={};
-  constructor(public viewCtrl:ViewController,public events:Events,public service:SessionService,public eventService:EventService){
-    this.eventInfo=this.service.getEventInfo()
+  // attende:any={};
+  userInfo:any={};
+  modifyInvitation:boolean=false;
+  constructor(public params: NavParams,public navCtrl:NavController,public viewCtrl:ViewController,public events:Events,public service:SessionService,public eventService:EventService){
+    this.eventInfo=this.service.getEventInfo();
+    this.modifyInvitation=params.get('modify');
   }
 
   ionViewWillLeave()
@@ -261,8 +361,17 @@ export class MemberPage {
   }
   ionViewDidLoad()
   {
+    
     this.events.unsubscribe('event:update')
+    
     this.events.subscribe('event:update', event=> {        
+        this.closeModal();
+        this.navCtrl.pop();
+    })  
+
+    this.events.unsubscribe('event:update:invitations')
+    
+    this.events.subscribe('event:update:invitations', event=> {        
         this.closeModal();
     })  
   }
@@ -270,18 +379,16 @@ export class MemberPage {
   {
     this.viewCtrl.dismiss()
   }
-  addMember()
+  invitationModify()
   {
-    console.log("member=="+this.attende.number);
-    if(!this.attende.number)
-    {
-      this.service.showToast2("Please enter number of memeber");
-      return;
-    }
-    this.eventInfo.member=parseInt(this.eventInfo.member)+parseInt(this.attende.number);
-    this.service.setEventInfo(this.eventInfo);
-    this.eventService.updateEvent(this.eventInfo)
+    this.userInfo.id=this.eventInfo.id;
+    this.userInfo.guestId=this.service.getUser().id;
+    this.userInfo.userType=this.service.getUser().userType;
+    this.eventService.updateEventStatus(this.userInfo)
+   
   }
+
+
 }
 @Component({
   selector: 'page-home',

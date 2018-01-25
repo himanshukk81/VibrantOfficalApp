@@ -11,6 +11,7 @@ import {Events,ToastController } from 'ionic-angular';
 import { LoginService,GuestService,UserService } from '../../app/sessionservice';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { MessagesPage } from '../messages/messages';
+import { EventsPage} from '../events/events';
 
 @Component({
   selector: 'page-Login',
@@ -29,6 +30,9 @@ export class LoginPage {
   guestId:any;
   users:any;
   userGuests:any=[];
+  otp:any;
+  guest:any={};
+  otpSent:boolean=false;
     constructor(public userservice:UserService,public guestService:GuestService,public nativeStorage:NativeStorage,public menu: MenuController,public navParams: NavParams,public navCtrl:NavController, public loginservice:LoginService,public http: Http,public events:Events,public service:SessionService){
     this.user={};
     this.menu.swipeEnable(false);
@@ -73,13 +77,17 @@ export class LoginPage {
     })
 
 
-    this.events.subscribe('guest:login:success', guestInfo => {
+    this.events.subscribe('guest:fetch:info', guestInfo => {
       this.loader=false;
-      guestInfo.userType=this.userTypeId;
-      this.events.publish('menu:load',guestInfo);
-      this.service.setUser(guestInfo)
-      this.navCtrl.setRoot(SharePhotoPage);
-      this.navCtrl.popToRoot();
+      // guestInfo.userType=this.userTypeId;
+      // this.events.publish('menu:load',guestInfo);
+      // this.service.setUser(guestInfo)
+      // this.navCtrl.setRoot(SharePhotoPage);
+      // this.navCtrl.popToRoot();
+      this.guestInfo=guestInfo;
+      this.otpSent=true;
+      this.service.showToast2("Otp SuccessFully sent on your number");
+      // console.log("Otp=="+guestInfo.otp);
     })
 
     
@@ -123,24 +131,23 @@ export class LoginPage {
      }
      this.loader=true;
      this.loginservice.login(this.user,"u");
-
   }
 
   getOtp()
   {
-    if(!this.guestInfo.userId)
-    {
-      this.service.showToast2("Please Choose User");
-      return;
-    }
-    if(this.userGuests.length==0)
-    {
-      this.service.showToast2("There is no guest for this user");
-      return;
-    }
-    this.guestInfo.userType=this.userTypeId;
-    // this.guestInfo.id=this.guestId;
-    this.loginservice.login(this.guestInfo,"g");
+    // if(!this.guestInfo.userId)
+    // {
+    //   this.service.showToast2("Please Choose User");
+    //   return;
+    // }
+    // if(this.userGuests.length==0)
+    // {
+    //   this.service.showToast2("There is no guest for this user");
+    //   return;
+    // }
+    // this.guestInfo.userType=this.userTypeId;
+    
+    this.loginservice.login(this.guest,"g");
     
     // this.events.publish('login:success',this.guestInfo);
     // this.service.setUser(this.guestInfo);
@@ -181,25 +188,38 @@ export class LoginPage {
  
   verifyOtp()
   {
-    var mobile="91"+this.guestInfo.mobile;
-    var smsUrl="https://control.msg91.com/api/verifyRequestOTP.php?authkey=169096A9g9vil6eKqv598ab8f0&mobile="+mobile+"&otp="+this.guestInfo.otp; 
-    this.http.get(smsUrl)
-     .map(val => val.json())
-     .subscribe(data => 
-       {
-         this.guestInfo.userType=this.userTypeId;
-         this.service.showToast2("Successfully verified");
-         this.events.publish('login:success',this.guestInfo);
-         this.service.setUser(this.guestInfo);
-         this.navCtrl.setRoot(GuestInvitationPage);
-         this.navCtrl.popToRoot();
-         console.log(JSON.stringify(data))
-       })
-      err =>
-       {
-        this.service.showToast2("Failed to verify otp please try again"); 
-        alert("Error"+err);
-       } 
+    // var mobile="91"+this.guestInfo.mobile;
+    // var smsUrl="https://control.msg91.com/api/verifyRequestOTP.php?authkey=169096A9g9vil6eKqv598ab8f0&mobile="+mobile+"&otp="+this.guestInfo.otp; 
+    // this.http.get(smsUrl)
+    //  .map(val => val.json())
+    //  .subscribe(data => 
+    //    {
+    //      this.guestInfo.userType=this.userTypeId;
+    //      this.service.showToast2("Successfully verified");
+    //      this.events.publish('login:success',this.guestInfo);
+    //      this.service.setUser(this.guestInfo);
+    //      this.navCtrl.setRoot(EventsPage);
+    //      this.navCtrl.popToRoot();
+    //      console.log(JSON.stringify(data))
+    //    })
+    //   err =>
+    //    {
+    //     this.service.showToast2("Failed to verify otp please try again"); 
+    //     alert("Error"+err);
+    //    } 
+
+
+    if(this.guest.otp!=this.guestInfo.otp)
+    {
+      this.service.showToast2("Incorrect OTP");
+      return;
+    }
+      this.guestInfo.userType=this.userTypeId;
+      this.events.publish('menu:load',this.guestInfo);
+      this.service.setUser(this.guestInfo)
+      this.navCtrl.setRoot(EventsPage);
+      this.navCtrl.popToRoot();
+      // this.loginservice.login(this.guestInfo,"g");
   }  
 
   

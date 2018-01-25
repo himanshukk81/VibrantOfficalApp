@@ -241,20 +241,22 @@ export class GuestService{
     guestInvitation:any;
     guestType:any;
     userGuests:any=[];
-    constructor(public http:Http,public events:Events,public toastCtrl:ToastController,public nativeStorage:NativeStorage,public toast:Toast)
+    constructor(public service:SessionService,public http:Http,public events:Events,public toastCtrl:ToastController,public nativeStorage:NativeStorage,public toast:Toast)
     {
         this.Guests=
-        [{"id":1,"name":"Himanshu","mobile":"9971672881","guestTypeId":1,"userId":1},
-        {"id":2,"name":"Shahid","mobile":"9891914661","guestTypeId":1,"userId":1},
-        {"id":3,"name":"Manoj","mobile":"98745612312","guestTypeId":2,"userId":1},
-        {"id":4,"name":"Yash","mobile":"789456123123","guestTypeId":3,"userId":2},
-        {"id":5,"name":"Rahul","mobile":"78945612354","guestTypeId":1,"userId":2}]
+        [{"id":1,"name":"Himanshu","mobile":"9971672881","guestTypeId":1,"userId":1,"uniqueId":"abcd","eventIds":["1","2"]},
+        {"id":2,"name":"Shahid","mobile":"9891914661","guestTypeId":1,"userId":2,"uniqueId":"xyz","eventIds":["5","6"]},
+        {"id":3,"name":"Manoj","mobile":"98745612312","guestTypeId":2,"userId":1,"uniqueId":"nma1","eventIds":["3","4"]},
+        {"id":3,"name":"Yash","mobile":"789456123123","guestTypeId":3,"userId":4,"uniqueId":"pot","eventIds":["10","11"]},
+        {"id":4,"name":"Rahul","mobile":"78945612354","guestTypeId":1,"userId":3,"uniqueId":"nope","eventIds":["8","9"]}]
     }
     getGuests()
     {
 
         this.events.publish("fetch:guests",this.Guests);
     }
+
+    
 
     getUserGuests(userId)
     {
@@ -269,16 +271,34 @@ export class GuestService{
      this.events.publish("fetch:user:guests",this.userGuests);
     }
 
+
     getGuestLogin(loginInfo)
     {
+       var verify=false;
        for(var i=0;i<this.Guests.length;i++)
        {
-        if(loginInfo.guestId==this.Guests[i].id)
+        if(loginInfo.uniqueId==this.Guests[i].uniqueId)
         {
-          this.events.publish("guest:login:success",this.Guests[i]);
+          this.Guests[i].otp=this.service.getRandomString(4);
+
+          console.log("OTP verified==="+this.Guests[i].otp);
+          this.sendOtp(this.Guests[i])
+          verify=true;
         }
        }
+       if(!verify)
+       {
+        this.service.showToast2("Invalid Unique code");
+        return;
+       }
     }
+
+    sendOtp(guestInfo)
+    {
+       //guestInfo.otp=this.service.getRandomString(4);
+       this.events.publish("guest:fetch:info",guestInfo); 
+    }
+
 
     getGuestInvitation(guestId)
     {
@@ -1096,27 +1116,123 @@ export class MessageService{
 
 @Injectable()
 export class EventService{
-    eventList:any=[{id:1,title:"Wedding", date:new Date(),venueName:"Hilton Prague Old Town",address:"Okhla",city:"New Delhi",
-    State:"Delhi",zipCode:"110020",description:"this is best wedding",lat:28.5609534,lng:77.2748794,member:0},
-    {id:2,title:"Wedding", date:new Date(),venueName:"Card Wala",address:"Lajpat Nagar",city:"New Delhi",
-    State:"Delhi",zipCode:"110024",description:"this is Excellent",lat:28.5697126,lng:77.2326572,member:0},
-    {id:3,title:"Wedding", date:new Date(),venueName:"Delhi Wedding Venue",address:"Malviya Nagar",city:"New Delhi",
-    State:"Delhi",zipCode:"110017",description:"this is best wedding",lat:28.5697078,lng:77.2063924,member:0},
-    {id:4,title:"Wedding", date:new Date(),venueName:"YSD Event Management",address:"Laxmi nagar",city:"New Delhi",
-    State:"Delhi",zipCode:"110092",description:"this is best wedding",lat:28.5696314,lng:77.1013261,member:0},
-    {id:5,title:"Wedding", date:new Date(),venueName:"Khushi Party Hall",address:"Pritam Pura",city:"New Delhi",
-    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.6632901,lng:77.1377298,member:0}];
+    userEvents:any=[];
+    guestList:any=[];
+    eventInvitations:any=[];
+    eventList:any=[{id:1,userId:1,title:"Wedding 1", date:new Date(),venueName:"Hilton Prague Old Town",address:"Okhla",city:"New Delhi",
+    State:"Delhi",zipCode:"110020",description:"this is best wedding",lat:28.5609534,lng:77.2748794,member:0,approve:0,reject:0,guestInfos:[]},
+    {id:2,userId:1,title:"Wedding 2", date:new Date(),venueName:"Card Wala",address:"Lajpat Nagar",city:"New Delhi",
+    State:"Delhi",zipCode:"110024",description:"this is Excellent",lat:28.5697126,lng:77.2326572,member:0,approve:0,reject:0,guestInfos:[]},
+    {id:3,userId:1,title:"Wedding 3", date:new Date(),venueName:"Delhi Wedding Venue",address:"Malviya Nagar",city:"New Delhi",
+    State:"Delhi",zipCode:"110017",description:"this is best wedding",lat:28.5697078,lng:77.2063924,member:0,approve:0,reject:0,guestInfos:[]},
+    {id:4,userId:1,title:"Wedding 4", date:new Date(),venueName:"YSD Event Management",address:"Laxmi nagar",city:"New Delhi",
+    State:"Delhi",zipCode:"110092",description:"this is best wedding",lat:28.5696314,lng:77.1013261,member:0,approve:0,reject:0,guestInfos:[]},
+    {id:5,userId:2,title:"Wedding 5", date:new Date(),venueName:"Khushi Party Hall",address:"Pritam Pura",city:"New Delhi",
+    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.6632901,lng:77.1377298,member:0,approve:0,reject:0,guestInfos:[]},
+    {id:6,userId:2,title:"Wedding 6", date:new Date(),venueName:"Kumkum Marriage Hall",address:"Shalimar bagh",city:"New Delhi",
+    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.6632901,lng:77.1377298,member:0,approve:0,reject:0,guestInfos:[]},
+    {id:7,userId:2,title:"Wedding 7", date:new Date(),venueName:"abcd",address:"Punjabi bagh",city:"New Delhi",
+    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.7609534,lng:77.2377298,member:0,approve:0,reject:0,guestInfos:[]},
+    {id:8,userId:3,title:"Wedding 8", date:new Date(),venueName:"xyz",address:"Laxmi nagar",city:"New Delhi",
+    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.6832901,lng:77.1577298,member:0,approve:0,reject:0,guestInfos:[]},
+    {id:9,userId:3,title:"Wedding 9", date:new Date(),venueName:"poppp",address:"Jamia",city:"New Delhi",
+     State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.7232901,lng:77.1477298,member:0,approve:0,reject:0,guestInfos:[]},
+    {id:10,userId:4,title:"Wedding 10", date:new Date(),venueName:"koierur",address:"Sarita vihar",city:"New Delhi",
+    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.7832901,lng:77.2377298,member:0,approve:0,reject:0,guestInfos:[]},
+    {id:11,userId:4,title:"Wedding 11", date:new Date(),venueName:"kloper",address:"Badarpur",city:"New Delhi",
+    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.8032901,lng:77.2377298,member:0,approve:0,reject:0,guestInfos:[]},
+    {id:12,userId:4,title:"Wedding 12", date:new Date(),venueName:"wertryui",address:"Anand Vihar",city:"New Delhi",
+    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.8132901,lng:77.4377298,member:0,approve:0,reject:0,guestInfos:[]},
+    ]
+    
     constructor(public events:Events,public service:SessionService)
-    {}
+    {
+
+        // this.events.subscribe('fetch:user:guests',userGuests1 => {
+        //     this.guestList=userGuests1;
+        //   })
+    }
     getEvents()
     {
-        // alert("event calleddddddddddddddddddd");
+        if(this.service.getUser().userType==1)
+        {
+            for(var i=0;i<this.eventList.length;i++)
+            {
+                if(this.eventList[i].userId==this.service.getUser().id)
+                {
+                    if(this.eventList[i].guestInfos.length>0)
+                    {
+                        for(var k=0;k<this.eventList[i].guestInfos.length;k++)
+                        {
+                            if(this.eventList[i].guestInfos[k].status=='A')
+                            {
+                                this.eventList[i].approve+=1;
+                                this.userEvents.push(this.eventList[i]);   
+                            }
+                            else
+                            {
+                                this.eventList[i].reject+=1;
+                                this.userEvents.push(this.eventList[i]);    
+                            }
+                        }
+                    }
+                    else
+                    {
+                        this.userEvents.push(this.eventList[i]); 
+                    }
+                    
+                }
+            }
+        }   
+        else
+        {
+            var user=this.service.getUser();
 
-        // alert("event list=="+JSON.stringify(this.eventList));
+            console.log("user=="+user);
 
+            console.log("Event ids=="+user.eventIds.length);
 
+            if(user.eventIds.length>0)
+            {
+                for(var i=0;i<user.eventIds.length;i++)
+                {
+                    for(var j=0;j<this.eventList.length;j++)
+                    {
+                        if(user.eventIds[i]==this.eventList[j].id)
+                        {
+                            this.userEvents.push(this.eventList[i]);
+                        }
+                    }
+                }   
+            }
+        }
+        this.events.publish('events1:fetch',this.userEvents);
         console.log("Event list==="+JSON.stringify(this.eventList));
-        this.events.publish('events1:fetch',this.eventList);
+    }
+
+
+    // getEventDetail(eventId)
+    // {
+    //   for(var i=0;i<this.eventList.length;i++)
+    //   {
+    //       if(this.eventList[i].id==eventId)
+    //       {
+    //         this.eventList[i].totalInvites=  
+    //       }
+    //   }  
+    // }
+
+    updateEventStatus(eventInfo)
+    {
+        for(var i=0;i<this.eventList.length;i++)
+        {
+            if(this.eventList[i].id==eventInfo.id)
+            {
+              this.eventList[i].guestInfos.push({"guestId":eventInfo.guestId,"status":eventInfo.status}); 
+            }
+        }   
+        this.events.publish('event:update:invitations')
+
     }
 
     updateEvent(eventInfo)
@@ -1131,11 +1247,6 @@ export class EventService{
         }
         this.events.publish('event:update')
     }
-
-   
-
-
-    
 }
 
 

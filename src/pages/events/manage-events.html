@@ -7,81 +7,122 @@
 <ion-header>
 
   <ion-navbar>
-      <ion-buttons start>
+      <!-- <ion-buttons start>
           <button ion-button icon-only (click)="closeModal()" >  <ion-icon name="close" md="md-close"> </ion-icon></button>        
-      </ion-buttons>
+      </ion-buttons> -->
     
     <ion-title>Manage Events</ion-title>
     <ion-buttons end>
-
-          <!-- <button ion-button icon-only (click)="updateEventInfo()" *ngIf="userInfo.userType==1"><ion-icon name="create"></ion-icon></button>
-          <button ion-button icon-only (click)="addMember()" *ngIf="userInfo.userType==2">Add Member</button> -->
-        
-      </ion-buttons>
+          <button ion-button icon-only (click)="updateEventInfo()" *ngIf="userInfo.userType==1"><ion-icon name="create"></ion-icon></button>
+          <button ion-button icon-only (click)="updateInvitationStatus()" *ngIf="userInfo.userType==2"><ion-icon name="create"></ion-icon></button>
+    </ion-buttons>
   </ion-navbar>
-
 </ion-header>
 
 
 <ion-content >
 
     
-    <ion-searchbar [(ngModel)]="autocomplete.input" (click)="openPlaces()" *ngIf="userInfo.userType==1"></ion-searchbar>
+
     
-    <div  id="map" style="height:50%;width:100%"></div>
+        <ion-searchbar [(ngModel)]="autocomplete.input" (click)="openPlaces()" *ngIf="userInfo.userType==1"></ion-searchbar>
+        <!-- <ion-list [hidden]="autocompleteItems.length == 0">
+            <ion-item *ngFor="let item of autocompleteItems" tappable (click)="selectSearchResult(item)">
+            {{ item.description }}
+            </ion-item>
+        </ion-list>     -->
 
-    <h2 text-center>Detail</h2>
-    <ion-scroll scrollY="true" style="overflow: scroll;white-space: nowrap; height:40%" >
-      <ion-item>
-        <ion-label>Title</ion-label>
-        <ion-input type="text" [(ngModel)]="event.title" [disabled]="userInfo.userType==2"></ion-input>
-      </ion-item> 
-      
-      <ion-item>
-          <ion-label>Date</ion-label>
-          <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="event.date" [disabled]="userInfo.userType==2"></ion-datetime>
-      </ion-item>
+        <div  id="map" #map></div>
+        <!-- <div  #map><img src="../../assets/imgs/wedding-icon.png"></div> -->
 
-      <ion-item>
-          <ion-label>Time</ion-label>
-          <ion-datetime pickerFormat="hh:mm A" [(ngModel)]="event.time" [disabled]="userInfo.userType==2" ></ion-datetime>
-      </ion-item>
+        <ion-scroll scrollY="true" style="overflow: hidden;white-space: nowrap; height:45%" >
 
-        <ion-item>
-          <ion-label>Venue Name</ion-label>
-          <ion-input type="text" [(ngModel)]="event.venueName" [disabled]="userInfo.userType==2"></ion-input>
-        </ion-item> 
+                <ion-toolbar *ngIf="userInfo.userType==1">
+                    <ion-segment [(ngModel)]="filter">
+                        <ion-segment-button value="1">Detail</ion-segment-button>
+                        <ion-segment-button value="2">View Invitations</ion-segment-button>
+                    </ion-segment>
+                </ion-toolbar>
+
+                
+                <ion-list *ngIf="filter==1 || userInfo.userType==2"> 
+                        <ion-item *ngIf="userInfo.userType==2">
+                                <h2 text-center>Detail</h2>
+                        </ion-item>    
+                        <ion-item>
+                            <ion-label>Title</ion-label>
+                            <ion-input type="text" [(ngModel)]="event.title" [disabled]="userInfo.userType==2"></ion-input>
+                        </ion-item> 
+                        
+                        <ion-item>
+                            <ion-label>Date</ion-label>
+                            <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="event.date" [disabled]="userInfo.userType==2"></ion-datetime>
+                        </ion-item>
+
+                        <ion-item>
+                            <ion-label>Time</ion-label>
+                            <ion-datetime pickerFormat="hh:mm A" [(ngModel)]="event.time" [disabled]="userInfo.userType==2" ></ion-datetime>
+                        </ion-item>
+
+                        <ion-item>
+                            <ion-label>Venue Name</ion-label>
+                            <ion-input type="text" [(ngModel)]="event.venueName" [disabled]="userInfo.userType==2"></ion-input>
+                        </ion-item> 
 
 
-        <ion-item>
-            <ion-label>Member</ion-label>
-            <ion-input type="text" [(ngModel)]="event.member" [disabled]="userInfo.userType==2"></ion-input>
-        </ion-item> 
-        
-        <ion-item>
-            <ion-label>Address</ion-label>
-            <ion-input type="text" [(ngModel)]="event.address" [disabled]="userInfo.userType==2"></ion-input>
-        </ion-item>
+                        <ion-item>
+                            <ion-label>Member</ion-label>
+                            <ion-input type="text" [(ngModel)]="event.member" [disabled]="userInfo.userType==2"></ion-input>
+                        </ion-item> 
+                        
+                        <ion-item>
+                            <ion-label>Address</ion-label>
+                            <ion-input type="text" [(ngModel)]="event.address" [disabled]="userInfo.userType==2"></ion-input>
+                        </ion-item>
 
-        <ion-item>
-            <ion-label>City</ion-label>
-            <ion-input type="text" [(ngModel)]="event.city" [disabled]="userInfo.userType==2"></ion-input>
-        </ion-item>
+                        <ion-item>
+                            <ion-label>City</ion-label>
+                            <ion-input type="text" [(ngModel)]="event.city" [disabled]="userInfo.userType==2"></ion-input>
+                        </ion-item>
 
-        <ion-item>
-            <ion-label>State</ion-label>
-            <ion-input type="text" [(ngModel)]="event.State" [disabled]="userInfo.userType==2"></ion-input>
-        </ion-item>
+                        <ion-item>
+                            <ion-label>State</ion-label>
+                            <ion-input type="text" [(ngModel)]="event.State" [disabled]="userInfo.userType==2"></ion-input>
+                        </ion-item>
 
-        <ion-item>
-            <ion-label>Zip</ion-label>
-            <ion-input type="text" [(ngModel)]="event.zipCode" [disabled]="userInfo.userType==2"></ion-input>
-        </ion-item>
-        <ion-item>
-            <ion-label>Description</ion-label>
-            <ion-input type="text" [(ngModel)]="event.description" [disabled]="userInfo.userType==2"></ion-input>
-        </ion-item>
+                        <ion-item>
+                            <ion-label>Zip</ion-label>
+                            <ion-input type="text" [(ngModel)]="event.zipCode" [disabled]="userInfo.userType==2"></ion-input>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label>Description</ion-label>
+                            <ion-input type="text" [(ngModel)]="event.description" [disabled]="userInfo.userType==2"></ion-input>
+                        </ion-item>
+                </ion-list>    
+                <ion-list *ngIf="filter==2">
+                        <a (click)="viewInvitation()"><ion-icon name="eye"></ion-icon></a>
+                        <ion-card class="row">
+                                <ion-card-content class="col-33">
+                                    Total Invites   <br/>
+                    
+                    
+                                   <h3 style="color:green"> {{event.guestInfos.length}}</h3> <br/> 
+                                    Total Approve       <br/> 
+                    
+                                    <h3 style="color:red"> {{event.approve}} </h3>
+                                </ion-card-content>
+                                <ion-card-content class="col-53">
+                                        Total Reject   <br/> 
+                                    <h3 style="color:green">{{event.reject}}</h3> <br/> 
+                    
+                                        Total Pending <br/> 
+                    
+                                    <h3 style="color:red">{{event.guestInfos.length-(event.approve+event.reject)}}</h3>
+                                </ion-card-content>
+                        </ion-card>
+                </ion-list>   
 
-    </ion-scroll>    
+        </ion-scroll>  
+    
    
 </ion-content>
