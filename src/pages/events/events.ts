@@ -1,13 +1,13 @@
 import { Component,ViewChild,ElementRef ,NgZone} from '@angular/core';
 import { IonicPage, NavController, NavParams,ModalController,ActionSheetController,ViewController,Events,Platform} from 'ionic-angular';
-import { SessionService,EventService,ReminderService,BudgetService } from '../../app/sessionservice';
+import { SessionService,EventService,ReminderService,BudgetService, GuestService } from '../../app/sessionservice';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { Geolocation } from '@ionic-native/geolocation'; // Newly Added
 import { Jsonp } from '@angular/http/src/http';
-import { LocationTrackerProvider } from '../../providers/location-tracker';
+import { LocationTrackerProvider } from '../../../providers/location-tracker';
 import {LatLngBounds,GoogleMaps,LatLng, GoogleMap,GoogleMapsEvent,GoogleMapOptions,CameraPosition,MarkerOptions,Marker } from '@ionic-native/google-maps';
-import { Keyboard } from '@ionic-native/keyboard';
+// import { Keyboard } from '@ionic-native/keyboard';
 
 // import { LocationTrackerProvider } from '../../providers/location-tracker';
 
@@ -89,10 +89,17 @@ export class ManageEventsPage {
   autocompleteItems: any=[];
   // GoogleAutocomplete:any;
   geocoder:any;
-  constructor(public keyboard:Keyboard,public zone:NgZone,public locationTracker:LocationTrackerProvider, public eventService:EventService,public platform:Platform,public service:SessionService, public events:Events,public modalCtrl:ModalController, public viewCtrl:ViewController,public camera: Camera,public actionCtrl:ActionSheetController,public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public guestService:GuestService,public zone:NgZone,public locationTracker:LocationTrackerProvider, public eventService:EventService,public platform:Platform,public service:SessionService, public events:Events,public modalCtrl:ModalController, public viewCtrl:ViewController,public camera: Camera,public actionCtrl:ActionSheetController,public navCtrl: NavController, public navParams: NavParams) {
     this.event=this.service.getEventInfo();
+
+    this.event.totalInvites=0;
+
+    console.log("Total Invites=="+this.guestService.totalInvitation());
+    this.event.totalInvites=this.guestService.totalInvitation();
     // this.event.lat=28.459497;
     // this.event.lng=77.026638;
+
+
     this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
     this.userInfo=this.service.getUser();    
     // this.userInfo.userType=1;
@@ -106,9 +113,9 @@ export class ManageEventsPage {
   }
 
 
-  keyboardCheck() {
-    return ! this.keyboard.onKeyboardShow();
-   }
+  // keyboardCheck() {
+  //   return ! this.keyboard.onKeyboardShow();
+  //  }
   ionViewDidLoad() {
     console.log('ionViewDidLoad ManageEventsPage');   
     this.platform.ready().then(() => {
@@ -116,6 +123,7 @@ export class ManageEventsPage {
 
       setTimeout(() => {  
         this.locationTracker.startTracking()
+        
       },100);
 
       

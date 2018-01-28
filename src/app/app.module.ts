@@ -4,6 +4,8 @@ import { Component, ViewChild } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule,Content } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
+import { HomePage2 } from '../pages/home1/home';
+
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import {Http, Response} from '@angular/http';
@@ -39,9 +41,9 @@ import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { FirstPage} from '../pages/first/first';
 import { MessagesPage} from '../pages/messages/messages';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
-import { LocationTrackerProvider } from '../providers/location-tracker';
+import { LocationTrackerProvider } from '../../providers/location-tracker';
 import { LocationAccuracy } from '@ionic-native/location-accuracy';
-import { Keyboard } from '@ionic-native/keyboard';
+// import { Keyboard } from '@ionic-native/keyboard';
 
 
 
@@ -68,7 +70,8 @@ import { Keyboard } from '@ionic-native/keyboard';
     GuestInvitationPage,
     ManageSharePhotoPage,
     MessagesPage,
-    MemberPage
+    MemberPage,
+    HomePage2
   ],
   imports: [
     HttpModule,
@@ -99,7 +102,8 @@ import { Keyboard } from '@ionic-native/keyboard';
     GuestInvitationPage,
     ManageSharePhotoPage,
     MessagesPage,
-    MemberPage
+    MemberPage,
+    HomePage2
   ],
   providers: [
     StatusBar,
@@ -130,7 +134,7 @@ import { Keyboard } from '@ionic-native/keyboard';
     LocationTrackerProvider,
     BackgroundGeolocation,
     LocationAccuracy,
-    Keyboard,
+    // Keyboard,
     // { provide: ImagePicker, useClass: imagePickerMock },
     // { provide: Base64, useClass: Base64Mock },
     {provide: ErrorHandler, useClass: IonicErrorHandler}

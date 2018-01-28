@@ -106,7 +106,7 @@
                                     Total Invites   <br/>
                     
                     
-                                   <h3 style="color:green"> {{event.guestInfos.length}}</h3> <br/> 
+                                   <h3 style="color:green"> {{event.totalInvites}}</h3> <br/> 
                                     Total Approve       <br/> 
                     
                                     <h3 style="color:red"> {{event.approve}} </h3>
@@ -117,7 +117,7 @@
                     
                                         Total Pending <br/> 
                     
-                                    <h3 style="color:red">{{event.guestInfos.length-(event.approve+event.reject)}}</h3>
+                                    <h3 style="color:red">{{event.totalInvites-(event.approve+event.reject)}}</h3>
                                 </ion-card-content>
                         </ion-card>
                 </ion-list>   

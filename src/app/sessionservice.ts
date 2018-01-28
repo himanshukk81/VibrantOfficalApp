@@ -8,6 +8,8 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
 
 declare var google:any;
 declare var navigator: any;
+
+
 @Injectable()
 export class SessionService {
     preQuestions:any;
@@ -232,6 +234,8 @@ export class SessionService {
 
     getEventInfo()
     {
+    //     console.log("total invites=="+this.guestService.totalInvitation())
+    //    this.eventInfo.totalInvites=this.guestService.totalInvitation();
        return this.eventInfo;
     }
 }
@@ -241,6 +245,7 @@ export class GuestService{
     guestInvitation:any;
     guestType:any;
     userGuests:any=[];
+    totalInvites:number=0;
     constructor(public service:SessionService,public http:Http,public events:Events,public toastCtrl:ToastController,public nativeStorage:NativeStorage,public toast:Toast)
     {
         this.Guests=
@@ -252,8 +257,20 @@ export class GuestService{
     }
     getGuests()
     {
-
         this.events.publish("fetch:guests",this.Guests);
+    }
+
+    totalInvitation()
+    {
+        this.totalInvites=0;
+        for(var i=0;i<this.Guests.length;i++)
+        {
+            if(this.Guests[i].userId==this.service.getUser().id)
+            {
+                this.totalInvites+=this.Guests[i].eventIds.length;
+            }
+        }
+        return this.totalInvites;
     }
 
     
