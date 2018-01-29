@@ -67,7 +67,7 @@ export class MyApp {
         } 
       })
 
-      // this.initializeApp();
+      this.initializeApp();
 
   }
   
@@ -81,7 +81,7 @@ export class MyApp {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
 
-      // this.checkUserStatus();
+      this.checkUserStatus();
       // this.initPushNotification();
       this.checkNetwork();
       this.initLocalNotification()
@@ -136,7 +136,16 @@ export class MyApp {
                 if(data)
                 {
                   // this.service.showToast("Data===");  
-                  this.rootPage=HomePage;
+
+                  if(data.userType==1)
+                  {
+                    this.rootPage=HomePage;
+                  }
+                  else
+                  {
+                    this.rootPage=EventsPage;
+                  }
+                  
                   this.events.publish('menu:load',data);
                   this.service.setUser(data);
 

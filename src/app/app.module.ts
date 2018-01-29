@@ -4,7 +4,7 @@ import { Component, ViewChild } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule,Content } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
-import { HomePage2 } from '../pages/home1/home';
+// import { HomePage2 } from '../pages/home1/home';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -44,7 +44,9 @@ import { IonicImageViewerModule } from 'ionic-img-viewer';
 import { LocationTrackerProvider } from '../../providers/location-tracker';
 import { LocationAccuracy } from '@ionic-native/location-accuracy';
 // import { Keyboard } from '@ionic-native/keyboard';
-
+import { environment} from '../environments/environment';
+import { AngularFireModule } from 'angularfire2';
+import { AngularFireDatabase, FirebaseListObservable,AngularFireDatabaseModule} from 'angularfire2/database-deprecated';
 
 
 
@@ -71,12 +73,13 @@ import { LocationAccuracy } from '@ionic-native/location-accuracy';
     ManageSharePhotoPage,
     MessagesPage,
     MemberPage,
-    HomePage2
   ],
   imports: [
     HttpModule,
     BrowserModule,
     IonicModule.forRoot(MyApp),
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireDatabaseModule,
     IonicImageViewerModule
     
   ],
@@ -103,7 +106,6 @@ import { LocationAccuracy } from '@ionic-native/location-accuracy';
     ManageSharePhotoPage,
     MessagesPage,
     MemberPage,
-    HomePage2
   ],
   providers: [
     StatusBar,
@@ -134,6 +136,7 @@ import { LocationAccuracy } from '@ionic-native/location-accuracy';
     LocationTrackerProvider,
     BackgroundGeolocation,
     LocationAccuracy,
+    AngularFireDatabase,
     // Keyboard,
     // { provide: ImagePicker, useClass: imagePickerMock },
     // { provide: Base64, useClass: Base64Mock },

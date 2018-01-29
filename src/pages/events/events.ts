@@ -28,8 +28,12 @@ export class EventsPage {
   lat:any;
   lng:any;
   map: GoogleMap;
+  userInfo:any={};
   constructor(public platform:Platform,public budgetService:BudgetService, public events:Events,public reminderService:ReminderService,public eventService:EventService,public geolocation:Geolocation,public modalCtrl:ModalController,public service:SessionService,public navCtrl: NavController, public navParams: NavParams) {
-    //  this.eventService.getEvents()   
+    //this.eventService.getEvents()
+    // this.userInfo.userType=1;
+    // this.userInfo.id=1;
+    // this.service.setUser(this.userInfo)
   }
 
   ionViewDidEnter()
@@ -92,17 +96,16 @@ export class ManageEventsPage {
   constructor(public guestService:GuestService,public zone:NgZone,public locationTracker:LocationTrackerProvider, public eventService:EventService,public platform:Platform,public service:SessionService, public events:Events,public modalCtrl:ModalController, public viewCtrl:ViewController,public camera: Camera,public actionCtrl:ActionSheetController,public navCtrl: NavController, public navParams: NavParams) {
     this.event=this.service.getEventInfo();
 
-    this.event.totalInvites=0;
 
+    console.log("event info======"+JSON.stringify(this.event));
+    this.event.totalInvites=0;
     console.log("Total Invites=="+this.guestService.totalInvitation());
     this.event.totalInvites=this.guestService.totalInvitation();
     // this.event.lat=28.459497;
     // this.event.lng=77.026638;
-
-
     this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
     this.userInfo=this.service.getUser();    
-    // this.userInfo.userType=1;
+    
   }
 
 
@@ -240,10 +243,11 @@ export class ManageEventsPage {
   }
 
 
-   updateEventInfo()
-   {
-    this.eventService.updateEvent(this.event)
-   } 
+  //  updateEventInfo()
+  //  {
+  //   console.log("Calling Update Event=================");
+  //   this.eventService.updateEvent(this.event)
+  //  } 
   loadMap()
   {    
         console.log("Map loading===");
@@ -333,7 +337,7 @@ export class ManageEventsPage {
      this.viewCtrl.dismiss()
    }
 
-   updateInvitationStatus()
+   updateEventInfo()
    {
 
     let profileModal = this.modalCtrl.create(MemberPage,{modify:true});
@@ -358,6 +362,7 @@ export class MemberPage {
   userInfo:any={};
   modifyInvitation:boolean=false;
   constructor(public params: NavParams,public navCtrl:NavController,public viewCtrl:ViewController,public events:Events,public service:SessionService,public eventService:EventService){
+    this.userInfo=this.service.getUser();
     this.eventInfo=this.service.getEventInfo();
     this.modifyInvitation=params.get('modify');
   }
@@ -373,12 +378,11 @@ export class MemberPage {
     this.events.unsubscribe('event:update')
     
     this.events.subscribe('event:update', event=> {        
+        
         this.closeModal();
-        this.navCtrl.pop();
+        // this.navCtrl.pop();
     })  
-
     this.events.unsubscribe('event:update:invitations')
-    
     this.events.subscribe('event:update:invitations', event=> {        
         this.closeModal();
     })  
@@ -389,11 +393,17 @@ export class MemberPage {
   }
   invitationModify()
   {
-    this.userInfo.id=this.eventInfo.id;
+    this.userInfo.eventId=this.eventInfo.id;
     this.userInfo.guestId=this.service.getUser().id;
+    this.userInfo.name=this.service.getUser().name;
     this.userInfo.userType=this.service.getUser().userType;
     this.eventService.updateEventStatus(this.userInfo)
    
+  }
+
+  updateEventInformation()
+  {
+    this.eventService.updateEvent(this.eventInfo)
   }
 
 

@@ -5,6 +5,7 @@ import { NativeStorage } from '@ionic-native/native-storage';
 import { Toast } from '@ionic-native/toast';
 import { HomePage } from '../pages/home/home';
 import { LocalNotifications } from '@ionic-native/local-notifications';
+import * as firebase from 'firebase';
 
 declare var google:any;
 declare var navigator: any;
@@ -246,12 +247,15 @@ export class GuestService{
     guestType:any;
     userGuests:any=[];
     totalInvites:number=0;
+    confirmationResult:any;
+    guestInformation:any;
+    // public recaptchaVerifier:firebase.auth.RecaptchaVerifier;
     constructor(public service:SessionService,public http:Http,public events:Events,public toastCtrl:ToastController,public nativeStorage:NativeStorage,public toast:Toast)
     {
         this.Guests=
         [{"id":1,"name":"Himanshu","mobile":"9971672881","guestTypeId":1,"userId":1,"uniqueId":"abcd","eventIds":["1","2"]},
-        {"id":2,"name":"Shahid","mobile":"9891914661","guestTypeId":1,"userId":2,"uniqueId":"xyz","eventIds":["5","6"]},
-        {"id":3,"name":"Manoj","mobile":"98745612312","guestTypeId":2,"userId":1,"uniqueId":"nma1","eventIds":["3","4"]},
+        {"id":2,"name":"Shahid","mobile":"9891914661","guestTypeId":1,"userId":2,"uniqueId":"xyz","eventIds":["5","6","1"]},
+        {"id":3,"name":"Manoj","mobile":"98745612312","guestTypeId":2,"userId":1,"uniqueId":"nma1","eventIds":["3","4","1"]},
         {"id":3,"name":"Yash","mobile":"789456123123","guestTypeId":3,"userId":4,"uniqueId":"pot","eventIds":["10","11"]},
         {"id":4,"name":"Rahul","mobile":"78945612354","guestTypeId":1,"userId":3,"uniqueId":"nope","eventIds":["8","9"]}]
     }
@@ -263,11 +267,22 @@ export class GuestService{
     totalInvitation()
     {
         this.totalInvites=0;
+        console.log("event info data0000======"+JSON.stringify(this.service.getEventInfo()));
         for(var i=0;i<this.Guests.length;i++)
         {
-            if(this.Guests[i].userId==this.service.getUser().id)
+            for(var j=0;j<this.Guests[i].eventIds.length;j++)
             {
-                this.totalInvites+=this.Guests[i].eventIds.length;
+
+                console.log("session Event id==="+this.service.getEventInfo().id)  
+                console.log("Session user id===="+this.service.getUser().id)
+                if(this.Guests[i].userId==this.service.getUser().id && this.service.getEventInfo().id==this.Guests[i].eventIds[j])
+                {
+                    console.log("Guest id in user==="+this.Guests[i].userId);
+                    console.log("Set event info id==="+this.service.getEventInfo().id);
+                    console.log("Event id in Guestsss===="+this.Guests[i].eventIds[j]);
+
+                    this.totalInvites+=1;     
+                }
             }
         }
         return this.totalInvites;
@@ -296,8 +311,6 @@ export class GuestService{
        {
         if(loginInfo.uniqueId==this.Guests[i].uniqueId)
         {
-          this.Guests[i].otp=this.service.getRandomString(4);
-
           console.log("OTP verified==="+this.Guests[i].otp);
           this.sendOtp(this.Guests[i])
           verify=true;
@@ -312,10 +325,60 @@ export class GuestService{
 
     sendOtp(guestInfo)
     {
-       //guestInfo.otp=this.service.getRandomString(4);
-       this.events.publish("guest:fetch:info",guestInfo); 
+        // this.events.publish("guest:fetch:info",guestInfo); 
+        var smsUrl="https://control.msg91.com/api/sendotp.php?authkey=169096A9g9vil6eKqv598ab8f0&mobile="+guestInfo.mobile+"&otp_expiry=15"; 
+        this.http.get(smsUrl)
+        .map(val => val.json())
+        .subscribe(data => 
+        {
+            // this.otpTriggered=true;
+            this.events.publish("guest:fetch:info",guestInfo);  
+            this.service.showToast2("Message Successfully sent to your registered number") ;
+            console.log(JSON.stringify(data))
+        })
+        err =>
+        {
+            this.service.showToast2("Message Failed to send please try again"); 
+            alert("Error"+err);
+        }  
+        //    guestInfo.otp=this.service.getRandomString(4);
+       
+        //    this.getOtp(guestInfo)
+       
     }
 
+
+
+    // verify(confirmationCode)
+    // {
+    //    this.confirmationResult.confirm(confirmationCode)
+    //         .then(result => {
+    //             this.service.showToast2("Successfully Logged in");
+    //             this.events.publish("guest:fetch:info",this.guestInformation); 
+    //           // ...
+    //         }).catch(error =>{
+    //             console.log("Error==="+error);
+    //             this.service.showToast2(error);
+    //           });
+    // }
+  
+  
+    // getOtp(guestInfo){
+    //   const appVerifier = this.recaptchaVerifier;
+    //   const phoneNumberString = "+91" +guestInfo.mobile;
+    //   firebase.auth().signInWithPhoneNumber(phoneNumberString, appVerifier)
+    //     .then( confirmationResult => {
+    //       this.guestInformation=guestInfo;
+    //       this.confirmationResult=confirmationResult;
+  
+    //   })
+    //   .catch(function (error) {
+    //     this.service.showToast2("Sms Not sent");
+        
+        
+    //     console.error("SMS not sent", error);
+    //   });
+    // }
 
     getGuestInvitation(guestId)
     {
@@ -1158,7 +1221,7 @@ export class EventService{
     State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.7832901,lng:77.2377298,member:0,approve:0,reject:0,guestInfos:[]},
     {id:11,userId:4,title:"Wedding 11", date:new Date(),venueName:"kloper",address:"Badarpur",city:"New Delhi",
     State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.8032901,lng:77.2377298,member:0,approve:0,reject:0,guestInfos:[]},
-    {id:12,userId:4,title:"Wedding 12", date:new Date(),venueName:"wertryui",address:"Anand Vihar",city:"New Delhi",
+    {id:12,userId:1,title:"Wedding 12", date:new Date(),venueName:"wertryui",address:"Anand Vihar",city:"New Delhi",
     State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.8132901,lng:77.4377298,member:0,approve:0,reject:0,guestInfos:[]},
     ]
     
@@ -1171,10 +1234,13 @@ export class EventService{
     }
     getEvents()
     {
+        this.userEvents=[];
         if(this.service.getUser().userType==1)
         {
             for(var i=0;i<this.eventList.length;i++)
             {
+                this.eventList[i].approve=0;
+                this.eventList[i].reject=0;
                 if(this.eventList[i].userId==this.service.getUser().id)
                 {
                     if(this.eventList[i].guestInfos.length>0)
@@ -1215,6 +1281,8 @@ export class EventService{
                 {
                     for(var j=0;j<this.eventList.length;j++)
                     {
+
+                        console.log("event Id 1221===="+user.eventIds[i]);
                         if(user.eventIds[i]==this.eventList[j].id)
                         {
                             this.userEvents.push(this.eventList[i]);
@@ -1243,9 +1311,10 @@ export class EventService{
     {
         for(var i=0;i<this.eventList.length;i++)
         {
-            if(this.eventList[i].id==eventInfo.id)
+            if(this.eventList[i].id==eventInfo.eventId)
             {
-              this.eventList[i].guestInfos.push({"guestId":eventInfo.guestId,"status":eventInfo.status}); 
+            
+              this.eventList[i].guestInfos.push({"guestId":eventInfo.guestId,"name":eventInfo.name,"status":eventInfo.status}); 
             }
         }   
         this.events.publish('event:update:invitations')
@@ -1254,14 +1323,16 @@ export class EventService{
 
     updateEvent(eventInfo)
     {
+        console.log("Updating Event=====================");
         for(var i=0;i<this.eventList.length;i++)
         {
             if(this.eventList[i].id==eventInfo.id)
             {
-
                 this.eventList[i]=eventInfo;
+                
             }
         }
+        this.service.showToast2("Successfully updated");
         this.events.publish('event:update')
     }
 }

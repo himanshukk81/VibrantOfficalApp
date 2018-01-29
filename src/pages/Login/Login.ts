@@ -86,7 +86,7 @@ export class LoginPage {
       // this.navCtrl.popToRoot();
       this.guestInfo=guestInfo;
       this.otpSent=true;
-      this.service.showToast2("Otp SuccessFully sent on your number");
+      // this.service.showToast2("Otp SuccessFully sent on your number");
       // console.log("Otp=="+guestInfo.otp);
     })
 
@@ -133,8 +133,12 @@ export class LoginPage {
      this.loginservice.login(this.user,"u");
   }
 
+
+
   getOtp()
   {
+
+    
     // if(!this.guestInfo.userId)
     // {
     //   this.service.showToast2("Please Choose User");
@@ -147,7 +151,7 @@ export class LoginPage {
     // }
     // this.guestInfo.userType=this.userTypeId;
     
-    this.loginservice.login(this.guest,"g");
+    this.loginservice.login(this.guestInfo,"g");    
     
     // this.events.publish('login:success',this.guestInfo);
     // this.service.setUser(this.guestInfo);
@@ -186,39 +190,49 @@ export class LoginPage {
       //  } 
   }
  
+
+  verifyWithoutOtp()
+  {
+    this.guestInfo.userType=this.userTypeId;
+    this.service.showToast2("Successfully verified");
+    this.events.publish('login:success',this.guestInfo);
+    this.service.setUser(this.guestInfo);
+    this.navCtrl.setRoot(EventsPage);
+  }
   verifyOtp()
   {
-    // var mobile="91"+this.guestInfo.mobile;
-    // var smsUrl="https://control.msg91.com/api/verifyRequestOTP.php?authkey=169096A9g9vil6eKqv598ab8f0&mobile="+mobile+"&otp="+this.guestInfo.otp; 
-    // this.http.get(smsUrl)
-    //  .map(val => val.json())
-    //  .subscribe(data => 
-    //    {
-    //      this.guestInfo.userType=this.userTypeId;
-    //      this.service.showToast2("Successfully verified");
-    //      this.events.publish('login:success',this.guestInfo);
-    //      this.service.setUser(this.guestInfo);
-    //      this.navCtrl.setRoot(EventsPage);
-    //      this.navCtrl.popToRoot();
-    //      console.log(JSON.stringify(data))
-    //    })
-    //   err =>
-    //    {
-    //     this.service.showToast2("Failed to verify otp please try again"); 
-    //     alert("Error"+err);
-    //    } 
+    var mobile=this.guestInfo.mobile;
+    // var mobile="9971672881";
+    var smsUrl="https://control.msg91.com/api/verifyRequestOTP.php?authkey=169096A9g9vil6eKqv598ab8f0&mobile="+mobile+"&otp="+this.guestInfo.otp; 
+    this.http.get(smsUrl)
+     .map(val => val.json())
+     .subscribe(data => 
+       {
+         this.guestInfo.userType=this.userTypeId;
+         this.service.showToast2("Successfully verified");
+         this.events.publish('login:success',this.guestInfo);
+         this.service.setUser(this.guestInfo);
+         this.navCtrl.setRoot(EventsPage);
+         this.navCtrl.popToRoot();
+         console.log(JSON.stringify(data))
+       })
+      err =>
+       {
+        this.service.showToast2("Failed to verify otp please try again"); 
+        alert("Error"+err);
+       } 
 
 
-    if(this.guest.otp!=this.guestInfo.otp)
-    {
-      this.service.showToast2("Incorrect OTP");
-      return;
-    }
-      this.guestInfo.userType=this.userTypeId;
-      this.events.publish('menu:load',this.guestInfo);
-      this.service.setUser(this.guestInfo)
-      this.navCtrl.setRoot(EventsPage);
-      this.navCtrl.popToRoot();
+      // if(this.guest.otp!=this.guestInfo.otp)
+      // {
+      //   this.service.showToast2("Incorrect OTP");
+      //   return;
+      // }
+      //   this.guestInfo.userType=this.userTypeId;
+      //   this.events.publish('menu:load',this.guestInfo);
+      //   this.service.setUser(this.guestInfo)
+      //   this.navCtrl.setRoot(EventsPage);
+      //   this.navCtrl.popToRoot();
       // this.loginservice.login(this.guestInfo,"g");
   }  
 
