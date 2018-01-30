@@ -6,9 +6,9 @@
     <ion-title>
         Message       
     </ion-title>    
-    <ion-buttons end>
+    <!-- <ion-buttons end>
         <button ion-button (click)="approveMessage()">Approve Message</button>
-    </ion-buttons>
+    </ion-buttons> -->
   </ion-navbar>
 </ion-header>
 
@@ -38,7 +38,7 @@
                         </ion-item>
                 </ion-list>
                 <ion-item *ngIf="userInfo.userType==1 && messages.length>0">
-                        <button ion-button (click)="approveMessage1()">ApproveImages</button>
+                        <button ion-button (click)="approveMessage1()">Approve Message</button>
                 </ion-item>    
                 <div *ngFor="let message of messages">
                         <!-- <div class="item row" *ngIf="userInfo.userType==1">

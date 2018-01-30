@@ -32,7 +32,7 @@ import { LocationAccuracy } from '@ionic-native/location-accuracy';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
   @ViewChild(NavController) navCtrl: NavController;
-  rootPage: any=FirstPage;
+  rootPage: any=EventsPage;
   headers:any;
   pages: Array<{title: string, component: any}>;
 
@@ -67,7 +67,7 @@ export class MyApp {
         } 
       })
 
-      this.initializeApp();
+      // this.initializeApp();
 
   }
   
@@ -136,7 +136,8 @@ export class MyApp {
                 if(data)
                 {
                   // this.service.showToast("Data===");  
-
+                  console.log("Local Storage data1======="+data)
+                  console.log("Local Storage data======="+JSON.stringify(data))
                   if(data.userType==1)
                   {
                     this.rootPage=HomePage;
@@ -145,10 +146,8 @@ export class MyApp {
                   {
                     this.rootPage=EventsPage;
                   }
-                  
                   this.events.publish('menu:load',data);
                   this.service.setUser(data);
-
                 }
                 else
                 {
@@ -159,8 +158,8 @@ export class MyApp {
             error =>{
               // alert("Errror="+error)
               let error2="Error="+error;
-              this.service.showToast("Error="+error2);
-              this.rootPage=LoginPage;
+              // this.service.showToast("Error="+error2);
+              this.rootPage=FirstPage;
             }  
         );
   }

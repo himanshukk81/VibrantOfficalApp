@@ -31,7 +31,7 @@ export class FunctionsPage {
   }
   removeFunction(function2)
   {
-    // this.db.list('/budget').delete();
+
     
   }
   addFunction()

@@ -19,8 +19,6 @@ export class GuestInvitationPage {
   loader:boolean=true;
   constructor(public events:Events, public service:SessionService,public guest:GuestService, public navCtrl: NavController, public navParams: NavParams) {
     var userId=this.service.getUser().id;
-    // this.loader=true;
-    // this.invitationList=this.guest.getGuestInvitation(this.service.getUser().id);
   }
 
   ionViewDidLoad() {
@@ -34,7 +32,6 @@ export class GuestInvitationPage {
 
       this.events.subscribe('guestinvitation:removed', invitations=> {
         this.invitationList=invitations;
-        // this.guest.getGuestInvitation(this.service.getUser().id)
         this.loader=false;
       })
      

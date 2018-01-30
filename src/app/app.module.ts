@@ -48,6 +48,7 @@ import { environment} from '../environments/environment';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabase, FirebaseListObservable,AngularFireDatabaseModule} from 'angularfire2/database-deprecated';
 
+import { EventFilterPipe } from '../filter/event-filter';
 
 
 @NgModule({
@@ -73,6 +74,7 @@ import { AngularFireDatabase, FirebaseListObservable,AngularFireDatabaseModule} 
     ManageSharePhotoPage,
     MessagesPage,
     MemberPage,
+    EventFilterPipe,
   ],
   imports: [
     HttpModule,

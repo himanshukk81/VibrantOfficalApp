@@ -25,7 +25,7 @@
     
 
     
-        <ion-searchbar [(ngModel)]="autocomplete.input" (click)="openPlaces()" *ngIf="userInfo.userType==1"></ion-searchbar>
+        <!-- <ion-searchbar [(ngModel)]="autocomplete.input" (click)="openPlaces()" *ngIf="userInfo.userType==1"></ion-searchbar> -->
         <!-- <ion-list [hidden]="autocompleteItems.length == 0">
             <ion-item *ngFor="let item of autocompleteItems" tappable (click)="selectSearchResult(item)">
             {{ item.description }}
@@ -36,16 +36,16 @@
         <!-- <div  #map><img src="../../assets/imgs/wedding-icon.png"></div> -->
 
         <ion-scroll scrollY="true" style="overflow: hidden;white-space: nowrap; height:45%" >
-
+                sfsdf {{event.viewInfo}}
                 <ion-toolbar *ngIf="userInfo.userType==1">
-                    <ion-segment [(ngModel)]="filter">
+                    <ion-segment [(ngModel)]="event.viewInfo">
                         <ion-segment-button value="1">Detail</ion-segment-button>
                         <ion-segment-button value="2">View Invitations</ion-segment-button>
                     </ion-segment>
                 </ion-toolbar>
 
                 
-                <ion-list *ngIf="filter==1 || userInfo.userType==2"> 
+                <ion-list *ngIf="event.viewInfo==1 || userInfo.userType==2"> 
                         <ion-item *ngIf="userInfo.userType==2">
                                 <h2 text-center>Detail</h2>
                         </ion-item>    
@@ -70,17 +70,17 @@
                         </ion-item> 
 
 
-                        <ion-item>
+                        <!-- <ion-item>
                             <ion-label>Member</ion-label>
                             <ion-input type="text" [(ngModel)]="event.member" [disabled]="true"></ion-input>
-                        </ion-item> 
+                        </ion-item>  -->
                         
                         <ion-item>
                             <ion-label>Address</ion-label>
                             <ion-input type="text" [(ngModel)]="event.address" [disabled]="true"></ion-input>
                         </ion-item>
 
-                        <ion-item>
+                        <!-- <ion-item>
                             <ion-label>City</ion-label>
                             <ion-input type="text" [(ngModel)]="event.city" [disabled]="true"></ion-input>
                         </ion-item>
@@ -93,14 +93,14 @@
                         <ion-item>
                             <ion-label>Zip</ion-label>
                             <ion-input type="text" [(ngModel)]="event.zipCode" [disabled]="true"></ion-input>
-                        </ion-item>
+                        </ion-item> -->
                         <ion-item>
                             <ion-label>Description</ion-label>
                             <ion-input type="text" [(ngModel)]="event.description" [disabled]="true"></ion-input>
                         </ion-item>
                 </ion-list>    
-                <ion-list *ngIf="filter==2">
-                        <a (click)="viewInvitation()"><ion-icon name="eye"></ion-icon></a>
+                <ion-list *ngIf="event.viewInfo==2">
+                        <h2 text-center> <a (click)="viewInvitation()" ><ion-icon name="eye"></ion-icon></a></h2>
                         <ion-card class="row">
                                 <ion-card-content class="col-33">
                                     Total Invites   <br/>

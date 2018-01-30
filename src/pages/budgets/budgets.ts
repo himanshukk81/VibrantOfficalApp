@@ -1,19 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams,ModalController,ViewController,Events } from 'ionic-angular';
 import { SessionService,BudgetService,CateogryService,PaymentService } from '../../app/sessionservice';
-
-
-
-
-// import { ManageBudgetsPage } from '../manage-budgets/manage-budgets';
-
-/**
- * Generated class for the BudgetsPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
 @Component({
   selector: 'page-budgets',
   templateUrl: 'budgets.html',
@@ -61,19 +48,13 @@ export class BudgetsPage {
         this.totalPending=0;
       }    
       this.loader=false;
-      // this.closeModal();
-  
    })
-    // console.log('ionViewDidLoad BudgetsPage');
   }
 
 
   budgetDetail(budget)
   {
     this.service.setBudget(budget);
-    // this.navCtrl.push(ManageBudgetsPage);
-    
-
     let profileModal = this.modalCtrl.create(ManageBudgetsPage);
     profileModal.present();
   }
@@ -154,8 +135,6 @@ export class ManageBudgetsPage {
 
   getPayments()
   {
-    // this.loader=true;
-    // this.paymentservice.getPaymentsOfBudget(this.budget.id)
     this.paymentPage=true;
   }
 

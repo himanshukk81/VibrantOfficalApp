@@ -126,18 +126,18 @@ export class SessionService {
     setUser(userInfo)
     {
        this.user=userInfo;
-    //    this.nativeStorage.setItem('userInfo',userInfo)
-    //     .then(
-    //         () =>
-    //             {
-    //              var message="stored";
-    //              this.showToast("stored user type")
-    //             },
-    //         error =>{
-    //             var message="stored error user type="+error;
-    //              this.showToast(message)
-    //         } 
-    //     );   
+        // this.nativeStorage.setItem('userInfo',userInfo)
+        // .then(
+        //     () =>
+        //         {
+        //             var message="stored";
+        //             this.showToast("stored user type")
+        //         },
+        //     error =>{
+        //         var message="stored error user type="+error;
+        //             this.showToast(message)
+        //     } 
+        // );   
     }
 
     getUser()
@@ -321,6 +321,26 @@ export class GuestService{
         this.service.showToast2("Invalid Unique code");
         return;
        }
+    }
+
+
+    getGuestLoginWithoutOtp(loginInfo)
+    {
+        var verify=false;
+        for(var i=0;i<this.Guests.length;i++)
+        {
+         if(loginInfo.uniqueId==this.Guests[i].uniqueId)
+         {
+           console.log("OTP verified==="+this.Guests[i].otp);
+           this.events.publish("guest:fetch:info",loginInfo);  
+           verify=true;
+         }
+        }
+        if(!verify)
+        {
+         this.service.showToast2("Invalid Unique code");
+         return;
+        }  
     }
 
     sendOtp(guestInfo)

@@ -1,11 +1,11 @@
 <ion-header>
     <ion-navbar>
-        <ion-title *ngIf="modifyInvitation && userInfo.userType==1 && eventInfo.guestInfos.length>0">Event</ion-title>
-        <ion-title *ngIf="!modifyInvitation && userInfo.userType==1 && eventInfo.guestInfos.length>0">View Event</ion-title>
+        <ion-title *ngIf="modifyInvitation">Event</ion-title>
+        <ion-title *ngIf="!modifyInvitation">View Event</ion-title>
         <ion-buttons end>
-            <button ion-button (click)="closeModal()">Close</button>
-            <button ion-button icon-only (click)="invitationModify()" *ngIf="modifyInvitation && userInfo.userType==2 && eventInfo.guestInfos.length==0"><ion-icon name="create"></ion-icon></button>
-            <button ion-button icon-only (click)="updateEventInformation()" *ngIf="modifyInvitation && userInfo.userType==1"><ion-icon name="create"></ion-icon></button>
+            <!-- <button ion-button (click)="closeModal()">Close</button> -->
+            <button ion-button icon-only (click)="invitationModify()" *ngIf="modifyInvitation && userInfo.userType==2 && eventInfo.guestInfos.length==0">  <ion-icon ios="ios-checkbox-outline" md="md-checkbox-outline"></ion-icon> </button>
+            <button ion-button icon-only (click)="updateEventInformation()" *ngIf="modifyInvitation && userInfo.userType==1">  <ion-icon ios="ios-checkbox-outline" md="md-checkbox-outline"></ion-icon></button>
         </ion-buttons>
     </ion-navbar>
     
@@ -16,7 +16,6 @@
         
      
         <ion-list *ngIf="userInfo.userType==2 && modifyInvitation">
-             Modify   
             <ion-list *ngIf="eventInfo.guestInfos.length==0">
                 <!-- Guest Length is Null -->
 
@@ -37,79 +36,65 @@
             </ion-list>
             
             <ion-list *ngIf="eventInfo.guestInfos.length>0">
-                    Guest Length is greater than 0
+                    
                 <ion-item *ngFor="let guest of eventInfo.guestInfos">                        
-                        <h3 *ngIf="guest.status=='A' && guest.guestId==userInfo.id" text-center><b style="color:green">You Have Already Approved For This Event</b></h3>
-                        <h3 *ngIf="guest.status=='R' && guest.guestId==userInfo.id" text-center><b style="color:red">You Have Already Rejected For This Event</b></h3>
+                        <h3 *ngIf="guest.status=='A' && guest.guestId==userInfo.id" text-center text-wrap><b style="color:green">You Have Already Approved For This Event</b></h3>
+                        <h3 *ngIf="guest.status=='R' && guest.guestId==userInfo.id" text-center text-wrap><b style="color:red">You Have Already Rejected For This Event</b></h3>
                 </ion-item>    
             </ion-list>    
 
         </ion-list>
+
         <ion-list *ngIf="userInfo.userType==1 && modifyInvitation"> 
-            <ion-item>
-                    <h2 text-center>Detail</h2>
-            </ion-item>    
-            <ion-item>
-                <ion-label>Title</ion-label>
-                <ion-input type="text" [(ngModel)]="eventInfo.title"></ion-input>
-            </ion-item> 
-            
-            <ion-item>
-                <ion-label>Date</ion-label>
-                <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="eventInfo.date"></ion-datetime>
-            </ion-item>
-
-            <ion-item>
-                <ion-label>Time</ion-label>
-                <ion-datetime pickerFormat="hh:mm A" [(ngModel)]="eventInfo.time"></ion-datetime>
-            </ion-item>
-
-            <ion-item>
-                <ion-label>Venue Name</ion-label>
-                <ion-input type="text" [(ngModel)]="eventInfo.venueName"></ion-input>
-            </ion-item> 
-
-
-            <ion-item>
-                <ion-label>Member</ion-label>
-                <ion-input type="text" [(ngModel)]="eventInfo.member"></ion-input>
-            </ion-item> 
-            
-            <ion-item>
-                <ion-label>Address</ion-label>
-                <ion-input type="text" [(ngModel)]="eventInfo.address"></ion-input>
-            </ion-item>
-
-            <ion-item>
-                <ion-label>City</ion-label>
-                <ion-input type="text" [(ngModel)]="eventInfo.city"></ion-input>
-            </ion-item>
-
-            <ion-item>
-                <ion-label>State</ion-label>
-                <ion-input type="text" [(ngModel)]="eventInfo.State"></ion-input>
-            </ion-item>
-
-            <ion-item>
-                <ion-label>Zip</ion-label>
-                <ion-input type="text" [(ngModel)]="eventInfo.zipCode"></ion-input>
-            </ion-item>
-            <ion-item>
-                <ion-label>Description</ion-label>
-                <ion-input type="text" [(ngModel)]="eventInfo.description"></ion-input>
-            </ion-item>
+            <ion-searchbar [(ngModel)]="autocomplete.input" (click)="openPlaces()"></ion-searchbar>
         </ion-list>
+        
+        <div  id="map2" #map2></div>
+
+        <ion-list *ngIf="userInfo.userType==1 && modifyInvitation"> 
+                <ion-item>
+                    <h2 text-center>Detail</h2>
+                </ion-item>    
+                <ion-item>
+                    <ion-label>Title</ion-label>
+                    <ion-input type="text" [(ngModel)]="eventInfo.title"></ion-input>
+                </ion-item> 
+                
+                <ion-item>
+                    <ion-label>Date</ion-label>
+                    <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="eventInfo.date"></ion-datetime>
+                </ion-item>
+    
+                <ion-item>
+                    <ion-label>Time</ion-label>
+                    <ion-datetime pickerFormat="hh:mm A" [(ngModel)]="eventInfo.time"></ion-datetime>
+                </ion-item>
+    
+                <ion-item>
+                    <ion-label>Venue Name</ion-label>
+                    <ion-input type="text" [(ngModel)]="eventInfo.venueName"></ion-input>
+                </ion-item> 
+    
+                <ion-item>
+                    <ion-label>Address</ion-label>
+                    <ion-input type="text" [(ngModel)]="eventInfo.address"></ion-input>
+                </ion-item>
+                <ion-item>
+                    <ion-label>Description</ion-label>
+                    <ion-input type="text" [(ngModel)]="eventInfo.description"></ion-input>
+                </ion-item>
+        </ion-list>
+
+
 
         <ion-list *ngIf="!modifyInvitation && userInfo.userType==1 && eventInfo.guestInfos.length>0">
                 <ion-list>
                 
                     <ion-item *ngFor="let guest of eventInfo.guestInfos">
                         <h2>{{guest.name}}</h2>
-
-
                         <h3 *ngIf="guest.status=='A'"><b style="color:green">Approve</b></h3>
                         <h3 *ngIf="guest.status=='R'"><b style="color:red">Reject</b></h3>
                     </ion-item>    
                 </ion-list>
-        </ion-list>        
+        </ion-list>    
     </ion-content>

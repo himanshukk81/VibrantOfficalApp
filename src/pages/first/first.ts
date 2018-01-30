@@ -31,25 +31,17 @@ export class FirstPage {
   confirmationResult:any;
 
   otpReceived:boolean=false;
-  // public recaptchaVerifier:firebase.auth.RecaptchaVerifier;
+  currentDate:any;
   constructor(public service:SessionService, public ngZone:NgZone, public db:AngularFireDatabase,public navCtrl: NavController, public navParams: NavParams,public alertCtrl:AlertController) {
    this.userButtonColor="light";
    this.joinneButtonColor="light"; 
    this.pushPage=LoginPage;
-  // //  this.selectedUserInfo="1";
-  // //  this.params={id:this.selectedUserInfo};
-  //   this.userButtonColor="secondary";
-    this.joinneButtonColor="light";
+   this.joinneButtonColor="light";
    
   }
 
   ionViewDidLoad() {
-    // this.user.name="Himanshu";
-    // this.user.email="Himanshukk81@gmail.com";
-    // this.db.list('user_detail').push(this.user);
-
     this.userInfo.phoneNumber=9971672881;
-    // this.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
     console.log('ionViewDidLoad FirstPage');
   }
 
@@ -68,44 +60,4 @@ export class FirstPage {
       this.userButtonColor="light";
     }
   }
-
-
-  // verify()
-  // {
-  //    console.log("User info 75===="+JSON.stringify(this.userInfo));
-  //    console.log("User info 77===="+JSON.stringify(this.userInfo));
-  //    console.log("Verifying otp==============");
-  //   //  var confirmation=this.confirmationResult;
-  //    this.confirmationResult.confirm(this.userInfo.confirmationCode)
-  //         .then(result => {
-  //           // User signed in successfully.
-  //           console.log("user info===="+result.user);  
-  //           // this.next(error) 
-  //           // console.log("User info Success===="+JSON.stringify(this.userInfo));
-  //             this.service.showToast2("Successfully Logged in");
-  //           // ...
-  //         }).catch(error =>{
-  //             // console.log("User info error===="+JSON.stringify(this.userInfo));
-
-  //             console.log("Error==="+error);
-              
-  //             this.service.showToast2(error);
-  //           });
-  // }
-
-
-  // getOtp(){
-  //   const appVerifier = this.recaptchaVerifier;
-  //   const phoneNumberString = "+91" +this.userInfo.phoneNumber;
-  //   // firebase.auth().signInWithPhoneNumber(phoneNumberString, appVerifier)
-  //     firebase.auth().signInWithPhoneNumber(phoneNumberString,appVerifier)
-  //     .then( confirmationResult => {
-  //       this.confirmationResult=confirmationResult;
-
-  //   })
-  //   .catch(error => {
-  //     this.service.showToast2("Sms Not sent");
-  //     console.error("SMS not sent", error);
-  //   });
-  // }   
 }
