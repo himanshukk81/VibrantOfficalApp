@@ -32,7 +32,7 @@ import { LocationAccuracy } from '@ionic-native/location-accuracy';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
   @ViewChild(NavController) navCtrl: NavController;
-  rootPage: any=EventsPage;
+  rootPage: any=FirstPage;
   headers:any;
   pages: Array<{title: string, component: any}>;
 

@@ -37,6 +37,7 @@
 
         <ion-scroll scrollY="true" style="overflow: hidden;white-space: nowrap; height:45%" >
                 sfsdf {{event.viewInfo}}
+                user info {{userInfo.userType}}
                 <ion-toolbar *ngIf="userInfo.userType==1">
                     <ion-segment [(ngModel)]="event.viewInfo">
                         <ion-segment-button value="1">Detail</ion-segment-button>
@@ -100,22 +101,22 @@
                         </ion-item>
                 </ion-list>    
                 <ion-list *ngIf="event.viewInfo==2">
-                        <h2 text-center> <a (click)="viewInvitation()" ><ion-icon name="eye"></ion-icon></a></h2>
+                        <!-- <h2 text-center> <a (click)="viewInvitation()" ><ion-icon name="eye"></ion-icon></a></h2> -->
                         <ion-card class="row">
                                 <ion-card-content class="col-33">
-                                    Total Invites   <br/>
+                                    <a (click)="viewInvitation(1)">Total Invites</a>   <br/>
                     
                     
                                    <h3 style="color:green"> {{event.totalInvites}}</h3> <br/> 
-                                    Total Approve       <br/> 
+                                   <a (click)="viewInvitation(2)">Total Approve </a>      <br/> 
                     
                                     <h3 style="color:green"> {{event.approve}} </h3>
                                 </ion-card-content>
                                 <ion-card-content class="col-53">
-                                        Total Reject   <br/> 
+                                    <a (click)="viewInvitation(3)">  Total Reject </a>  <br/> 
                                     <h3 style="color:red">{{event.reject}}</h3> <br/> 
                     
-                                        Total Pending <br/> 
+                                    <a (click)="viewInvitation(4)"> Total Pending </a> <br/> 
                     
                                     <h3 style="color:red">{{event.totalInvites-(event.approve+event.reject)}}</h3>
                                 </ion-card-content>

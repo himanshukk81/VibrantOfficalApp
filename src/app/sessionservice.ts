@@ -246,18 +246,23 @@ export class GuestService{
     guestInvitation:any;
     guestType:any;
     userGuests:any=[];
-    totalInvites:number=0;
+    totalInvites:any=[];
+    totalApproves:any=[];
+    totalPending:any=[];
+    totalReject:any=[];
     confirmationResult:any;
     guestInformation:any;
+    totalInvitationCount:number=0;
+    
     // public recaptchaVerifier:firebase.auth.RecaptchaVerifier;
     constructor(public service:SessionService,public http:Http,public events:Events,public toastCtrl:ToastController,public nativeStorage:NativeStorage,public toast:Toast)
     {
         this.Guests=
-        [{"id":1,"name":"Himanshu","mobile":"9971672881","guestTypeId":1,"userId":1,"uniqueId":"abcd","eventIds":["1","2"]},
-        {"id":2,"name":"Shahid","mobile":"9891914661","guestTypeId":1,"userId":2,"uniqueId":"xyz","eventIds":["5","6","1"]},
-        {"id":3,"name":"Manoj","mobile":"98745612312","guestTypeId":2,"userId":1,"uniqueId":"nma1","eventIds":["3","4","1"]},
-        {"id":3,"name":"Yash","mobile":"789456123123","guestTypeId":3,"userId":4,"uniqueId":"pot","eventIds":["10","11"]},
-        {"id":4,"name":"Rahul","mobile":"78945612354","guestTypeId":1,"userId":3,"uniqueId":"nope","eventIds":["8","9"]}]
+        [{"id":1,"name":"Himanshu","mobile":"9971672881","guestTypeId":1,"userId":1,"uniqueId":"abcd","eventIds":["1","2"],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0},
+        {"id":2,"name":"Shahid","mobile":"9891914661","guestTypeId":1,"userId":1,"uniqueId":"xyz","eventIds":["5","6","1"],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0},
+        {"id":3,"name":"Manoj","mobile":"98745612312","guestTypeId":2,"userId":2,"uniqueId":"nma1","eventIds":["3","4","1"],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0},
+        {"id":4,"name":"Yash","mobile":"789456123123","guestTypeId":3,"userId":4,"uniqueId":"pot","eventIds":["10","11"],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0},
+        {"id":5,"name":"Rahul","mobile":"78945612354","guestTypeId":1,"userId":3,"uniqueId":"nope","eventIds":["8","9"],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0}]
     }
     getGuests()
     {
@@ -266,26 +271,110 @@ export class GuestService{
 
     totalInvitation()
     {
-        this.totalInvites=0;
+        this.totalInvites=[];
         console.log("event info data0000======"+JSON.stringify(this.service.getEventInfo()));
         for(var i=0;i<this.Guests.length;i++)
         {
+            this.Guests[i].totalInvites=0;
             for(var j=0;j<this.Guests[i].eventIds.length;j++)
             {
-
+                
                 console.log("session Event id==="+this.service.getEventInfo().id)  
                 console.log("Session user id===="+this.service.getUser().id)
                 if(this.Guests[i].userId==this.service.getUser().id && this.service.getEventInfo().id==this.Guests[i].eventIds[j])
                 {
-                    console.log("Guest id in user==="+this.Guests[i].userId);
-                    console.log("Set event info id==="+this.service.getEventInfo().id);
-                    console.log("Event id in Guestsss===="+this.Guests[i].eventIds[j]);
-
-                    this.totalInvites+=1;     
+                    this.Guests[i].totalInvites+=1;
+                    this.totalInvites.push(this.Guests[i])
                 }
             }
         }
+        console.log("Total Invitations======="+JSON.stringify(this.totalInvites));
         return this.totalInvites;
+    }
+    // totalApproves1()
+    // {
+        
+    //     var eventList=this.eventservice.getEventsData();
+    //     for(var i=0;i<eventList.length;i++)
+    //     {
+    //         if(this.service.getEventInfo().id==eventList[i].id)
+    //         {
+    //             for(var j=0;j<this.Guests.length;j++)
+    //             {
+    //                 for(var k=0;k<this.Guests[j].eventIds.length;k++)
+    //                 {
+    //                     if(eventList[i].id==this.Guests[j].eventIds[k])
+    //                     {
+    //                         this.Guests[j].totalApproves+=1;
+    //                         this.totalApproves.push(this.Guests[j]);
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    // totalReject1()
+    // {
+    //     for(var i=0;i<eventList.length;i++)
+    //     {
+    //         if(this.service.getEventInfo().id==eventList[i].id)
+    //         {
+    //             for(var j=0;j<this.Guests.length;j++)
+    //             {
+    //                 for(var k=0;k<this.Guests[j].eventIds.length;k++)
+    //                 {
+    //                     if(eventList[i].id==this.Guests[j].eventIds[k])
+    //                     {
+    //                         this.Guests[j].totalApproves+=1;
+    //                         this.totalApproves.push(this.Guests[j]);
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }  
+    // }
+
+    // totalPending1()
+    // {
+    //     for(var i=0;i<eventList.length;i++)
+    //     {
+    //         if(this.service.getEventInfo().id==eventList[i].id)
+    //         {
+    //             for(var j=0;j<this.Guests.length;j++)
+    //             {
+    //                 for(var k=0;k<this.Guests[j].eventIds.length;k++)
+    //                 {
+    //                     if(eventList[i].id==this.Guests[j].eventIds[k])
+    //                     {
+    //                         this.Guests[j].totalApproves+=1;
+    //                         this.totalApproves.push(this.Guests[j]);
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     } 
+    // }
+
+
+    totalInvitationCount1()
+    {
+        this.totalInvitationCount=0;
+        console.log("event info data0000======"+JSON.stringify(this.service.getEventInfo()));
+        
+        for(var i=0;i<this.Guests.length;i++)
+        {
+            for(var j=0;j<this.Guests[i].eventIds.length;j++)
+            {
+                console.log("session Event id==="+this.service.getEventInfo().id)  
+                console.log("Session user id===="+this.service.getUser().id)
+                if(this.Guests[i].userId==this.service.getUser().id && this.service.getEventInfo().id==this.Guests[i].eventIds[j])
+                {
+                    this.totalInvitationCount+=1
+                }
+            }
+        }
+        return this.totalInvitationCount;
     }
 
     
@@ -332,7 +421,7 @@ export class GuestService{
          if(loginInfo.uniqueId==this.Guests[i].uniqueId)
          {
            console.log("OTP verified==="+this.Guests[i].otp);
-           this.events.publish("guest:fetch:info",loginInfo);  
+           this.events.publish("guest:fetch:info",this.Guests[i]);  
            verify=true;
          }
         }
@@ -415,8 +504,6 @@ export class GuestService{
                 showInvitations.push(this.guestInvitation[i]); 
             }
         }
-
-
         // return showInvitations;
         this.events.publish("guestlist:fetch",showInvitations);
     }
@@ -1220,29 +1307,29 @@ export class EventService{
     guestList:any=[];
     eventInvitations:any=[];
     eventList:any=[{id:1,userId:1,title:"Wedding 1", date:new Date(),venueName:"Hilton Prague Old Town",address:"Okhla",city:"New Delhi",
-    State:"Delhi",zipCode:"110020",description:"this is best wedding",lat:28.5609534,lng:77.2748794,member:0,approve:0,reject:0,guestInfos:[]},
+    State:"Delhi",zipCode:"110020",description:"this is best wedding",lat:28.5609534,lng:77.2748794,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
     {id:2,userId:1,title:"Wedding 2", date:new Date(),venueName:"Card Wala",address:"Lajpat Nagar",city:"New Delhi",
-    State:"Delhi",zipCode:"110024",description:"this is Excellent",lat:28.5697126,lng:77.2326572,member:0,approve:0,reject:0,guestInfos:[]},
+    State:"Delhi",zipCode:"110024",description:"this is Excellent",lat:28.5697126,lng:77.2326572,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
     {id:3,userId:1,title:"Wedding 3", date:new Date(),venueName:"Delhi Wedding Venue",address:"Malviya Nagar",city:"New Delhi",
-    State:"Delhi",zipCode:"110017",description:"this is best wedding",lat:28.5697078,lng:77.2063924,member:0,approve:0,reject:0,guestInfos:[]},
+    State:"Delhi",zipCode:"110017",description:"this is best wedding",lat:28.5697078,lng:77.2063924,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
     {id:4,userId:1,title:"Wedding 4", date:new Date(),venueName:"YSD Event Management",address:"Laxmi nagar",city:"New Delhi",
-    State:"Delhi",zipCode:"110092",description:"this is best wedding",lat:28.5696314,lng:77.1013261,member:0,approve:0,reject:0,guestInfos:[]},
+    State:"Delhi",zipCode:"110092",description:"this is best wedding",lat:28.5696314,lng:77.1013261,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
     {id:5,userId:2,title:"Wedding 5", date:new Date(),venueName:"Khushi Party Hall",address:"Pritam Pura",city:"New Delhi",
-    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.6632901,lng:77.1377298,member:0,approve:0,reject:0,guestInfos:[]},
+    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.6632901,lng:77.1377298,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
     {id:6,userId:2,title:"Wedding 6", date:new Date(),venueName:"Kumkum Marriage Hall",address:"Shalimar bagh",city:"New Delhi",
-    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.6632901,lng:77.1377298,member:0,approve:0,reject:0,guestInfos:[]},
+    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.6632901,lng:77.1377298,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
     {id:7,userId:2,title:"Wedding 7", date:new Date(),venueName:"abcd",address:"Punjabi bagh",city:"New Delhi",
-    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.7609534,lng:77.2377298,member:0,approve:0,reject:0,guestInfos:[]},
+    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.7609534,lng:77.2377298,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
     {id:8,userId:3,title:"Wedding 8", date:new Date(),venueName:"xyz",address:"Laxmi nagar",city:"New Delhi",
-    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.6832901,lng:77.1577298,member:0,approve:0,reject:0,guestInfos:[]},
+    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.6832901,lng:77.1577298,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
     {id:9,userId:3,title:"Wedding 9", date:new Date(),venueName:"poppp",address:"Jamia",city:"New Delhi",
-     State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.7232901,lng:77.1477298,member:0,approve:0,reject:0,guestInfos:[]},
+     State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.7232901,lng:77.1477298,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
     {id:10,userId:4,title:"Wedding 10", date:new Date(),venueName:"koierur",address:"Sarita vihar",city:"New Delhi",
-    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.7832901,lng:77.2377298,member:0,approve:0,reject:0,guestInfos:[]},
+    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.7832901,lng:77.2377298,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
     {id:11,userId:4,title:"Wedding 11", date:new Date(),venueName:"kloper",address:"Badarpur",city:"New Delhi",
-    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.8032901,lng:77.2377298,member:0,approve:0,reject:0,guestInfos:[]},
+    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.8032901,lng:77.2377298,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
     {id:12,userId:1,title:"Wedding 12", date:new Date(),venueName:"wertryui",address:"Anand Vihar",city:"New Delhi",
-    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.8132901,lng:77.4377298,member:0,approve:0,reject:0,guestInfos:[]},
+    State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.8132901,lng:77.4377298,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
     ]
     
     constructor(public events:Events,public service:SessionService)
@@ -1251,6 +1338,12 @@ export class EventService{
         // this.events.subscribe('fetch:user:guests',userGuests1 => {
         //     this.guestList=userGuests1;
         //   })
+    }
+
+
+    getEventsData()
+    {
+        return this.eventList;
     }
     getEvents()
     {
@@ -1272,11 +1365,16 @@ export class EventService{
                                 this.eventList[i].approve+=1;
                                 this.userEvents.push(this.eventList[i]);   
                             }
-                            else
+                            else if(this.eventList[i].guestInfos[k].status=='R')
                             {
                                 this.eventList[i].reject+=1;
                                 this.userEvents.push(this.eventList[i]);    
                             }
+                            // else
+                            // {
+                            //     this.eventList[i].pending+=1;
+                            //     this.userEvents.push(this.eventList[i]);     
+                            // }
                         }
                     }
                     else
@@ -1333,12 +1431,28 @@ export class EventService{
         {
             if(this.eventList[i].id==eventInfo.eventId)
             {
-            
-              this.eventList[i].guestInfos.push({"guestId":eventInfo.guestId,"name":eventInfo.name,"status":eventInfo.status}); 
+              
+              if(this.eventList[i].guestInfos.length>0)
+              {
+                for(var j=0;j<this.eventList[i].guestInfos.length;j++)
+                {
+                    if(this.eventList[i].guestInfos[j].guestId==eventInfo.guestId)
+                    {
+                        this.eventList[i].guestInfos=[];  
+                    }
+                }
+              }  
+              if(eventInfo.status=='A')
+              {
+                this.eventList[i].guestInfos.push({"guestId":eventInfo.guestId,"name":eventInfo.name,"status":eventInfo.status,"adultMember":eventInfo.adultMember,"childMember":eventInfo.child}); 
+              }                     
+              else if(eventInfo.status=='R')
+              { 
+                this.eventList[i].guestInfos.push({"guestId":eventInfo.guestId,"name":eventInfo.name,"status":eventInfo.status,"comment":eventInfo.comment});   
+              }
             }
         }   
         this.events.publish('event:update:invitations')
-
     }
 
     updateEvent(eventInfo)

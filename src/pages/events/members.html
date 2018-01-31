@@ -4,7 +4,8 @@
         <ion-title *ngIf="!modifyInvitation">View Event</ion-title>
         <ion-buttons end>
             <!-- <button ion-button (click)="closeModal()">Close</button> -->
-            <button ion-button icon-only (click)="invitationModify()" *ngIf="modifyInvitation && userInfo.userType==2 && eventInfo.guestInfos.length==0">  <ion-icon ios="ios-checkbox-outline" md="md-checkbox-outline"></ion-icon> </button>
+            <button ion-button icon-only (click)="invitationModify()" *ngIf="modifyInvitation && userInfo.userType==2"> 
+                 <ion-icon ios="ios-checkbox-outline" md="md-checkbox-outline"></ion-icon> </button>
             <button ion-button icon-only (click)="updateEventInformation()" *ngIf="modifyInvitation && userInfo.userType==1">  <ion-icon ios="ios-checkbox-outline" md="md-checkbox-outline"></ion-icon></button>
         </ion-buttons>
     </ion-navbar>
@@ -16,7 +17,7 @@
         
      
         <ion-list *ngIf="userInfo.userType==2 && modifyInvitation">
-            <ion-list *ngIf="eventInfo.guestInfos.length==0">
+            <ion-list>
                 <!-- Guest Length is Null -->
 
                 <ion-list radio-group [(ngModel)]="userInfo.status">
@@ -34,11 +35,28 @@
                     <button ion-button color="primary" (click)="invitationModify()">Save</button> 
                 </ion-item> -->
             </ion-list>
+
+
+            <ion-list>
+                <ion-item *ngIf="userInfo.status=='R'"> 
+                    <ion-label>Comment</ion-label>
+                    <ion-input type="text" [(ngModel)]="userInfo.comment"></ion-input>
+                </ion-item>    
+
+                <ion-item *ngIf="userInfo.status=='A'">
+                        <ion-label>Adult</ion-label>
+                        <ion-input type="number" [(ngModel)]="userInfo.adultMember"></ion-input>
+                </ion-item>    
+
+                <ion-item *ngIf="userInfo.status=='A'">
+                        <ion-label>Child</ion-label>
+                        <ion-input type="number" [(ngModel)]="userInfo.childMember"></ion-input>
+                </ion-item>        
+            </ion-list>    
             
-            <ion-list *ngIf="eventInfo.guestInfos.length>0">
-                    
+            <ion-list *ngIf="eventInfo.guestInfos.length>0">                    
                 <ion-item *ngFor="let guest of eventInfo.guestInfos">                        
-                        <h3 *ngIf="guest.status=='A' && guest.guestId==userInfo.id" text-center text-wrap><b style="color:green">You Have Already Approved For This Event</b></h3>
+                        <h3 *ngIf="guest.status=='A' && guest.guestId==userInfo.id " text-center text-wrap><b style="color:green">You Have Already Approved For This Event</b></h3>
                         <h3 *ngIf="guest.status=='R' && guest.guestId==userInfo.id" text-center text-wrap><b style="color:red">You Have Already Rejected For This Event</b></h3>
                 </ion-item>    
             </ion-list>    
@@ -88,13 +106,38 @@
 
 
         <ion-list *ngIf="!modifyInvitation && userInfo.userType==1 && eventInfo.guestInfos.length>0">
-                <ion-list>
-                
-                    <ion-item *ngFor="let guest of eventInfo.guestInfos">
-                        <h2>{{guest.name}}</h2>
-                        <h3 *ngIf="guest.status=='A'"><b style="color:green">Approve</b></h3>
-                        <h3 *ngIf="guest.status=='R'"><b style="color:red">Reject</b></h3>
+                <ion-list *ngIf="viewTypeinfo!=1">
+                    <ion-item *ngFor="let guest of eventInfo.guestInfos">                        
+                        <ion-item *ngIf="viewTypeinfo==2">
+                                <h2>{{guest.name}}</h2>
+                                <h3 *ngIf="guest.status=='A'"><b style="color:green">Approve</b></h3>
+                                <h3 *ngIf="guest.status=='A'"><b>Adult : {{guest.adultMember}}</b>  </h3>
+                                <h3 *ngIf="guest.status=='A'"><b>Child : {{guest.childMember}}</b>  </h3>
+                        </ion-item>
+
+
+                        <ion-item *ngIf="viewTypeinfo==3">
+                                <h2>{{guest.name}}</h2>
+                                <h3 *ngIf="guest.status=='R'"><b style="color:red">Reject</b></h3>
+                                <h3 *ngIf="guest.status=='R'"><b>Comment </b> {{guest.comment}}</h3>
+                        </ion-item>
+
+                        <ion-item *ngIf="viewTypeinfo==4">
+                                <h2>{{guest.name}}</h2>
+                                <h3 *ngIf="guest.status=='A'"><b style="color:yellow">Pending</b></h3>
+                                
+                        </ion-item>
                     </ion-item>    
                 </ion-list>
+
+
+                
         </ion-list>    
+
+        <ion-list *ngIf="viewTypeinfo==1">
+                <ion-item *ngFor="let invitation of totalInvitations">                        
+                       <h2><b> Guest</b> {{invitation.name}}</h2>
+                       <h2><b>Total Invitation</b> {{invitation.totalInvites}}</h2>
+                </ion-item>    
+        </ion-list>
     </ion-content>

@@ -1,6 +1,6 @@
 import { Component,ViewChild,ElementRef ,NgZone,Pipe} from '@angular/core';
 import { DatePipe} from '@angular/common';
-import { IonicPage, NavController, NavParams,ModalController,ActionSheetController,ViewController,Events,Platform} from 'ionic-angular';
+import { IonicPage, NavController, NavParams,ModalController,ActionSheetController,ViewController,Events,Platform,AlertController} from 'ionic-angular';
 import { SessionService,EventService,ReminderService,BudgetService, GuestService } from '../../app/sessionservice';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
@@ -9,6 +9,7 @@ import { Jsonp } from '@angular/http/src/http';
 import { LocationTrackerProvider } from '../../../providers/location-tracker';
 import {LatLngBounds,GoogleMaps,LatLng, GoogleMap,GoogleMapsEvent,GoogleMapOptions,CameraPosition,MarkerOptions,Marker } from '@ionic-native/google-maps';
 import { EventFilterPipe } from '../../filter/event-filter';
+import { setTimeout } from 'timers';
 
 @Component({
   selector: 'page-events',
@@ -20,13 +21,13 @@ export class EventsPage {
   reminderList:any=[];
   lat:any;
   lng:any;
+  loader:boolean=true;
   // map: GoogleMap;
   userInfo:any={};
-  
   constructor(public platform:Platform,public budgetService:BudgetService, public events:Events,public reminderService:ReminderService,public eventService:EventService,public geolocation:Geolocation,public modalCtrl:ModalController,public service:SessionService,public navCtrl: NavController, public navParams: NavParams) {
-    this.userInfo.id=1;
-    this.userInfo.userType=1;
-    this.service.setUser(this.userInfo);
+    // this.userInfo.id=1;
+    // this.userInfo.userType=1;
+    // this.service.setUser(this.userInfo);
   }
 
   ionViewDidEnter()
@@ -42,7 +43,13 @@ export class EventsPage {
       this.eventService.getEvents()
     }) 
     this.events.subscribe('events1:fetch', events=> {        
-      this.eventList=events;
+      
+      setTimeout(()=>{
+        this.eventList=events;  
+        this.loader=false;
+      },1000)
+      
+      
       console.log("Events info==="+JSON.stringify(this.eventList));
     }) 
   }
@@ -89,8 +96,8 @@ export class ManageEventsPage {
     this.event.totalInvites=0;
     this.event.viewInfo="1";
     
-    console.log("Total Invites=="+this.guestService.totalInvitation());
-    this.event.totalInvites=this.guestService.totalInvitation();
+    // console.log("Total Invites=="+this.guestService.totalInvitation());
+    this.event.totalInvites=this.guestService.totalInvitationCount1();
     this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
     this.userInfo=this.service.getUser();    
     
@@ -247,9 +254,9 @@ export class ManageEventsPage {
     // profileModal.present();   
    }
 
-   viewInvitation()
+   viewInvitation(viewType)
    {
-    this.navCtrl.push(MemberPage,{modify:false})
+    this.navCtrl.push(MemberPage,{modify:false,viewTypeInfo:viewType})
     //  let profileModal = this.modalCtrl.create(MemberPage,{modify:false});
     //  profileModal.present();   
    }
@@ -265,17 +272,33 @@ export class MemberPage {
   userInfo:any={};
   autocomplete:any={};
   modifyInvitation:boolean=false;
+  viewTypeinfo:any;
   // map1: GoogleMap;
 
   map2:any;
   
   markers:any=[];
+  totalInvitations:any=[];
 
   
-  constructor(public navParams: NavParams,public platform:Platform,public modalCtrl:ModalController,public params: NavParams,public navCtrl:NavController,public viewCtrl:ViewController,public events:Events,public service:SessionService,public eventService:EventService){
+  constructor(public guestService:GuestService,public alertCtrl:AlertController,public navParams: NavParams,public platform:Platform,public modalCtrl:ModalController,public params: NavParams,public navCtrl:NavController,public viewCtrl:ViewController,public events:Events,public service:SessionService,public eventService:EventService){
+
+    this.userInfo={};
     this.userInfo=this.service.getUser();
     this.eventInfo=this.service.getEventInfo();
     this.modifyInvitation=this.navParams.get('modify')
+    if(this.navParams.get('viewTypeInfo'))
+    {
+      this.viewTypeinfo=this.navParams.get('viewTypeInfo');
+
+      if(this.viewTypeinfo==1)
+      {
+        this.totalInvitations=[];
+        this.totalInvitations=this.guestService.totalInvitation();
+      }
+    }
+
+
   }
 
   ionViewWillLeave()
@@ -359,8 +382,41 @@ export class MemberPage {
     this.userInfo.guestId=this.service.getUser().id;
     this.userInfo.name=this.service.getUser().name;
     this.userInfo.userType=this.service.getUser().userType;
-    this.eventService.updateEventStatus(this.userInfo)
+    if(this.userInfo.status=='R')
+    {
+      this.presentConfirm()
+    }
+    else
+    {
+      this.eventService.updateEventStatus(this.userInfo)
+    }
+    
+    
    
+  }
+
+  presentConfirm()
+  {
+    let alert = this.alertCtrl.create({
+      title: 'Reject Confirmation',
+      message: 'Are You Sure Want To Reject Event?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            // console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Confirm',
+          handler: () => {
+              this.eventService.updateEventStatus(this.userInfo)
+              },
+        }
+      ]
+    })    
+    alert.present();
   }
   updateEventInformation()
   {

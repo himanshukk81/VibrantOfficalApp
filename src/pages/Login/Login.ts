@@ -65,6 +65,7 @@ export class LoginPage {
       this.service.setUser(guestInfo)
       this.guestInfo=guestInfo;
       this.otpSent=true;
+      this.events.publish('login:success',this.guestInfo);
     })
 
     
@@ -109,11 +110,16 @@ export class LoginPage {
      this.loader=true;
      this.loginservice.login(this.user,"u");
   }
-  getOtp()
+  getOtp1()
   {
     this.loginservice.login(this.guestInfo,"g");    
   }
 
+
+  getOtp()
+  {
+    this.guestService.getGuestLoginWithoutOtp(this.guestInfo)
+  }
   verifyOtp()
   {
     var mobile=this.guestInfo.mobile;
