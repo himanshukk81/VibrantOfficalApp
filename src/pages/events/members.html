@@ -105,7 +105,7 @@
 
 
 
-        <ion-list *ngIf="!modifyInvitation && userInfo.userType==1 && eventInfo.guestInfos.length>0">
+        <!-- <ion-list *ngIf="!modifyInvitation && userInfo.userType==1 && eventInfo.guestInfos.length>0">
                 <ion-list *ngIf="viewTypeinfo!=1">
                     <ion-item *ngFor="let guest of eventInfo.guestInfos">                        
                         <ion-item *ngIf="viewTypeinfo==2">
@@ -123,7 +123,7 @@
                         </ion-item>
 
                         <ion-item *ngIf="viewTypeinfo==4">
-                                <h2>{{guest.name}}</h2>
+                                <h2 >{{guest.name}}</h2>
                                 <h3 *ngIf="guest.status=='A'"><b style="color:yellow">Pending</b></h3>
                                 
                         </ion-item>
@@ -132,12 +132,28 @@
 
 
                 
-        </ion-list>    
+        </ion-list>     -->
 
-        <ion-list *ngIf="viewTypeinfo==1">
-                <ion-item *ngFor="let invitation of totalInvitations">                        
-                       <h2><b> Guest</b> {{invitation.name}}</h2>
-                       <h2><b>Total Invitation</b> {{invitation.totalInvites}}</h2>
+        <ion-list *ngIf="!modifyInvitation && userInfo.userType==1">
+
+                <h2 text-center *ngIf="invitations.length>0">Guest List</h2>
+                <h2 style="color:red" *ngIf="invitations.length==0" text-center>No Detail</h2>
+                <ion-item *ngFor="let invitation of invitations">    
+                    <h2>{{invitation.name}}</h2>  
+
+                    <div *ngFor="let info of invitation.eventIds">
+                        <h3 *ngIf="info.status=='P' && eventInfo.id == info.eventId" ><b>Status :</b> <span style="color:yellow">Pending</span></h3>
+                        <h3 *ngIf="info.status=='A' && eventInfo.id == info.eventId"><b>Status :</b> <span style="color:Green">Approve</span></h3>
+                        <h3 *ngIf="info.status=='R' && eventInfo.id == info.eventId"><b>Status :</b> <span style="color:red">Reject</span></h3>
+
+                        <div *ngIf="info.status=='A' && eventInfo.id == info.eventId"> 
+                                <h3><b>Adult : {{info.adultMember}}</b>  </h3>
+                                <h3><b>Child : {{info.childMember}}</b>  </h3>
+                        </div>
+                        <div *ngIf="info.status=='R' && eventInfo.id == info.eventId"> 
+                                <h3><b>Comment : {{info.comment}}</b>  </h3>
+                        </div>  
+                    </div>    
                 </ion-item>    
         </ion-list>
     </ion-content>

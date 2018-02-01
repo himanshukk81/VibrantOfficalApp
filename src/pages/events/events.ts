@@ -9,7 +9,7 @@ import { Jsonp } from '@angular/http/src/http';
 import { LocationTrackerProvider } from '../../../providers/location-tracker';
 import {LatLngBounds,GoogleMaps,LatLng, GoogleMap,GoogleMapsEvent,GoogleMapOptions,CameraPosition,MarkerOptions,Marker } from '@ionic-native/google-maps';
 import { EventFilterPipe } from '../../filter/event-filter';
-import { setTimeout } from 'timers';
+// import { setTimeout } from 'timers';
 
 @Component({
   selector: 'page-events',
@@ -95,8 +95,6 @@ export class ManageEventsPage {
     console.log("event info======"+JSON.stringify(this.event));
     this.event.totalInvites=0;
     this.event.viewInfo="1";
-    
-    // console.log("Total Invites=="+this.guestService.totalInvitation());
     this.event.totalInvites=this.guestService.totalInvitationCount1();
     this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
     this.userInfo=this.service.getUser();    
@@ -273,6 +271,7 @@ export class MemberPage {
   autocomplete:any={};
   modifyInvitation:boolean=false;
   viewTypeinfo:any;
+  invitations:any=[];
   // map1: GoogleMap;
 
   map2:any;
@@ -290,11 +289,23 @@ export class MemberPage {
     if(this.navParams.get('viewTypeInfo'))
     {
       this.viewTypeinfo=this.navParams.get('viewTypeInfo');
-
+      this.invitations=[];
       if(this.viewTypeinfo==1)
       {
-        this.totalInvitations=[];
-        this.totalInvitations=this.guestService.totalInvitation();
+        // this.invitations=this.guestService.totalInvitation();
+        this.invitations=this.guestService.getDetailForEvent('T');
+      }
+      else if(this.viewTypeinfo==2)
+      {
+        this.invitations=this.guestService.getDetailForEvent('A');
+      }
+      else if(this.viewTypeinfo==3)
+      {
+        this.invitations=this.guestService.getDetailForEvent('R');
+      }
+      else
+      {
+        this.invitations=this.guestService.getDetailForEvent('P');
       }
     }
 
@@ -322,7 +333,9 @@ export class MemberPage {
         this.closeModal();
     })  
     this.events.unsubscribe('event:update:invitations')
-    this.events.subscribe('event:update:invitations', event=> {        
+    this.events.subscribe('event:update:invitations', event=> { 
+      
+      this.guestService.updateEventStatus(this.userInfo)
         this.closeModal();
     })      
   }
@@ -389,6 +402,7 @@ export class MemberPage {
     else
     {
       this.eventService.updateEventStatus(this.userInfo)
+      
     }
     
     

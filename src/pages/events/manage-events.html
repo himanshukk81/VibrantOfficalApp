@@ -36,8 +36,6 @@
         <!-- <div  #map><img src="../../assets/imgs/wedding-icon.png"></div> -->
 
         <ion-scroll scrollY="true" style="overflow: hidden;white-space: nowrap; height:45%" >
-                sfsdf {{event.viewInfo}}
-                user info {{userInfo.userType}}
                 <ion-toolbar *ngIf="userInfo.userType==1">
                     <ion-segment [(ngModel)]="event.viewInfo">
                         <ion-segment-button value="1">Detail</ion-segment-button>
