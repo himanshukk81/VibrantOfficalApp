@@ -395,18 +395,30 @@ export class MemberPage {
     this.userInfo.guestId=this.service.getUser().id;
     this.userInfo.name=this.service.getUser().name;
     this.userInfo.userType=this.service.getUser().userType;
+
+
     if(this.userInfo.status=='R')
     {
-      this.presentConfirm()
+      if(!this.userInfo.comment)
+      {
+        this.service.showToast2("Please Enter Comment");
+        return;
+      }
     }
     else
     {
-      this.eventService.updateEventStatus(this.userInfo)
-      
+      if(!this.userInfo.adultMember)
+      {
+        this.service.showToast2("Please Enter Adult Member");
+        return;
+      }
+      if(!this.userInfo.childMember)
+      {
+        this.service.showToast2("Please Enter Child Member ");
+        return;
+      }
+      this.eventService.updateEventStatus(this.userInfo) 
     }
-    
-    
-   
   }
 
   presentConfirm()
