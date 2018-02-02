@@ -1,4 +1,4 @@
-import { Injectable,Directive } from '@angular/core';
+import { Injectable,Directive, group } from '@angular/core';
 import {Http, Response,RequestOptions,Request, RequestMethod,Headers,URLSearchParams} from '@angular/http';
 import {Events,ToastController } from 'ionic-angular';
 import { NativeStorage } from '@ionic-native/native-storage';
@@ -457,13 +457,16 @@ export class GuestService{
         {"id":3,"name":"Manoj","mobile":"98745612312","guestTypeId":2,"userId":2,"uniqueId":"nma1","eventIds":[{"eventId":3,"status":"P"},{"eventId":4,"status":"P"},{"eventId":1,"status":"P"}],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0},
         {"id":4,"name":"Yash","mobile":"789456123123","guestTypeId":3,"userId":4,"uniqueId":"pot","eventIds":[{"eventId":10,"status":"P"},{"eventId":11,"status":"P"}],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0},
         {"id":5,"name":"Rahul","mobile":"78945612354","guestTypeId":1,"userId":3,"uniqueId":"nope","eventIds":[{"eventId":8,"status":"P"},{"eventId":9,"status":"P"}],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0}]
-        
-
         this.service.setGuests(this.Guests);
     }
     getGuests()
     {
         this.events.publish("fetch:guests",this.Guests);
+    }
+
+    getGuestsForGroup()
+    {
+       return this.Guests; 
     }
 
 
@@ -1429,7 +1432,6 @@ export class MessageService{
         }
 
         this.getMessages()
-        // this.events.publish('approve:message',this.allMessages);
     }
 
 
@@ -1557,6 +1559,106 @@ export class MessageService{
             }
         }
         this.events.publish('messages:fetches',this.userMessages);
+    }
+}
+
+@Injectable()
+
+export class GroupMessageService{
+    groups:any=[{id:1,name:"Friends",userId:1,guestIds:[{"id":1},{"id":2}]},{id:2,name:"Family",userId:2,guestIds:[{"id":1},{"id":2}]}];
+    groupsMessages:any=[];
+    filterGroupMessages:any=[];
+    constructor(public events:Events,public service:SessionService,public guestService:GuestService)
+    { }
+    createGroup(groupInfo)
+    {
+      this.groups.push(groupInfo);
+      this.events.publish('group:created',this.groups);    
+    }
+    getGroups(type)
+    {
+        if(type==1)
+        {
+            this.events.publish('fetch:groups',this.groups);    
+        }
+        else if(type==2)
+        {
+            this.events.publish('fetch:groups1',this.groups);    
+        }
+        
+    }
+    sendGroupMessage(groupMessageInfo)
+    {
+       this.groupsMessages.push(groupMessageInfo)
+       this.getGroupMessages(groupMessageInfo)
+
+    }
+
+    approveGroupMessages(groupMessages)
+    {
+        for(var i=0;i<groupMessages.length;i++)
+        {
+            for(var j=0;j<this.groupsMessages.length;j++)
+            {
+                if(this.groupsMessages[j].groupId==groupMessages[i].groupId)
+                {
+                    this.groupsMessages[j].status='A'; 
+                }       
+            } 
+        }
+        this.events.publish('group:message:approve')
+    }
+    getGroupMessages(groupInfo)
+    {
+      this.filterGroupMessages=[];  
+      if(this.service.getUser().userType==1)
+        {
+            for(var i=0;i<this.groupsMessages.length;i++)
+            {
+                if(this.groupsMessages[i].groupId==groupInfo.groupId &&
+                     
+                     this.groupsMessages[i].userId==this.service.getUser().id && 
+                     
+                     this.groupsMessages[i].senderId==this.service.getUser().id)
+                {
+                    this.groupsMessages[i].sender=true;
+                    this.filterGroupMessages.push(this.groupsMessages[i])
+                }
+                else if(this.groupsMessages[i].groupId==groupInfo.groupId && this.groupsMessages[i].userId==this.service.getUser().id && this.groupsMessages[i].senderId!=this.service.getUser().id)
+                {
+                    this.groupsMessages[i].sender=false;
+                    this.filterGroupMessages.push(this.groupsMessages[i])
+                }
+            }
+        }   
+      else
+        {
+            for(var i=0;i<this.groupsMessages.length;i++)
+            {
+                console.log("Message info========="+JSON.stringify(this.service.getUser()));
+                if(this.groupsMessages[i].groupId==groupInfo.groupId &&
+                     
+                    this.groupsMessages[i].userId==this.service.getUser().userId && 
+                    
+                    this.groupsMessages[i].senderId==this.service.getUser().id && this.groupsMessages[i].senderType==2)
+               {
+                   this.groupsMessages[i].sender=true;
+                   this.filterGroupMessages.push(this.groupsMessages[i])
+               }
+               else  if(this.groupsMessages[i].groupId==groupInfo.groupId &&
+                     
+                this.groupsMessages[i].userId==this.service.getUser().userId && 
+                
+                this.groupsMessages[i].senderId!=this.service.getUser().id && this.groupsMessages[i].senderType==2 && this.groupsMessages[i].status=='A')
+               {
+                   
+                   this.groupsMessages[i].sender=false;
+                   this.filterGroupMessages.push(this.groupsMessages[i])
+               }
+             
+            }
+        }    
+      this.events.publish('fetch:group:messages',this.filterGroupMessages);
     }
 }
 

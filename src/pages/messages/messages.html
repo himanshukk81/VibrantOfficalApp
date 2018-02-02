@@ -16,7 +16,18 @@
 <ion-content>
             
         <!-- <div ion-fixed class="select-fixed" *ngIf="userInfo.userType==1">  -->
-               <ion-list *ngIf="userInfo.userType==1"> 
+
+
+                <ion-list> 
+                        <ion-item>
+                            <ion-label>Message Type</ion-label>
+                            <ion-select type="text" [(ngModel)]="messageType"> 
+                                    <ion-option  value="1">Individual</ion-option>
+                                    <ion-option  value="2">Group</ion-option>
+                            </ion-select>
+                        </ion-item>    
+                </ion-list>      
+                <ion-list *ngIf="userInfo.userType==1 && messageType==1"> 
                     <ion-item>
                         <ion-label>Select Guest</ion-label>
                         <ion-select type="text" [(ngModel)]="messageInfo.guestId"> 
@@ -26,7 +37,7 @@
                     </ion-item>    
                 </ion-list>  
 
-                <ion-list radio-group [(ngModel)]="messageType" *ngIf="userInfo.userType==2">
+                <ion-list radio-group [(ngModel)]="messageType" *ngIf="userInfo.userType==2 && messageType==1">
                         <ion-item>
                         <ion-label>User</ion-label>
                         <ion-radio value="user" checked></ion-radio>
@@ -37,9 +48,36 @@
                         <ion-radio value="guests"></ion-radio>
                         </ion-item>
                 </ion-list>
+                <ion-list *ngIf="messageType==2">
+                    <ion-item>
+                        <ion-label>Select Group</ion-label>
+                         
+                        <ion-select type="text" [(ngModel)]="groupMessageInfo.groupId" (ionChange)="getGroupMessages($event)"> 
+                                <!-- <ion-option  value="">Select Group</ion-option> -->
+                                <ion-option *ngFor="let group of groups"  value="{{group.id}}">{{group.name}}</ion-option> 
+                        </ion-select>
+                    </ion-item>    
+                </ion-list>  
                 <ion-item *ngIf="userInfo.userType==1 && messages.length>0">
                         <button ion-button (click)="approveMessage1()">Approve Message</button>
-                </ion-item>    
+                </ion-item>
+                
+                <ion-item *ngIf="userInfo.userType==1 && groupMessages.length>0">
+                        <button ion-button (click)="approveGroupMessage()">Approve Group Message</button>
+                </ion-item>
+                
+                <div *ngFor="let groupMessage of groupMessages">
+                    <!-- <span align="right" class="col col-50" *ngIf="groupMessage.senderId==userInfo.id && groupMessage.senderType==userInfo.userType">right {{groupMessage.editorMsg}}</span>   
+                        <span align="left" class="col col-50"  *ngIf="groupMessage.senderId==userInfo.id && groupMessage.senderType!=userInfo.userType">left {{groupMessage.editorMsg}} -->
+
+                            <span align="right" class="col col-50" *ngIf="groupMessage.sender">{{groupMessage.editorMsg}}</span>   
+                            <span align="left" class="col col-50"  *ngIf="!groupMessage.sender">{{groupMessage.editorMsg}}
+
+                        <span *ngIf="groupMessage.status=='P' && userInfo.userType==1"><ion-checkbox [(ngModel)]="groupMessage.selected"></ion-checkbox><b style="color:yellow">Pending</b></span>
+                        <span *ngIf="groupMessage.status=='A' && userInfo.userType==1"><b style="color:green">Approve</b></span>                              
+                    </span>    
+                </div>    
+
                 <div *ngFor="let message of messages">
                         <!-- <div class="item row" *ngIf="userInfo.userType==1">
                                  <span align="right" class="col col-50" *ngIf="userInfo.id==message.senderId && message.senderType==1">{{message.editorMsg}}
@@ -74,7 +112,6 @@
 
 
                 </div>   
-        <!-- </div> -->
 </ion-content>
 <ion-footer no-border [style.height]="showEmojiPicker ? '255px' : '55px'">
   <ion-grid class="input-wrap">
@@ -84,7 +121,7 @@
                   <ion-icon name="md-happy"></ion-icon>
               </button>
           </ion-col> -->
-          <ion-col col-10>
+          <ion-col col-10 *ngIf="messageType==1">
               <ion-textarea #chat_input
                             placeholder="Text Input"
                             [(ngModel)]="messageInfo.editorMsg"
@@ -92,9 +129,26 @@
                             (focus)="onFocus()">
               </ion-textarea>
           </ion-col>
+
+
+          <ion-col col-10 *ngIf="messageType==2">
+                <ion-textarea #chat_input
+                              placeholder="Text Input"
+                              [(ngModel)]="groupMessageInfo.editorMsg"
+                              (keyup.enter)="sendGroupMessage()"
+                              (focus)="onFocus()">
+                </ion-textarea>
+            </ion-col>
           <!-- {{messageInfo.editorMsg}} -->
-          <ion-col col-2 >
-              <button ion-button clear icon-only item-right (click)="sendMessage()" [disabled]="!messageInfo.editorMsg">
+           <ion-col col-2 >
+              <button ion-button clear icon-only item-right (click)="sendGroupMessage()" [disabled]="!groupMessageInfo.editorMsg" *ngIf="messageType==2">
+                        <ion-icon name="ios-send" ios="ios-send" md="md-send"></ion-icon>
+              </button>  
+
+              <!-- <button ion-button clear icon-only item-right (click)="sendGroupMessage()">
+                    <ion-icon name="ios-send" ios="ios-send" md="md-send"></ion-icon>
+              </button>   -->
+              <button ion-button clear icon-only item-right (click)="sendMessage()" [disabled]="!messageInfo.editorMsg" *ngIf="messageType==1">
                   <ion-icon name="ios-send" ios="ios-send" md="md-send"></ion-icon>
               </button>
           </ion-col>

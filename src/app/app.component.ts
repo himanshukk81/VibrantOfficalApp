@@ -23,6 +23,7 @@ import { GuestInvitationPage} from '../pages/guest-invitation/guest-invitation';
 import { SharePhotoPage,ManageSharePhotoPage} from '../pages/share-photo/share-photo';
 import { MessagesPage} from '../pages/messages/messages';
 import { LocationAccuracy } from '@ionic-native/location-accuracy';
+import { GroupsPage,createGroup} from '../pages/groups/groups';
 
 
 
@@ -35,10 +36,13 @@ export class MyApp {
   rootPage: any=FirstPage;
   headers:any;
   pages: Array<{title: string, component: any}>;
-
+  userInfo1:any={};
   constructor(public locationAccuracy: LocationAccuracy,public events:Events, public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,public service:SessionService,public native:NativeStorage,public sharing:SocialSharing,public alertCtrl:AlertController  
     ,public nativeStorage:NativeStorage,public network:Network,public localNotifications:LocalNotifications,public http:Http) {
       this.events.subscribe('menu:load', user => {
+        
+        
+
         if(user.userType==1)
         {
           this.pages = [
@@ -50,6 +54,7 @@ export class MyApp {
             {title:'Budgets',component:BudgetsPage},
             {title:'Events',component:EventsPage},
             {title:'Reminders',component:RemindersPage},
+            {title:'Groups',component:GroupsPage},
             {title:'Logout',component:LoginPage},
           ];
         } 
@@ -66,7 +71,7 @@ export class MyApp {
           ];
         } 
       })
-
+      // rootPage: any=MessagesPage;
       // this.initializeApp();
 
   }

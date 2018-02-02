@@ -11,7 +11,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import {Http, Response} from '@angular/http';
 import { HttpModule }    from '@angular/http';
 import { SessionService,CateogryService,LoginService,GuestService,ApprovePhotoService,
-  BudgetService,ToDoService ,ReminderService,ShareImageService,MessageService,EventService,PaymentService,UserService} from './sessionservice';
+  BudgetService,ToDoService ,ReminderService,ShareImageService,MessageService,EventService,PaymentService,UserService,GroupMessageService} from './sessionservice';
 import { LoginPage } from '../pages/Login/Login';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { Toast } from '@ionic-native/toast';
@@ -39,6 +39,7 @@ import { Facebook } from '@ionic-native/facebook';
 import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { FirstPage} from '../pages/first/first';
+import { GroupsPage,createGroup} from '../pages/groups/groups';
 import { MessagesPage} from '../pages/messages/messages';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
 import { LocationTrackerProvider } from '../../providers/location-tracker';
@@ -75,6 +76,7 @@ import { EventFilterPipe } from '../filter/event-filter';
     MessagesPage,
     MemberPage,
     EventFilterPipe,
+    GroupsPage,createGroup
   ],
   imports: [
     HttpModule,
@@ -108,6 +110,7 @@ import { EventFilterPipe } from '../filter/event-filter';
     ManageSharePhotoPage,
     MessagesPage,
     MemberPage,
+    GroupsPage,createGroup
   ],
   providers: [
     StatusBar,
@@ -139,6 +142,8 @@ import { EventFilterPipe } from '../filter/event-filter';
     BackgroundGeolocation,
     LocationAccuracy,
     AngularFireDatabase,
+    GroupMessageService,
+
     // Keyboard,
     // { provide: ImagePicker, useClass: imagePickerMock },
     // { provide: Base64, useClass: Base64Mock },

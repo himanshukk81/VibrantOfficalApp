@@ -88,7 +88,6 @@ export class ManageEventsPage {
   destination:any={};
   autocompleteItems: any=[];
   filterSegment:any;
-  
   geocoder:any;
   constructor(public guestService:GuestService,public zone:NgZone,public locationTracker:LocationTrackerProvider, public eventService:EventService,public platform:Platform,public service:SessionService, public events:Events,public modalCtrl:ModalController, public viewCtrl:ViewController,public camera: Camera,public actionCtrl:ActionSheetController,public navCtrl: NavController, public navParams: NavParams) {
     this.event=this.service.getEventInfo();
