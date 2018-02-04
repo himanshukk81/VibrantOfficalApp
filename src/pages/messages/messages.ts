@@ -1,6 +1,7 @@
 import { Component,ViewChild, group } from '@angular/core';
 import { IonicPage, NavController, NavParams ,Events,Content,TextInput} from 'ionic-angular';
 import { SessionService,MessageService,GuestService,GroupMessageService} from '../../app/sessionservice';
+import { PENDING } from '@angular/forms/src/model';
 
 /**
  * Generated class for the MessagesPage page.
@@ -63,7 +64,7 @@ export class MessagesPage {
       this.messageService.getMessages();
     })
 
-    this.events.subscribe('fetch:group:messages', groupMessages=> {   
+    this.events.subscribe('fetch:group:messages',groupMessages=> {   
       this.groupMessages=[];     
       this.groupMessages=groupMessages;
       this.messages=[];
@@ -76,6 +77,7 @@ export class MessagesPage {
     })
 
     this.events.subscribe('group:message:approve',approved=>{
+      this.getGroupMessages();
       this.service.showToast2("SuccessFully approved");
       this.loader=false;
     })
@@ -94,6 +96,11 @@ export class MessagesPage {
     this.groupMessageService.getGroupMessages(this.groupMessageInfo)
   }
 
+  chooseMessageType()
+  {
+    
+  }
+
   sendGroupMessage()
   {
     var newGroupMessageInfo={};
@@ -106,6 +113,7 @@ export class MessagesPage {
     this.groupMessageInfo.id=this.service.getRandomString(5);
     this.groupMessageInfo.createDate=new Date();
     this.groupMessageInfo.senderId=this.service.getUser().id;
+    this.groupMessageInfo.senderName=this.service.getUser().name;
     this.groupMessageInfo.senderType=this.service.getUser().userType;
     
     if(this.service.getUser().userType==1)
@@ -119,7 +127,7 @@ export class MessagesPage {
       this.groupMessageInfo.userId=this.service.getUser().userId;
       this.groupMessageInfo.status='P';
     }
-    this.groupMessages.push(Object.assign({},this.groupMessageInfo));
+    this.groupMessages.filterGroupMessages.push(Object.assign({},this.groupMessageInfo));
     newGroupMessageInfo=Object.assign({},this.groupMessageInfo);
     this.groupMessageService.sendGroupMessage(newGroupMessageInfo)
     this.groupMessageInfo.editorMsg='';
@@ -128,7 +136,15 @@ export class MessagesPage {
   approveGroupMessages()
   {
     this.loader=true;
-    this.groupMessageService.approveGroupMessages(this.groupMessages)
+    var groupMessageIds=[];
+    for(var i=0;i<this.groupMessages.filterGroupMessages.length;i++)
+    {
+      if(this.groupMessages.filterGroupMessages[i].selected)
+      {
+        groupMessageIds.push(this.groupMessages.filterGroupMessages[i].id);
+      }
+    }
+    this.groupMessageService.approveGroupMessages(groupMessageIds)
   }
 
   scrollToBottom() {

@@ -46,7 +46,7 @@ export class HomePage {
       setTimeout(() => {  
         this.budgetservice.getBudgets();         
        },100); 
-       this.events.unsubscribe('budgets:fetch');
+       this.events.unsubscribe('budgets:fetch')
        this.events.subscribe('budgets:fetch', budgets=> {
           this.budgets=budgets
           this.totalEstimateCost=0;

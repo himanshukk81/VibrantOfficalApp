@@ -19,14 +19,34 @@
 
 
 <ion-content padding>
-    <ion-toolbar *ngIf="userInfo.userType==1">
+
+
+    <ion-list> 
+            <ion-item>
+                <ion-label>Message Type</ion-label>
+                <ion-select type="text" [(ngModel)]="messageTypeInfo">  
+                        <ion-option  value="1">Individual</ion-option>
+                        <ion-option  value="2">Group</ion-option>
+                </ion-select>
+            </ion-item>    
+    </ion-list> 
+
+    <ion-item *ngIf="messageTypeInfo==2">
+            <ion-label>Select Group</ion-label>
+             
+            <ion-select type="text" [(ngModel)]="imageInfo.groupId" (ionChange)="getGroupImages($event)"> 
+                    <!-- <ion-option  value="">Select Group</ion-option> -->
+                    <ion-option *ngFor="let group of groups"  value="{{group.id}}">{{group.name}}</ion-option> 
+            </ion-select>
+    </ion-item> 
+    <ion-toolbar *ngIf="userInfo.userType==1 && messageTypeInfo==1">
         <ion-segment [(ngModel)]="filterInput.selectedUserType"  (click)="filterUser()" >
             <ion-segment-button value="1">Me</ion-segment-button>
             <ion-segment-button value="2">Guest</ion-segment-button>
         </ion-segment>
     </ion-toolbar>
     <ion-list>
-        <ion-item *ngIf="filterInput.selectedUserType==2">
+        <ion-item *ngIf="filterInput.selectedUserType==2 && messageTypeInfo==1">
             <ion-label>Select Guest</ion-label>
             <ion-select type="text" [(ngModel)]="filterInput.guestId" (click)="filterGuestImages()">
                 <ion-option  value="0">ALL</ion-option>  
@@ -38,7 +58,13 @@
         <ion-item *ngIf="filterInput.selectedUserType==2">
          <button ion-button (click)="approveImage1()">ApproveImages</button>
         </ion-item> 
+
+        <ion-item *ngIf="messageTypeInfo==2">
+          <button ion-button (click)="approveGroupImages()">Approved Group Images</button>
+        </ion-item> 
         <!-- <ion-list> -->
+
+           <ion-list *ngIf="messageTypeInfo==1"> 
             <ion-item *ngFor="let image of images">
                 <!-- {{images.imagesArray}} -->
                     <!-- dfgdfhgjdfj -->
@@ -56,6 +82,32 @@
                 </ion-item>
                 
             </ion-item>
+           </ion-list> 
+
+
+
+            <ion-list *ngIf="messageTypeInfo==2">
+                <ion-item *ngFor="let groupImage of groupImages">
+                    <!-- {{images.imagesArray}} -->
+                        <!-- dfgdfhgjdfj -->
+                    <!-- {{image.imagesArray}} -->
+                    <!-- <p *ngIf="image.message">{{image.message}}</p><br/> -->
+                    <ion-item *ngFor="let obj of groupImage.imagesArray">
+                        
+                        <!-- <span >{{obj.imageUrl}}</span> -->
+                        
+                        <span><img [src]="obj.imageUrl" style="width:50px;height:50px" imageViewer></span>
+                        <!-- user type {{filterInput.selectedUserType}}   Status {{obj.status}} -->
+                        <!-- <span *ngIf="filterInput.selectedUserType==2 && obj.status=='P'"><ion-checkbox [(ngModel)]="obj.selected"></ion-checkbox></span>   -->
+                        <span *ngIf="filterInput.selectedUserType==2 && obj.status=='P'" style="color:red">Pending <input type="checkbox" [(ngModel)]="obj.selected" /></span>
+                        <span *ngIf="filterInput.selectedUserType==2 && obj.status=='A'" style="color:green">Approved</span>
+                    </ion-item>
+                    
+                </ion-item>
+            </ion-list>    
+
+
+            
         <!-- </ion-list>     -->
 
 

@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, group } from '@angular/core';
 import { IonicPage, NavController, NavParams,Events,ViewController,ModalController } from 'ionic-angular';
 import { ImagePicker } from '@ionic-native/image-picker';
-import { SessionService,ShareImageService,GuestService} from '../../app/sessionservice';
+import { SessionService,ShareImageService,GuestService,GroupImageService,GroupMessageService} from '../../app/sessionservice';
 import { json } from 'body-parser';
 
 /**
@@ -25,6 +25,7 @@ export class SharePhotoPage {
   userInfo:any={};
   loader:boolean=false;
   first:boolean=true;
+  groupImages:any=[];
   constructor(public guestservice:GuestService, public service:SessionService,public modalCtrl:ModalController,public events:Events,public imageService:ShareImageService,public imagePicker: ImagePicker,public navCtrl: NavController, public navParams: NavParams) {
     this.userInfo=this.service.getUser();
   }
@@ -54,6 +55,12 @@ export class SharePhotoPage {
       this.guests=guests;
     })
 
+
+    this.events.unsubscribe('fetch:group:images')
+    this.events.subscribe('fetch:group:images', images=> {
+      this.groupImages=images;
+    })
+
     this.events.unsubscribe('fetch:images')
     this.events.subscribe('fetch:images', images1=> {
       // this.service.showToast2("Successfully upload images");
@@ -76,6 +83,9 @@ export class SharePhotoPage {
     console.log('ionViewDidLoad SharePhotoPage');
   }
 
+
+  
+
   filterUser()
   {
     
@@ -87,6 +97,11 @@ export class SharePhotoPage {
   filterGuestImages()
   {
     this.imageService.getFilterImages(this.filterInput)
+  }
+
+  getGroupImages()
+  {
+    // this.groupImageService.getGroupImages(this.imageInfo);
   }
   addImages()
   {
@@ -141,8 +156,10 @@ export class ManageSharePhotoPage {
   filter:any={};
   guests:any;
   userInfo:any;
-
-  constructor(public guestservice:GuestService,public service:SessionService,public events:Events,public viewCtrl:ViewController,public imageService:ShareImageService, public imagePicker: ImagePicker,public navCtrl: NavController, public navParams: NavParams) {
+  groupImagesIds:any=[];
+  groupImages:any=[];
+  groups:any;
+  constructor(public groupMessageService:GroupMessageService, public groupImageService:GroupImageService,public guestservice:GuestService,public service:SessionService,public events:Events,public viewCtrl:ViewController,public imageService:ShareImageService, public imagePicker: ImagePicker,public navCtrl: NavController, public navParams: NavParams) {
     this.imageInfo.imagesArray=[];
 
     console.log("user info===="+JSON.stringify(this.service.getUser()));
@@ -160,6 +177,16 @@ export class ManageSharePhotoPage {
 
     this.events.subscribe('fetch:guests', guests=> {
       this.guests=guests;
+
+      this.groupMessageService.getGroups(1);
+    })
+
+   
+
+
+    this.events.subscribe('fetch:groups', groups=> {
+      this.groups=groups;
+      
     })
 
 
@@ -172,6 +199,7 @@ export class ManageSharePhotoPage {
 
       }
       // this.imageInfo.id=this.service.getUser().id;
+      this.imageInfo.senderId=this.service.getUser().id;
       this.imageInfo.userId=this.service.getUser().id;
       this.imageInfo.status="A";
     }
@@ -180,6 +208,7 @@ export class ManageSharePhotoPage {
       // this.imageInfo.status='P';
       // this.imageInfo.imagesArray.push({"imageUrl":this.service.getRandomString(5)});      
       // this.imageInfo.id=this.service.getUser().id;
+      this.imageInfo.senderId=this.service.getUser().id;
       this.imageInfo.guestId=this.service.getUser().id;
       this.imageInfo.userId=this.service.getUser().userId;
       this.imageInfo.status="P";
@@ -195,56 +224,83 @@ export class ManageSharePhotoPage {
 
 
 
-
+  getGroupImages()
+  {
+    // this.groupImageService.getGroupImages(this.imageInfo);
+  }
   chooseImages()
   { 
-    this.imageInfo.imagesArray=[];
-    this.imageOptions= {
-      maximumImagesCount:50, 
-      quality: 100, 
-      width: 200, 
-      height: 200
-    };   
-    this.imagePicker.getPictures(this.imageOptions).then((results) => {
-      var base64File;
-      for (var i = 0; i < results.length; i++) {
 
-        this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"imageUrl":results[i],"status":this.imageInfo.status,"guestId":this.imageInfo.guestId});      
-        // this.imageInfo.imagesArray.push({"imageUrl":results[i]});
-        console.log('Image URI: ' + base64File);
-      }
-    }, (err) => { 
-      alert("Error 68==="+JSON.stringify(err));
-      console.log("Failed to fetch images===="+JSON.stringify(err));
-    });
+    for(var i=0;i<3;i++)
+    {
+      this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"imageUrl":this.service.getRandomString(5),"status":'A',"groupId":this.imageInfo.groupId,"userId":this.service.getUser().id});
+    }
+    
+    // this.imageInfo.imagesArray=[];
+    // this.imageOptions= {
+    //   maximumImagesCount:50, 
+    //   quality: 100, 
+    //   width: 200, 
+    //   height: 200
+    // };   
+    // this.imagePicker.getPictures(this.imageOptions).then((results) => {
+    //   var base64File;
+
+    //   if(this.imageInfo.imageType==1)
+    //   {
+    //     for (var i = 0; i < results.length; i++) {
+
+    //       this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"imageUrl":results[i],"status":this.imageInfo.status,"guestId":this.imageInfo.guestId});      
+    //       // this.imageInfo.imagesArray.push({"imageUrl":results[i]});
+    //       console.log('Image URI: ' + base64File);
+    //     }
+    //   }
+    //   else
+    //   {
+    //     for (var i = 0; i < results.length; i++) {
+    //       if(this.service.getUser().userType==1)
+    //       {
+    //         this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"imageUrl":results[i],"status":'A',"groupId":this.imageInfo.groupId,"userId":this.service.getUser().id});
+    //       }
+    //       else
+    //       {
+    //         this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"imageUrl":results[i],"status":'P',"groupId":this.imageInfo.groupId,"guestId":this.service.getUser().id});
+    //       }  
+    //       // this.imageInfo.imagesArray.push({"imageUrl":results[i]});
+    //       console.log('Image URI: ' + base64File);
+    //     }
+    //   }
+    
+    // }, (err) => { 
+    //   alert("Error 68==="+JSON.stringify(err));
+    //   console.log("Failed to fetch images===="+JSON.stringify(err));
+    // });
   }
 
  
   sharePhoto()
   {
-    // var userInfo=this.service.getUser();
-    
     this.loader=true;
-
-
-    // for(var i=0;i<3;i++)
-    // {
-    //   // this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"imageUrl":this.service.getRandomString(5),"status":this.imageInfo.status,"guestId":this.imageInfo.guestId});      
-    //   this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"imageUrl":this.service.getRandomString(5),"status":this.imageInfo.status,"guestId":this.imageInfo.guestId});      
-    // }
-    // this.imageService.sharedImages(this.imageInfo);
-
-    
-    
     console.log("image arrray==="+JSON.stringify(this.imageInfo));
 
     if(this.imageCounter==this.imageInfo.imagesArray.length)
     {
       console.log("Image counter=="+this.imageCounter);
-      this.imageService.sharedImages(this.imageInfo);
+
+
+      if(this.imageInfo.imageType==1)
+      {
+        this.imageService.sharedImages(this.imageInfo);
+      }
+      else
+      {
+        this.groupImageService.shareGroupImages(this.imageInfo)
+      }
+      
 
       console.log("Sharing.................................");
       this.closeModal();
+      this.imageCounter=0;
       this.loader=false;
     }
     else
@@ -265,6 +321,46 @@ export class ManageSharePhotoPage {
     }
 
 
+  }
+
+  approveGroupImages()
+  {
+    
+
+    for(var i=0;i<this.groupImages.length;i++)
+    {
+      for(var j=0;j<this.groupImages[i].imagesArray.length;j++)
+      {
+        if(this.groupImages[i].imagesArray[j].selected)
+        {
+          this.groupImagesIds.push(this.groupImages[i].imagesArray[j].id);
+        }
+      }
+    }
+  }
+  sharePhotoInGroup()
+  {
+    if(this.imageCounter==this.imageInfo.imagesArray.length)
+    {
+      this.imageService.sharedImages(this.imageInfo);
+      this.closeModal();
+      this.loader=false;
+    }
+    else
+    {
+      this.convertToBase64(this.imageInfo.imagesArray[this.imageCounter].imageUrl, 'image/png').then(
+        data => {
+          // alert("Base64 image===");
+          console.log("Base64 file===="+data.toString());
+          this.imageInfo.imagesArray[this.imageCounter].imageUrl=data.toString();
+          // alert("Converted successfully=="+JSON.stringify(this.imageInfo.imagesArray));
+          this.imageCounter++;
+          this.sharePhoto();
+        },err=>{
+          alert("Error===90"+err);
+        }
+      ); 
+    }
   }
   convertToBase64(url, outputFormat) {
     return new Promise((resolve, reject) => {

@@ -21,13 +21,13 @@
                 <ion-list> 
                         <ion-item>
                             <ion-label>Message Type</ion-label>
-                            <ion-select type="text" [(ngModel)]="messageType"> 
+                            <ion-select type="text" [(ngModel)]="messageTypeInfo">  
                                     <ion-option  value="1">Individual</ion-option>
                                     <ion-option  value="2">Group</ion-option>
                             </ion-select>
                         </ion-item>    
                 </ion-list>      
-                <ion-list *ngIf="userInfo.userType==1 && messageType==1"> 
+                <ion-list *ngIf="userInfo.userType==1 && messageTypeInfo==1"> 
                     <ion-item>
                         <ion-label>Select Guest</ion-label>
                         <ion-select type="text" [(ngModel)]="messageInfo.guestId"> 
@@ -37,7 +37,7 @@
                     </ion-item>    
                 </ion-list>  
 
-                <ion-list radio-group [(ngModel)]="messageType" *ngIf="userInfo.userType==2 && messageType==1">
+                <ion-list radio-group [(ngModel)]="messageType" *ngIf="userInfo.userType==2 && messageTypeInfo==1">
                         <ion-item>
                         <ion-label>User</ion-label>
                         <ion-radio value="user" checked></ion-radio>
@@ -48,7 +48,7 @@
                         <ion-radio value="guests"></ion-radio>
                         </ion-item>
                 </ion-list>
-                <ion-list *ngIf="messageType==2">
+                <ion-list *ngIf="messageTypeInfo==2">
                     <ion-item>
                         <ion-label>Select Group</ion-label>
                          
@@ -62,56 +62,62 @@
                         <button ion-button (click)="approveMessage1()">Approve Message</button>
                 </ion-item>
                 
-                <ion-item *ngIf="userInfo.userType==1 && groupMessages.length>0">
-                        <button ion-button (click)="approveGroupMessage()">Approve Group Message</button>
+                <ion-item *ngIf="userInfo.userType==1 && groupMessages.pending>0">
+                        <button ion-button (click)="approveGroupMessages()">Approve Group Message</button>
                 </ion-item>
-                
-                <div *ngFor="let groupMessage of groupMessages">
-                    <!-- <span align="right" class="col col-50" *ngIf="groupMessage.senderId==userInfo.id && groupMessage.senderType==userInfo.userType">right {{groupMessage.editorMsg}}</span>   
-                        <span align="left" class="col col-50"  *ngIf="groupMessage.senderId==userInfo.id && groupMessage.senderType!=userInfo.userType">left {{groupMessage.editorMsg}} -->
-
-                            <span align="right" class="col col-50" *ngIf="groupMessage.sender">{{groupMessage.editorMsg}}</span>   
-                            <span align="left" class="col col-50"  *ngIf="!groupMessage.sender">{{groupMessage.editorMsg}}
-
-                        <span *ngIf="groupMessage.status=='P' && userInfo.userType==1"><ion-checkbox [(ngModel)]="groupMessage.selected"></ion-checkbox><b style="color:yellow">Pending</b></span>
-                        <span *ngIf="groupMessage.status=='A' && userInfo.userType==1"><b style="color:green">Approve</b></span>                              
-                    </span>    
+                <div *ngIf="messageTypeInfo==2">
+                        <div *ngFor="let groupMessage of groupMessages.filterGroupMessages">
+                                <!-- <span align="right" class="col col-50" *ngIf="groupMessage.senderId==userInfo.id && groupMessage.senderType==userInfo.userType">right {{groupMessage.editorMsg}}</span>   
+                                    <span align="left" class="col col-50"  *ngIf="groupMessage.senderId==userInfo.id && groupMessage.senderType!=userInfo.userType">left {{groupMessage.editorMsg}} -->
+                                    <div class="item row">    
+                                                    <span align="right" class="col col-50" *ngIf="groupMessage.sender">{{groupMessage.editorMsg}}</span>   
+                                                    <span align="left" class="col col-50"  *ngIf="!groupMessage.sender">{{groupMessage.editorMsg}}<br/>
+                                                     
+                                                       sender {{groupMessage.senderName}}    
+                                                    <!-- user Type {{userInfo.userType}}     status {{groupMessage.status}}    -->
+                                                    <span *ngIf="groupMessage.status=='P' && userInfo.userType==1">Pending <ion-checkbox [(ngModel)]="groupMessage.selected"></ion-checkbox><b style="color:yellow">Pending</b></span>
+                                                    <span *ngIf="groupMessage.status=='A' && userInfo.userType==1">Approve <b style="color:green">Approve</b></span>                              
+                                                     </span>    
+                                    </div>    
+                        </div>     
                 </div>    
-
-                <div *ngFor="let message of messages">
-                        <!-- <div class="item row" *ngIf="userInfo.userType==1">
-                                 <span align="right" class="col col-50" *ngIf="userInfo.id==message.senderId && message.senderType==1">{{message.editorMsg}}
-                                 </span>
-                                 <span align="left" class="col col-50" *ngIf="userInfo.id==message.receiverId && message.senderType==2">{{message.editorMsg}}
-                                 </span>
-                                 <span align="left" class="col col-50" *ngIf="(message.receiverId==0 || !message.receiverId) && message.senderType==2">{{message.editorMsg}}
-                                     <span *ngIf="message.status=='P'"> <span style="color:red">Pending</span></span>
-                                     <span *ngIf="message.status=='A'"><p style="color:green">Approve</p></span>
-                                 </span>   
-                        </div>
-                        <div class="item row" *ngIf="userInfo.userType==2">                        
-                            
-                        
-                          <span align="right" class="col col-50" *ngIf="userInfo.id==message.senderId && message.senderType==2">{{message.editorMsg}}</span>   
-                          
-                          <span align="left" class="col col-50" *ngIf="userInfo.id==message.receiverId && message.senderType==1">{{message.editorMsg}}</span>
-                          <span align="left" class="col col-50" *ngIf="(userInfo.id!=message.senderId) 
-                                    && (message.receiverId==0 || !message.receiverId) && message.status=='A'">{{message.editorMsg}}</span>
-                        </div> -->
-
-
-                        <div class="item row">                        
+                
+                <div *ngIf="messageTypeInfo==1">
+                    <div *ngFor="let message of messages" >
+                            <!-- <div class="item row" *ngIf="userInfo.userType==1">
+                                    <span align="right" class="col col-50" *ngIf="userInfo.id==message.senderId && message.senderType==1">{{message.editorMsg}}
+                                    </span>
+                                    <span align="left" class="col col-50" *ngIf="userInfo.id==message.receiverId && message.senderType==2">{{message.editorMsg}}
+                                    </span>
+                                    <span align="left" class="col col-50" *ngIf="(message.receiverId==0 || !message.receiverId) && message.senderType==2">{{message.editorMsg}}
+                                        <span *ngIf="message.status=='P'"> <span style="color:red">Pending</span></span>
+                                        <span *ngIf="message.status=='A'"><p style="color:green">Approve</p></span>
+                                    </span>   
+                            </div>
+                            <div class="item row" *ngIf="userInfo.userType==2">                        
                                 
-                                      <!-- message status {{message.status}}   user type {{userInfo.userType}} -->
-                              <span align="right" class="col col-50" *ngIf="message.sender">{{message.editorMsg}}</span>   
-                              <span align="left" class="col col-50"  *ngIf="!message.sender">{{message.editorMsg}}
-                                  <span *ngIf="message.status=='P' && userInfo.userType==1"><ion-checkbox [(ngModel)]="message.selected"></ion-checkbox><b style="color:red">Pending</b></span>
-                                  <span *ngIf="message.status=='A' && userInfo.userType==1"><b style="color:green">Approve</b></span>                              
-                              </span>    
-                        </div>
+                            
+                            <span align="right" class="col col-50" *ngIf="userInfo.id==message.senderId && message.senderType==2">{{message.editorMsg}}</span>   
+                            
+                            <span align="left" class="col col-50" *ngIf="userInfo.id==message.receiverId && message.senderType==1">{{message.editorMsg}}</span>
+                            <span align="left" class="col col-50" *ngIf="(userInfo.id!=message.senderId) 
+                                        && (message.receiverId==0 || !message.receiverId) && message.status=='A'">{{message.editorMsg}}</span>
+                            </div> -->
 
 
-                </div>   
+                            <div class="item row">                        
+                                    
+                                        <!-- message status {{message.status}}   user type {{userInfo.userType}} -->
+                                <span align="right" class="col col-50" *ngIf="message.sender">{{message.editorMsg}}</span>   
+                                <span align="left" class="col col-50"  *ngIf="!message.sender">{{message.editorMsg}}
+                                    <span *ngIf="message.status=='P' && userInfo.userType==1"><ion-checkbox [(ngModel)]="message.selected"></ion-checkbox><b style="color:red">Pending</b></span>
+                                    <span *ngIf="message.status=='A' && userInfo.userType==1"><b style="color:green">Approve</b></span>                              
+                                </span>    
+                            </div>
+
+
+                    </div> 
+                </div>      
 </ion-content>
 <ion-footer no-border [style.height]="showEmojiPicker ? '255px' : '55px'">
   <ion-grid class="input-wrap">
@@ -121,7 +127,7 @@
                   <ion-icon name="md-happy"></ion-icon>
               </button>
           </ion-col> -->
-          <ion-col col-10 *ngIf="messageType==1">
+          <ion-col col-10 *ngIf="messageTypeInfo==1">
               <ion-textarea #chat_input
                             placeholder="Text Input"
                             [(ngModel)]="messageInfo.editorMsg"
@@ -131,7 +137,7 @@
           </ion-col>
 
 
-          <ion-col col-10 *ngIf="messageType==2">
+          <ion-col col-10 *ngIf="messageTypeInfo==2">
                 <ion-textarea #chat_input
                               placeholder="Text Input"
                               [(ngModel)]="groupMessageInfo.editorMsg"
@@ -141,14 +147,14 @@
             </ion-col>
           <!-- {{messageInfo.editorMsg}} -->
            <ion-col col-2 >
-              <button ion-button clear icon-only item-right (click)="sendGroupMessage()" [disabled]="!groupMessageInfo.editorMsg" *ngIf="messageType==2">
+              <button ion-button clear icon-only item-right (click)="sendGroupMessage()" [disabled]="!groupMessageInfo.editorMsg" *ngIf="messageTypeInfo==2">
                         <ion-icon name="ios-send" ios="ios-send" md="md-send"></ion-icon>
               </button>  
 
               <!-- <button ion-button clear icon-only item-right (click)="sendGroupMessage()">
                     <ion-icon name="ios-send" ios="ios-send" md="md-send"></ion-icon>
               </button>   -->
-              <button ion-button clear icon-only item-right (click)="sendMessage()" [disabled]="!messageInfo.editorMsg" *ngIf="messageType==1">
+              <button ion-button clear icon-only item-right (click)="sendMessage()" [disabled]="!messageInfo.editorMsg" *ngIf="messageTypeInfo==1">
                   <ion-icon name="ios-send" ios="ios-send" md="md-send"></ion-icon>
               </button>
           </ion-col>

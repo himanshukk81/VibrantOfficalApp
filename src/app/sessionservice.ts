@@ -1184,7 +1184,6 @@ export class ShareImageService1{
     sharedImages(imageInfo)
     {   
         // this.imageInfo.message=imageInfo.message;
-        
         this.imageInfos=this.imageInfos.concat(imageInfo);
         this.sessionImages=this.sessionImages.concat(imageInfo);
         this.getFilterImages(imageInfo);
@@ -1223,7 +1222,6 @@ export class ShareImageService{
       console.log("Calling guest data");  
       var imageList=[];
         //   imageList=this.imageInfos;
-
         var user=this.service.getUser();
 
         console.log("user info==="+JSON.stringify(user));
@@ -1232,26 +1230,26 @@ export class ShareImageService{
             for(var i=0;i<this.imageInfos.length;i++)
             {
             // if(this.imageInfos[i].userType==1 && this.service.getUser().id==this.imageInfos[i].userId)
-            if(this.imageInfos[i].userType==1 && info.selectedUserType==this.imageInfos[i].userType)
-            // if(this.imageInfos[i].userType==1)
-    
-            {
-                imageList.push(this.imageInfos[i]);
-            }  
-            // else if(this.imageInfos[i].userType==2 && this.service.getUser().id==this.imageInfos[i].userId)
-            else if(this.imageInfos[i].userType==2 && info.selectedUserType==this.imageInfos[i].userType)
-            // else if(this.imageInfos[i].userType==2)
+                if(this.imageInfos[i].userType==1 && info.selectedUserType==this.imageInfos[i].userType)
+                // if(this.imageInfos[i].userType==1)
+        
+                {
+                    imageList.push(this.imageInfos[i]);
+                }  
             
-            {
-                if(!info.guestId || info.guestId==0)
+                else if(this.imageInfos[i].userType==2 && info.selectedUserType==this.imageInfos[i].userType)
+                // else if(this.imageInfos[i].userType==2)
+                
                 {
-                    imageList.push(this.imageInfos[i]);  
-                }
-                else if(info.guestId==this.imageInfos[i].guestId)
-                {
-                    imageList.push(this.imageInfos[i]); 
-                }
-            }          
+                    if(!info.guestId || info.guestId==0)
+                    {
+                        imageList.push(this.imageInfos[i]);  
+                    }
+                    else if(info.guestId==this.imageInfos[i].guestId)
+                    {
+                        imageList.push(this.imageInfos[i]); 
+                    }
+                }          
             } 
         }
         else if(this.service.getUser().userType==2)
@@ -1376,11 +1374,8 @@ export class ShareImageService{
     }
     sharedImages(imageInfo)
     {   
-        // this.imageInfo.message=imageInfo.message;
         this.imageInfos=this.imageInfos.concat(imageInfo);
         this.getFilterImages(imageInfo); 
-        
-        // this.events.publish('fetch:images',this.imageInfos);  
     }
 
     deleteImages(imageInfo)
@@ -1563,11 +1558,113 @@ export class MessageService{
 }
 
 @Injectable()
+export class GroupImageService{
+    allImages:any=[];
+    userImages:any=[];
+    filterImages:any=[];
+    // userImages:any=[];
+    constructor(public events:Events,public service:SessionService)
+    {
+
+    }
+
+    shareGroupImages(imageInfo)
+    {
+        //    this.allImages.push(imageInfo);
+       this.allImages=this.allImages.concat(imageInfo);
+    }
+
+    approvedGroupImages(selectedImagesIds)
+    {
+        for(var i=0;i<selectedImagesIds.length;i++)
+        {
+           for(var k=0;k<this.allImages.length;k++)
+           {
+            for(var j=0;j<this.allImages[k].imagesArray.length;j++)
+            {
+                if(this.allImages[k].imagesArray[j].id==selectedImagesIds[i])
+                {
+                    this.allImages[k].imagesArray[j].status='A';
+                }
+            }
+           } 
+           
+        }
+    }
+
+
+
+    getGroupImages(imageInfo)
+    {
+
+        if(this.service.getUser().userType==1)
+        {
+         for(var i=0;i<this.allImages.length;i++)
+         {
+            if(this.allImages[i].groupId==imageInfo.groupId)
+            {
+                if(this.allImages[i].senderId==this.service.getUser().id)
+                {
+                   this.allImages[i].sender=true; 
+                   this.filterImages.push(this.allImages[i]);
+                }
+                else if((this.allImages[i].senderId!=this.service.getUser().id || this.allImages[i].senderType==2))
+                {
+                   this.allImages[i].sender=false; 
+                   this.filterImages.push(this.allImages[i]); 
+                } 
+            } 
+
+         }
+        }
+        else
+        {
+            for(var i=0;i<this.allImages.length;i++)
+            {
+
+               if(this.allImages[i].groupId==imageInfo.groupId)
+               {
+                    if(this.allImages[i].senderId==this.service.getUser().id)
+                    {
+                        this.allImages[i].sender=true; 
+                        this.filterImages.push(this.allImages[i]);
+                    }
+                    else if((this.allImages[i].senderId!=this.service.getUser().id || this.allImages[i].senderType==1))
+                    {
+                        this.allImages[i].sender=false; 
+                        this.filterImages.push(this.allImages[i]); 
+                    }
+                    else
+                    {
+                        for(var j=0;j<this.allImages[i].imageArray.length;j++)
+                        {
+                            if(this.allImages[i].imageArray[j].status=='A')
+                            {
+                                this.allImages[i].sender=false;                         
+                                this.filterImages.push(this.allImages[i]);   
+                            }
+                        }
+                    }  
+               } 
+               
+            } 
+        }
+        
+        this.events.publish('fetch:group:images',this.filterImages);
+    }
+
+
+
+}
+
+@Injectable()
 
 export class GroupMessageService{
     groups:any=[{id:1,name:"Friends",userId:1,guestIds:[{"id":1},{"id":2}]},{id:2,name:"Family",userId:2,guestIds:[{"id":1},{"id":2}]}];
     groupsMessages:any=[];
+    filterGroupMessageInfo:any={};
     filterGroupMessages:any=[];
+    pendingMessages:number=0;
     constructor(public events:Events,public service:SessionService,public guestService:GuestService)
     { }
     createGroup(groupInfo)
@@ -1594,23 +1691,25 @@ export class GroupMessageService{
 
     }
 
-    approveGroupMessages(groupMessages)
+    approveGroupMessages(groupMessageIds)
     {
-        for(var i=0;i<groupMessages.length;i++)
+        for(var i=0;i<groupMessageIds.length;i++)
         {
             for(var j=0;j<this.groupsMessages.length;j++)
             {
-                if(this.groupsMessages[j].groupId==groupMessages[i].groupId)
-                {
-                    this.groupsMessages[j].status='A'; 
-                }       
+               if(groupMessageIds[i]==this.groupsMessages[j].id)
+               {
+                this.groupsMessages[j].status='A'; 
+               }     
             } 
         }
         this.events.publish('group:message:approve')
     }
     getGroupMessages(groupInfo)
     {
-      this.filterGroupMessages=[];  
+      this.filterGroupMessageInfo.filterGroupMessages=[];  
+      this.filterGroupMessageInfo.pending=0;
+    //   this.filterGroupMessages=[];  
       if(this.service.getUser().userType==1)
         {
             for(var i=0;i<this.groupsMessages.length;i++)
@@ -1619,15 +1718,24 @@ export class GroupMessageService{
                      
                      this.groupsMessages[i].userId==this.service.getUser().id && 
                      
-                     this.groupsMessages[i].senderId==this.service.getUser().id)
+                     (this.groupsMessages[i].senderId==this.service.getUser().id && this.groupsMessages[i].senderType==1))
                 {
                     this.groupsMessages[i].sender=true;
-                    this.filterGroupMessages.push(this.groupsMessages[i])
+                    this.filterGroupMessageInfo.filterGroupMessages.push(this.groupsMessages[i])
                 }
-                else if(this.groupsMessages[i].groupId==groupInfo.groupId && this.groupsMessages[i].userId==this.service.getUser().id && this.groupsMessages[i].senderId!=this.service.getUser().id)
+                else if(this.groupsMessages[i].groupId==groupInfo.groupId && this.groupsMessages[i].userId==this.service.getUser().id && (this.groupsMessages[i].senderId!=this.service.getUser().id || this.groupsMessages[i].senderType==2))
                 {
+                    // this.pendingMessages++;
                     this.groupsMessages[i].sender=false;
-                    this.filterGroupMessages.push(this.groupsMessages[i])
+
+                    if(this.groupsMessages[i].status=='P')
+                    {
+                        this.filterGroupMessageInfo.pending++; 
+                    }
+                    
+                    this.filterGroupMessageInfo.filterGroupMessages.push(this.groupsMessages[i])
+                    // this.filterGroupMessages[0].pending=true;
+                    
                 }
             }
         }   
@@ -1636,29 +1744,43 @@ export class GroupMessageService{
             for(var i=0;i<this.groupsMessages.length;i++)
             {
                 console.log("Message info========="+JSON.stringify(this.service.getUser()));
-                if(this.groupsMessages[i].groupId==groupInfo.groupId &&
-                     
-                    this.groupsMessages[i].userId==this.service.getUser().userId && 
-                    
-                    this.groupsMessages[i].senderId==this.service.getUser().id && this.groupsMessages[i].senderType==2)
+              
+                console.log(i +" index "+this.groupsMessages[i].groupId);
+                console.log(i +" index "+this.groupsMessages[i].senderId);
+                console.log(i +" index "+this.service.getUser().id);
+                console.log(i +" index "+this.groupsMessages[i].senderType);
+                if(this.groupsMessages[i].senderId==this.service.getUser().id && this.groupsMessages[i].senderType==2)
                {
                    this.groupsMessages[i].sender=true;
-                   this.filterGroupMessages.push(this.groupsMessages[i])
+                   this.filterGroupMessageInfo.filterGroupMessages.push(this.groupsMessages[i])
                }
-               else  if(this.groupsMessages[i].groupId==groupInfo.groupId &&
-                     
-                this.groupsMessages[i].userId==this.service.getUser().userId && 
-                
-                this.groupsMessages[i].senderId!=this.service.getUser().id && this.groupsMessages[i].senderType==2 && this.groupsMessages[i].status=='A')
-               {
+            //    else  if(this.groupsMessages[i].groupId==groupInfo.groupId && (this.groupsMessages[i].senderId==this.service.getUser().userId && this.groupsMessages[i].senderType==1))
+            //    {
                    
-                   this.groupsMessages[i].sender=false;
-                   this.filterGroupMessages.push(this.groupsMessages[i])
+            //        this.groupsMessages[i].sender=false;
+            //        this.filterGroupMessages.push(this.groupsMessages[i])
+            //    }
+               else if(this.groupsMessages[i].status=='A')
+               {
+                   for(var j=0;j<this.groups.length;j++)
+                   {
+                      if(this.groups[j].id==groupInfo.groupId)
+                      {
+                         for(var k=0;k<this.groups[j].guestIds.length;k++)
+                         {
+                             if(this.service.getUser().id==this.groups[j].guestIds[k].id)
+                             {
+                                this.groupsMessages[i].sender=false;
+                                this.filterGroupMessageInfo.filterGroupMessages.push(this.groupsMessages[i]) 
+                             }
+                         } 
+                      } 
+                   }    
                }
              
             }
         }    
-      this.events.publish('fetch:group:messages',this.filterGroupMessages);
+      this.events.publish('fetch:group:messages',this.filterGroupMessageInfo);
     }
 }
 
