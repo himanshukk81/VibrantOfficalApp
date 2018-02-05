@@ -33,4 +33,6 @@
                         </ion-item>          
                 </ion-list>
           </ion-list>    
+
+          <h3 text-center style="color:red" *ngIf="!loader && availableGuests.length==0">No Guest Available</h3>
         </ion-content>

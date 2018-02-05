@@ -23,7 +23,7 @@
         <ion-spinner name="bubbles"></ion-spinner>
     </div> 
   <ion-list>
-    <ion-item *ngFor="let group of availableGuests">
+    <ion-item *ngFor="let group of groups">
       <h2>{{group.name}}</h2>
       <p>{{group.createDate | date:'medium'}}</p>
     </ion-item>  

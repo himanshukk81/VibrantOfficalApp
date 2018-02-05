@@ -456,7 +456,10 @@ export class GuestService{
         {"id":2,"name":"Shahid","mobile":"9891914661","guestTypeId":1,"userId":1,"uniqueId":"xyz","eventIds":[{"eventId":1,"status":"P"},{"eventId":5,"status":"P"},{"eventId":6,"status":"P"}],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0},
         {"id":3,"name":"Manoj","mobile":"98745612312","guestTypeId":2,"userId":2,"uniqueId":"nma1","eventIds":[{"eventId":3,"status":"P"},{"eventId":4,"status":"P"},{"eventId":1,"status":"P"}],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0},
         {"id":4,"name":"Yash","mobile":"789456123123","guestTypeId":3,"userId":4,"uniqueId":"pot","eventIds":[{"eventId":10,"status":"P"},{"eventId":11,"status":"P"}],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0},
-        {"id":5,"name":"Rahul","mobile":"78945612354","guestTypeId":1,"userId":3,"uniqueId":"nope","eventIds":[{"eventId":8,"status":"P"},{"eventId":9,"status":"P"}],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0}]
+        {"id":5,"name":"Rahul","mobile":"78945612354","guestTypeId":1,"userId":3,"uniqueId":"nope","eventIds":[{"eventId":8,"status":"P"},{"eventId":9,"status":"P"}],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0},
+        {"id":6,"name":"Abhinav","mobile":"98745612312","guestTypeId":2,"userId":2,"uniqueId":"abhi","eventIds":[{"eventId":3,"status":"P"},{"eventId":12,"status":"P"},{"eventId":1,"status":"P"}],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0}
+        ]
+        
         this.service.setGuests(this.Guests);
     }
     getGuests()
@@ -1559,9 +1562,11 @@ export class MessageService{
 
 @Injectable()
 export class GroupImageService{
+    groups:any=[{id:1,name:"Friends",userId:1,guestIds:[{"id":1},{"id":2},{"id":3},{"id":6}]},{id:2,name:"Family",userId:2,guestIds:[{"id":1},{"id":2},{"id":3},{"id":6}]}];
     allImages:any=[];
     userImages:any=[];
     filterImages:any=[];
+    newArray: any = []; 
     // userImages:any=[];
     constructor(public events:Events,public service:SessionService)
     {
@@ -1572,6 +1577,9 @@ export class GroupImageService{
     {
         //    this.allImages.push(imageInfo);
        this.allImages=this.allImages.concat(imageInfo);
+    //    this.getGroupImages(imageInfo);
+
+       this.events.publish('image:shared:successfully');
     }
 
     approvedGroupImages(selectedImagesIds)
@@ -1580,23 +1588,24 @@ export class GroupImageService{
         {
            for(var k=0;k<this.allImages.length;k++)
            {
-            for(var j=0;j<this.allImages[k].imagesArray.length;j++)
-            {
-                if(this.allImages[k].imagesArray[j].id==selectedImagesIds[i])
+                for(var j=0;j<this.allImages[k].imagesArray.length;j++)
                 {
-                    this.allImages[k].imagesArray[j].status='A';
+                    if(this.allImages[k].imagesArray[j].id==selectedImagesIds[i])
+                    {
+                        this.allImages[k].imagesArray[j].status='A';
+                    }
                 }
-            }
            } 
-           
         }
+
+        this.events.publish('group:image:successfully:approved'); 
     }
 
 
 
     getGroupImages(imageInfo)
     {
-
+        this.filterImages=[];
         if(this.service.getUser().userType==1)
         {
          for(var i=0;i<this.allImages.length;i++)
@@ -1605,16 +1614,31 @@ export class GroupImageService{
             {
                 if(this.allImages[i].senderId==this.service.getUser().id)
                 {
+                   this.allImages[i].senderName="Me"; 
                    this.allImages[i].sender=true; 
                    this.filterImages.push(this.allImages[i]);
                 }
-                else if((this.allImages[i].senderId!=this.service.getUser().id || this.allImages[i].senderType==2))
+                // else if((this.allImages[i].senderId!=this.service.getUser().id && this.allImages[i].userType==2))
+
+                else if(this.allImages[i].userType==2)
                 {
-                   this.allImages[i].sender=false; 
-                   this.filterImages.push(this.allImages[i]); 
+                    // if(this.allImages[i].senderId!=this.service.getUser().id)
+                    // {
+
+                    // }
+                    // else
+                    // {
+
+                    // }
+
+                    if(this.allImages[i].userId==this.service.getUser().id)
+                    {
+                        this.allImages[i].sender=false; 
+                        this.filterImages.push(this.allImages[i]);   
+                    }
+                    
                 } 
             } 
-
          }
         }
         else
@@ -1624,26 +1648,68 @@ export class GroupImageService{
 
                if(this.allImages[i].groupId==imageInfo.groupId)
                {
-                    if(this.allImages[i].senderId==this.service.getUser().id)
+                    if(this.allImages[i].senderId==this.service.getUser().id)   //in this is case User admin guest can also match if it is on the first
                     {
-                        this.allImages[i].sender=true; 
-                        this.filterImages.push(this.allImages[i]);
-                    }
-                    else if((this.allImages[i].senderId!=this.service.getUser().id || this.allImages[i].senderType==1))
-                    {
-                        this.allImages[i].sender=false; 
-                        this.filterImages.push(this.allImages[i]); 
-                    }
-                    else
-                    {
-                        for(var j=0;j<this.allImages[i].imageArray.length;j++)
+                        if(this.allImages[i].userType==2)
                         {
-                            if(this.allImages[i].imageArray[j].status=='A')
-                            {
-                                this.allImages[i].sender=false;                         
-                                this.filterImages.push(this.allImages[i]);   
-                            }
+                            this.allImages[i].senderName="Me"; 
+                            this.allImages[i].sender=true; 
+                            this.filterImages.push(this.allImages[i]); 
                         }
+                        else if(this.allImages[i].userType==1)
+                        {
+                            this.allImages[i].sender=false; 
+                            this.filterImages.push(this.allImages[i]);                             
+                        }   
+                    }
+                    else if((this.allImages[i].senderId!=this.service.getUser().id))
+                    {
+                        // if(this.allImages[i].userType==1)
+                        // {
+                        //     this.allImages[i].sender=false; 
+                        //     this.filterImages.push(this.allImages[i]);                              
+                        // }
+                        // else if(this.allImages[i].userType==2)
+                        // {
+                            for(var j=0;j<this.groups.length;j++)
+                            {
+                                if(this.groups[j].id==imageInfo.groupId)
+                                {
+                                    for(var k=0;k<this.groups[j].guestIds.length;k++)
+                                    {
+                                        if(this.service.getUser().id==this.groups[j].guestIds[k].id)
+                                        {
+                                            console.log("Image array length====="+this.allImages[i].imagesArray.length);
+                                         
+                                         
+                                            if(this.allImages[i].userType==1)
+                                            {
+                                                this.filterImages.push(Object.assign({},this.allImages[i]));    
+                                            }
+                                            else if(this.allImages[i].userType==2)
+                                            {
+                                                for(var l=0;l<this.allImages[i].imagesArray.length;l++)
+                                                {
+                                                    console.log("Image loop======"+this.allImages[i].imagesArray[l]+"index inner loop==="+l)
+                                                    if(this.allImages[i].imagesArray[l].status=='A')
+                                                    {
+                                                        this.allImages[i].sender=false;  
+                                                        this.newArray.push(Object.assign({}, this.allImages[i]))
+                                                        this.newArray[0].imagesArray=[];
+                                                        this.newArray[0].imagesArray.push(this.allImages[i].imagesArray[l])
+                                                        this.filterImages.push(Object.assign({},this.newArray[0]));   
+                                                        this.newArray=[];
+                                                    }
+                                                }  
+                                            }
+                                            
+                                        }
+                                    } 
+                                } 
+                            } 
+                        // }
+                         
+                       
                     }  
                } 
                

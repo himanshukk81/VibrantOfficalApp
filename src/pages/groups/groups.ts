@@ -99,10 +99,14 @@ export class createGroup
           }
           if(!this.guestExistInGroup)
           {
-            this.availableGuests.push(this.guests[i]);
+            if(this.guests[i].userId=this.service.getUser().id)
+            {
+              this.availableGuests.push(this.guests[i]);
+            } 
           }
         }
         console.log("Available Guests======="+JSON.stringify(this.availableGuests));
+        this.loader=false;
     })
     this.events.subscribe('group:created',groups=>{
       this.loader=false;
@@ -111,7 +115,7 @@ export class createGroup
 
     this.events.subscribe('fetch:guests',guests=>{ 
       this.guests=guests;
-
+    
       this.groupMessageService.getGroups(2);
     })
   }
@@ -132,13 +136,19 @@ export class createGroup
     this.loader=true;
     this.groupInfo.userId=this.service.getUser().id;
     this.groupInfo.id=this.service.getRandomString(5);
-    for(var i=0;i<this.guests.length;i++)
+    this.groupInfo.guestIds=[];
+
+    console.log("Availble  Guests====="+JSON.stringify(this.availableGuests));
+    for(var i=0;i<this.availableGuests.length;i++)
     {
-      if(this.guests[i].selected)
+      if(this.availableGuests[i].guestSelected)
       {
-        this.groupInfo.guestIds.push(this.guests[i].id);
+        console.log("Selected  availble");
+        this.groupInfo.guestIds.push(this.availableGuests[i].id);
       }
     }
+
+    console.log("Group infosssssss::::::::;"+JSON.stringify(this.groupInfo.guestIds));
     if(!this.groupInfo.name)
     {
       this.service.showToast2("Please Enter Your Group name");

@@ -324,6 +324,10 @@ export class MemberPage {
   ionViewDidLoad()
   {
     // this.loadMap()
+    this.userInfo.status=null;
+    this.userInfo.adultMember=0;
+    this.userInfo.childMember=0;
+    this.userInfo.comment='';
     this.platform.ready().then(() => {
       this.loadMap()
     })
@@ -395,7 +399,7 @@ export class MemberPage {
     this.userInfo.name=this.service.getUser().name;
     this.userInfo.userType=this.service.getUser().userType;
 
-
+    console.log("user info==========398"+JSON.stringify(this.userInfo));
     if(this.userInfo.status=='R')
     {
       if(!this.userInfo.comment)
@@ -403,6 +407,9 @@ export class MemberPage {
         this.service.showToast2("Please Enter Comment");
         return;
       }
+
+      this.presentConfirm();
+      
     }
     else
     {
@@ -416,8 +423,10 @@ export class MemberPage {
         this.service.showToast2("Please Enter Child Member ");
         return;
       }
-      this.eventService.updateEventStatus(this.userInfo) 
+      this.eventService.updateEventStatus(this.userInfo)
+     
     }
+   
   }
 
   presentConfirm()
@@ -445,6 +454,27 @@ export class MemberPage {
   }
   updateEventInformation()
   {
+
+    if(!this.eventInfo.title)
+    {
+      this.service.showToast2("Please Enter Title!")
+      return;
+    }
+    if(!this.eventInfo.date)
+    {
+      this.service.showToast2("Please Choose Date!")
+      return;
+    }
+    if(!this.eventInfo.time)
+    {
+      this.service.showToast2("Please Choose Time!")
+      return;
+    }
+    if(!this.eventInfo.venueName)
+    {
+      this.service.showToast2("Please Enter Venue Name!")
+      return;
+    }
     this.eventService.updateEvent(this.eventInfo)
   }
 }
