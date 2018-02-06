@@ -1434,6 +1434,79 @@ export class MessageService{
 
 
 
+    getMessages1(receiverId)
+    {
+      this.userMessages=[];  
+      var user=this.service.getUser();
+
+      if(!user)
+      {
+          return;
+      }
+          console.log("user info==="+JSON.stringify(user))
+          if(this.service.getUser().userType==1)
+          {
+            for(var i=0;i<this.allMessages.length;i++)
+            {
+                if(this.allMessages[i].senderId==this.service.getUser().id && this.allMessages[i].senderType==1)
+                {
+                    if(receiverId==0)
+                    {
+                        this.userMessages.push(this.allMessages[i]) 
+                        this.allMessages[i].sender=true;
+                    }
+                    else 
+                    {
+                        if(this.allMessages[i].receiverId==receiverId)
+                        {
+                            this.userMessages.push(this.allMessages[i])
+                            this.allMessages[i].sender=true; 
+                        }
+                    }
+                }
+                if(this.allMessages[i].receiverId==this.service.getUser().id && this.allMessages[i].receiverType==1)
+                {
+                    if(receiverId==0)
+                    {
+                        this.userMessages.push(this.allMessages[i])       
+                        this.allMessages[i].sender=false;
+                    }
+                    else
+                    {
+                        if(this.allMessages[i].receiverId==this.service.getUser().id && this.allMessages[i].senderId==receiverId)
+                        {                          
+                          this.userMessages.push(this.allMessages[i])       
+                          this.allMessages[i].sender=false; 
+                        }
+                    }
+                    
+                }
+            }
+          }
+          else if(this.service.getUser().userType==2)
+          {
+            for(var i=0;i<this.allMessages.length;i++)
+            {
+                if(this.allMessages[i].senderId==this.service.getUser().id && this.allMessages[i].senderType==2)
+                {
+                    this.userMessages.push(this.allMessages[i])   
+                    this.allMessages[i].sender=true;
+                }
+
+                else if((!this.allMessages[i].receiverId || this.allMessages[i].receiverId==0)&& this.allMessages[i].status=='A')
+                {
+                    this.userMessages.push(this.allMessages[i]) 
+                    this.allMessages[i].sender=false;
+                }
+                else if(this.allMessages[i].receiverId==this.service.getUser().id && this.allMessages[i].receiverType==2)
+                {
+                    this.userMessages.push(this.allMessages[i])   
+                    this.allMessages[i].sender=false;
+                }
+            }                                                                         
+          } 
+      this.events.publish('messages:fetches',this.userMessages);
+    }
 
     getMessages()
     {
@@ -1476,11 +1549,8 @@ export class MessageService{
                     }  
                     else if((!this.allMessages[i].receiverId || this.allMessages[i].receiverId==0) && this.allMessages[i].status=='A')
                     {
-                        if(this.allMessages[i].userId==this.service.getUser().userId)
-                        {
-                            this.allMessages[i].sender=false;
-                            this.userMessages.push(this.allMessages[i]);  
-                        }
+                        this.allMessages[i].sender=false;
+                        this.userMessages.push(this.allMessages[i]);
                     } 
                 }
                  
@@ -1612,33 +1682,26 @@ export class GroupImageService{
                                             console.log("Image array length====="+this.allImages[i].imagesArray.length);
                                          
                                          
-                                            // if(this.allImages[i].userType==1)
-
-                                            if(this.allImages[i].userId==this.service.getUser().userId)
+                                            if(this.allImages[i].userType==1)
                                             {
-                                                console.log("user id match");
-                                                if(this.allImages[i].userType==1)
-                                                {
-                                                    this.filterImages.push(Object.assign({},this.allImages[i]));    
-                                                }
-                                                else if(this.allImages[i].userType==2)
-                                                {
-                                                    for(var l=0;l<this.allImages[i].imagesArray.length;l++)
-                                                    {
-                                                        console.log("Image loop======"+this.allImages[i].imagesArray[l]+"index inner loop==="+l)
-                                                        if(this.allImages[i].imagesArray[l].status=='A')
-                                                        {
-                                                            this.allImages[i].sender=false;  
-                                                            this.newArray.push(Object.assign({}, this.allImages[i]))
-                                                            this.newArray[0].imagesArray=[];
-                                                            this.newArray[0].imagesArray.push(this.allImages[i].imagesArray[l])
-                                                            this.filterImages.push(Object.assign({},this.newArray[0]));   
-                                                            this.newArray=[];
-                                                        }
-                                                    }  
-                                                } 
+                                                this.filterImages.push(Object.assign({},this.allImages[i]));    
                                             }
-                                            
+                                            else if(this.allImages[i].userType==2)
+                                            {
+                                                for(var l=0;l<this.allImages[i].imagesArray.length;l++)
+                                                {
+                                                    console.log("Image loop======"+this.allImages[i].imagesArray[l]+"index inner loop==="+l)
+                                                    if(this.allImages[i].imagesArray[l].status=='A')
+                                                    {
+                                                        this.allImages[i].sender=false;  
+                                                        this.newArray.push(Object.assign({}, this.allImages[i]))
+                                                        this.newArray[0].imagesArray=[];
+                                                        this.newArray[0].imagesArray.push(this.allImages[i].imagesArray[l])
+                                                        this.filterImages.push(Object.assign({},this.newArray[0]));   
+                                                        this.newArray=[];
+                                                    }
+                                                }  
+                                            }
                                             
                                         }
                                     } 

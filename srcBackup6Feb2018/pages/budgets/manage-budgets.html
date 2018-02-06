@@ -1,0 +1,72 @@
+<!--
+  Generated template for the ManageBudgetsPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Manage Budgets</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="closeModal()">Close</button>
+      </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+
+        <ion-toolbar *ngIf="update">
+                <ion-segment [(ngModel)]="budgetType"  click="getPayments()" >
+                    <ion-segment-button value="1">Expense</ion-segment-button>
+                    <ion-segment-button value="2">Payments</ion-segment-button>
+                </ion-segment>
+        </ion-toolbar>
+
+   <ion-list *ngIf="budgetType==1">     
+        <ion-item>
+        <ion-label>Name</ion-label>
+        <ion-input type="text" [(ngModel)]="budget.name"></ion-input>
+        </ion-item>
+    
+        <ion-item>
+            <ion-label>Select Category</ion-label>
+            <ion-select type="text" [(ngModel)]="budget.categoryId">
+                <ion-option *ngFor="let category of categories"  value="{{category.id}}">{{category.name}}</ion-option> 
+            </ion-select>
+        </ion-item>
+
+        <ion-item>
+            <ion-label>Estimated Cost</ion-label>
+            <ion-input type="number" [(ngModel)]="budget.estimatedCost"></ion-input>
+        </ion-item> 
+
+        <ion-item>
+            <ion-label>Final Cost</ion-label>
+            <ion-input type="number" [(ngModel)]="budget.finalCost"></ion-input>
+        </ion-item> 
+
+        <ion-item>
+            <ion-label>Notes</ion-label>
+            <ion-input type="Text" [(ngModel)]="budget.Notes"></ion-input>
+        </ion-item> 
+        <button ion-button type="submit" block (click)="saveBudgetInfo()" [disabled]="loader" *ngIf="!update">Add Budget <ion-spinner name="circles" *ngIf="loader"></ion-spinner></button>
+        <button ion-button type="submit" block (click)="updateBudget()" [disabled]="loader" *ngIf="update">Update Budget <ion-spinner name="circles" *ngIf="loader"></ion-spinner></button>
+   </ion-list>   
+   <ion-list *ngIf="budgetType==2">    
+        <ion-list> 
+                <ion-item>
+                        <ion-label>Amount</ion-label>
+                        <ion-input type="text" [(ngModel)]="paymentInfo.amount"></ion-input><br/><br/>
+
+                </ion-item>
+
+                <div text-center>
+                    <button ion-button type="submit"  (click)="savePayments()" [disabled]="loader">Save<ion-spinner name="circles" *ngIf="loader"></ion-spinner></button>
+        
+                </div>        
+        </ion-list> 
+   </ion-list>        
+</ion-content>

@@ -1,0 +1,50 @@
+page-share-photo {
+    .message.left {
+        .msg-content {
+          float: left;
+        }
+        .msg-detail {
+          padding-left: 60px;
+        }
+        .user-img {
+          left: 0;
+        }
+        .msg-content {
+          color: #343434;
+          span.triangle {
+            border-top-width: 0;
+            border-right-width: 0;
+            left: -5px;
+          }
+        }
+  
+      }
+  
+      .message.right {
+        .msg-detail {
+          padding-right: 60px;
+          .msg-info {
+            text-align: right;
+          }
+        }
+        .user-img {
+          right: 0;
+        }
+        ion-spinner {
+          position: absolute;
+          right: 10px;
+          top: 50px;
+        }
+        .msg-content {
+          
+          float: right;
+          span.triangle {
+            
+            border-bottom-width: 0;
+            border-left-width: 0;
+            right: -5px;
+          }
+        }
+  
+      }
+}

@@ -1,0 +1,42 @@
+<!--
+  Generated template for the GuestInvitationPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+    <ion-navbar hideBackButton="true">
+      <button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+       
+      <ion-title>Invitation</ion-title>
+    </ion-navbar>
+    
+  </ion-header>
+
+
+<ion-content padding>
+
+    <ion-list>
+      <ion-item-sliding *ngFor="let invite of invitationList">
+          
+                     <ion-item>
+                         <h2>{{invite.name}}</h2>
+                    
+                     </ion-item>
+                  
+                     <ion-item-options>
+                       <button ion-button color="danger" (click)="rejectInvite(invite)"><p><ion-icon name="trash"></ion-icon> Delete</p></button>
+                     </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>  
+
+      <div text-center *ngIf="loader">
+          <ion-spinner name="circles" ></ion-spinner>
+      </div>  
+
+      <div text-center *ngIf="!loader && invitationList.length==0">
+          <h3>No Invitation Right Now</h3>
+      </div>  
+</ion-content>

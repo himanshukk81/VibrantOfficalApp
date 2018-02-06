@@ -34,7 +34,6 @@ export class HomePage {
   lat:any;
   lng:any;
   map: GoogleMap;
-  firstTimeLoad:boolean=false;
   constructor(public budgetservice:BudgetService ,public navCtrl: NavController,public http:Http,public camera: Camera,
     public actionCtrl:ActionSheetController,public socialSharing: SocialSharing,
     public service:SessionService,public platform:Platform,
@@ -44,45 +43,37 @@ export class HomePage {
     }
     ionViewDidLoad()
     {
-
-      if(!this.firstTimeLoad)
-      {
-        setTimeout(() => {  
-          this.budgetservice.getBudgets();         
-         },100); 
-         this.events.unsubscribe('budgets:fetch')
-         this.events.subscribe('budgets:fetch', budgets=> {
-  
-  
-            this.budgets=budgets
-            this.totalEstimateCost=0;
-            this.totalFinalCost=0;
-            this.totalPaid=0;
-            this.totalPending=0;  
-            
-            console.log("Budget info===="+JSON.stringify(budgets));
-            for(var i=0;i<this.budgets.length;i++)
-            {
-              this.totalEstimateCost+=parseInt(this.budgets[i].estimatedCost);
-              this.totalFinalCost+=parseInt(this.budgets[i].finalCost);
-              this.totalPaid+=parseInt(this.budgets[i].paid);
-            }
+      setTimeout(() => {  
+        this.budgetservice.getBudgets();         
+       },100); 
+       this.events.unsubscribe('budgets:fetch')
+       this.events.subscribe('budgets:fetch', budgets=> {
+          this.budgets=budgets
+          this.totalEstimateCost=0;
+          this.totalFinalCost=0;
+          this.totalPaid=0;
+          this.totalPending=0;  
+          
+          console.log("Budget info===="+JSON.stringify(budgets));
+          for(var i=0;i<this.budgets.length;i++)
+          {
+            this.totalEstimateCost+=parseInt(this.budgets[i].estimatedCost);
+            this.totalFinalCost+=parseInt(this.budgets[i].finalCost);
+            this.totalPaid+=parseInt(this.budgets[i].paid);
+          }
+    
+          if(this.totalFinalCost>=this.totalPaid)
+          {
+            this.totalPending=this.totalFinalCost-this.totalPaid;
+          }
+          else
+          {
+            this.totalPending=0;
+          }    
+          this.loader=false;
+          // this.closeModal();
       
-            if(this.totalFinalCost>=this.totalPaid)
-            {
-              this.totalPending=this.totalFinalCost-this.totalPaid;
-            }
-            else
-            {
-              this.totalPending=0;
-            }    
-            this.loader=false;
-            // this.closeModal();
-        
-         })
-         this.firstTimeLoad=true;
-      }
-      
+       })
     }
 
 

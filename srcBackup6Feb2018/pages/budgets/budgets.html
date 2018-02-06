@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-navbar>
+
+      <button ion-button menuToggle>
+          <ion-icon name="menu"></ion-icon>
+      </button>
+      <ion-title>Budgets</ion-title>
+      <ion-buttons end>
+        <button ion-button (click)="addBudget()">Add Budget</button>
+      </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+
+
+        <ion-card class="row">
+            <ion-card-content class="col-33">
+                Estimated Cost   <br/>
+
+
+               <h3 style="color:green"> {{totalEstimateCost}} </h3> <br/> 
+                Final Cost       <br/> 
+
+                <h3 style="color:red"> {{totalFinalCost}} </h3>
+            </ion-card-content>
+            <ion-card-content class="col-53">
+                    Paid   <br/> 
+                <h3 style="color:green">{{totalPaid}}</h3> <br/> 
+
+                    Pending <br/> 
+
+                <h3 style="color:red">{{totalPending}}</h3>
+            </ion-card-content>
+        </ion-card>
+      <ion-list>
+        <ion-item-sliding *ngFor="let budget of budgets">
+            <ion-item>
+                <h2>{{budget.name}}</h2>
+                <div>
+                    <span item-start>Cost  :{{budget.finalCost}}</span>
+
+                    <span item-end>Paid :{{budget.paid}}</span>
+                </div>
+            </ion-item>
+         
+            <ion-item-options>
+                <button ion-button color="primary" (click)="budgetDetail(budget)"><p><ion-icon name="paper"></ion-icon> Edit</p></button>
+              <button ion-button color="danger" (click)="removeBudget(budget)"><p><ion-icon name="trash"></ion-icon> Delete</p></button>
+            </ion-item-options>
+        </ion-item-sliding>
+          <div text-center *ngIf="loader">
+              <ion-spinner name="circles" ></ion-spinner>
+          </div>  
+    
+          <div text-center *ngIf="!loader && budgets.length==0">
+              <h3>No Budgets Right Now</h3>
+          </div>  
+      </ion-list>
+</ion-content>

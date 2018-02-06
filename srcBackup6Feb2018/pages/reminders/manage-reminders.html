@@ -31,10 +31,6 @@
           <ion-label>Time</ion-label>
           <ion-datetime displayFormat="h:mm A" pickerFormat="h:mm A" [(ngModel)]="reminder.time"></ion-datetime>
       </ion-item>
-
-      <ion-item>
-          {{reminder.time}}
-      </ion-item>
       <ion-item *ngIf="update">
         <ion-label>Select Status</ion-label>
         <ion-select type="text" [(ngModel)]="reminder.status">

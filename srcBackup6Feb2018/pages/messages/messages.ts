@@ -52,7 +52,6 @@ export class MessagesPage {
     this.events.unsubscribe('fetch:guests')
     this.events.unsubscribe('messages:fetches')
     this.events.subscribe('messages:fetches', messages1=> {        
-      this.messages=[];
       this.messages=messages1;
       this.loader=false;
       this.groupMessages=[];
@@ -97,11 +96,10 @@ export class MessagesPage {
     this.groupMessageService.getGroupMessages(this.groupMessageInfo)
   }
 
-  getIndividualMessages()
+  chooseMessageType()
   {
-    this.messageService.getMessages();
+    
   }
-
 
   sendGroupMessage()
   {

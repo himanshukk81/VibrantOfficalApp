@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-navbar hideBackButton="true">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+     
+    <ion-title>Home</ion-title>
+  </ion-navbar>
+  
+</ion-header>
+
+
+    <ion-content padding>
+      <h2 text-center> Budget</h2>
+      <ion-card class="row">
+        <ion-card-content class="col-33">
+            Estimated Cost   <br/>
+
+
+           <h3 style="color:green"> {{totalEstimateCost}} </h3> <br/> 
+            Final Cost       <br/> 
+
+            <h3 style="color:red"> {{totalFinalCost}} </h3>
+        </ion-card-content>
+        <ion-card-content class="col-53">
+                Paid   <br/> 
+            <h3 style="color:green">{{totalPaid}}</h3> <br/> 
+
+                Pending <br/> 
+
+            <h3 style="color:red">{{totalPending}}</h3>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-grid>
+        <ion-row>
+          <ion-col col-7>
+              <ion-fab >
+                  <button ion-fab color="primary" (click)="goToSharePhoto()">Share Photo</button>
+              </ion-fab>
+          </ion-col>  
+
+          <ion-col col-5>
+              <ion-fab>
+                  <button ion-fab color="primary" (click)="goToMessage()">Messages</button>
+              </ion-fab>
+          </ion-col>  
+        </ion-row> <br/><br/><br/><br/><br/><br/>
+        <ion-row>
+            <ion-col col-7>
+                <ion-fab>
+                    <button ion-fab color="primary" (click)="goToBudgets()">Budgets</button>
+                </ion-fab>
+            </ion-col>  
+  
+            <ion-col col-5>
+                <ion-fab>
+                    <button ion-fab color="primary" (click)="gotToEvent()">Events</button>
+                </ion-fab>
+            </ion-col>  
+          </ion-row>  
+      </ion-grid>  
+    </ion-content>
+
+
+
+

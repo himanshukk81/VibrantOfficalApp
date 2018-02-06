@@ -1,0 +1,127 @@
+<!--
+  Generated template for the ManageEventsPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+      <!-- <ion-buttons start>
+          <button ion-button icon-only (click)="closeModal()" >  <ion-icon name="close" md="md-close"> </ion-icon></button>        
+      </ion-buttons> -->
+    
+    <ion-title>Manage Events</ion-title>
+    <ion-buttons end>
+          <button ion-button icon-only (click)="updateEventInfo()"><ion-icon name="create"></ion-icon></button>
+          <!-- <button ion-button icon-only (click)="updateInvitationStatus()" *ngIf="userInfo.userType==2"><ion-icon name="create"></ion-icon></button> -->
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content >
+
+    
+
+    
+        <!-- <ion-searchbar [(ngModel)]="autocomplete.input" (click)="openPlaces()" *ngIf="userInfo.userType==1"></ion-searchbar> -->
+        <!-- <ion-list [hidden]="autocompleteItems.length == 0">
+            <ion-item *ngFor="let item of autocompleteItems" tappable (click)="selectSearchResult(item)">
+            {{ item.description }}
+            </ion-item>
+        </ion-list>     -->
+
+        <div  id="map" #map></div>
+        <!-- <div  #map><img src="../../assets/imgs/wedding-icon.png"></div> -->
+
+        <ion-scroll scrollY="true" style="overflow: hidden;white-space: nowrap; height:45%" >
+                <ion-toolbar *ngIf="userInfo.userType==1">
+                    <ion-segment [(ngModel)]="event.viewInfo">
+                        <ion-segment-button value="1">Detail</ion-segment-button>
+                        <ion-segment-button value="2">View Invitations</ion-segment-button>
+                    </ion-segment>
+                </ion-toolbar>
+
+                
+                <ion-list *ngIf="event.viewInfo==1 || userInfo.userType==2"> 
+                        <ion-item *ngIf="userInfo.userType==2">
+                                <h2 text-center>Detail</h2>
+                        </ion-item>    
+                        <ion-item>
+                            <ion-label>Title</ion-label>
+                            <ion-input type="text" [(ngModel)]="event.title" [disabled]="true"></ion-input>
+                        </ion-item> 
+                        
+                        <ion-item>
+                            <ion-label>Date</ion-label>
+                            <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="event.date" [disabled]="true"></ion-datetime>
+                        </ion-item>
+
+                        <ion-item>
+                            <ion-label>Time</ion-label>
+                            <ion-datetime pickerFormat="hh:mm A" [(ngModel)]="event.time" [disabled]="true" ></ion-datetime>
+                        </ion-item>
+
+                        <ion-item>
+                            <ion-label>Venue Name</ion-label>
+                            <ion-input type="text" [(ngModel)]="event.venueName" [disabled]="true"></ion-input>
+                        </ion-item> 
+
+
+                        <!-- <ion-item>
+                            <ion-label>Member</ion-label>
+                            <ion-input type="text" [(ngModel)]="event.member" [disabled]="true"></ion-input>
+                        </ion-item>  -->
+                        
+                        <ion-item>
+                            <ion-label>Address</ion-label>
+                            <ion-input type="text" [(ngModel)]="event.address" [disabled]="true"></ion-input>
+                        </ion-item>
+
+                        <!-- <ion-item>
+                            <ion-label>City</ion-label>
+                            <ion-input type="text" [(ngModel)]="event.city" [disabled]="true"></ion-input>
+                        </ion-item>
+
+                        <ion-item>
+                            <ion-label>State</ion-label>
+                            <ion-input type="text" [(ngModel)]="event.State" [disabled]="true"></ion-input>
+                        </ion-item>
+
+                        <ion-item>
+                            <ion-label>Zip</ion-label>
+                            <ion-input type="text" [(ngModel)]="event.zipCode" [disabled]="true"></ion-input>
+                        </ion-item> -->
+                        <ion-item>
+                            <ion-label>Description</ion-label>
+                            <ion-input type="text" [(ngModel)]="event.description" [disabled]="true"></ion-input>
+                        </ion-item>
+                </ion-list>    
+                <ion-list *ngIf="event.viewInfo==2">
+                        <!-- <h2 text-center> <a (click)="viewInvitation()" ><ion-icon name="eye"></ion-icon></a></h2> -->
+                        <ion-card class="row">
+                                <ion-card-content class="col-33">
+                                    <a (click)="viewInvitation(1)">Total Invites</a>   <br/>
+                    
+                    
+                                   <h3 style="color:green"> {{event.totalInvites}}</h3> <br/> 
+                                   <a (click)="viewInvitation(2)">Total Approve </a>      <br/> 
+                    
+                                    <h3 style="color:green"> {{event.approve}} </h3>
+                                </ion-card-content>
+                                <ion-card-content class="col-53">
+                                    <a (click)="viewInvitation(3)">  Total Reject </a>  <br/> 
+                                    <h3 style="color:red">{{event.reject}}</h3> <br/> 
+                    
+                                    <a (click)="viewInvitation(4)"> Total Pending </a> <br/> 
+                    
+                                    <h3 style="color:red">{{event.totalInvites-(event.approve+event.reject)}}</h3>
+                                </ion-card-content>
+                        </ion-card>
+                </ion-list>   
+
+        </ion-scroll>  
+    
+   
+</ion-content>

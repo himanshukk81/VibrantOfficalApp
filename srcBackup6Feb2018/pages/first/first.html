@@ -1,0 +1,21 @@
+<ion-content padding>
+  <div text-center style="margin-top:20%"> 
+      <h2>Select User Type</h2>
+  </div>
+
+ 
+  <div text-center style="margin-top:35%"> 
+    <button ion-button color="{{userButtonColor}}" (click)="selectedUser(1)">User</button> <br/><br/><br/>
+    <button ion-button color="{{joinneButtonColor}}" (click)="selectedUser(2)">Joinne</button>
+
+  </div>
+ 
+  <div text-center style="margin-top:10%"> 
+      <button ion-button  [navPush]="pushPage" [navParams]="params" [disabled]="!selectedUserInfo">
+          <div>
+            <ion-icon name='ios-arrow-dropright'></ion-icon>
+            <label>Next</label>
+          </div>
+      </button>
+  </div>  
+</ion-content>

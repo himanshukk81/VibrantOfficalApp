@@ -33,8 +33,7 @@ import { GroupsPage,createGroup} from '../pages/groups/groups';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
   @ViewChild(NavController) navCtrl: NavController;
-  rootPage: any=FirstPage ;
-  
+  rootPage: any=FirstPage;
   headers:any;
   pages: Array<{title: string, component: any}>;
   userInfo1:any={};
@@ -72,19 +71,6 @@ export class MyApp {
           ];
         } 
       })
-
-      this.platform.ready().then((readySource) => {
-        this.localNotifications.on('click', (notification, state) => {
-          
-          let json = JSON.parse(notification.data);
-          console.log("Notify user======="+json);
-          let alert = alertCtrl.create({
-            title: notification.title,
-            subTitle: json.mydata
-          });
-          alert.present();
-        })
-      });
       // rootPage: any=MessagesPage;
       this.initializeApp();
 
@@ -103,7 +89,7 @@ export class MyApp {
       this.checkUserStatus();
       // this.initPushNotification();
       this.checkNetwork();
-      // this.initLocalNotification()
+      this.initLocalNotification()
       this.enableLocation();
       // this.initLocalNotification();
     });
@@ -187,7 +173,6 @@ export class MyApp {
   {
     this.localNotifications.on('click', (notification, state) => {
       let json = JSON.parse(notification.data);      
-      alert("Notify reminder----------------------------");
       console.log("Notify local notification=="+json);
       // alert("Notificy")
       // let json = JSON.parse(notification.data);

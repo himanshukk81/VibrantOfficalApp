@@ -1,0 +1,38 @@
+<ion-header>
+        <ion-navbar>
+            <ion-title>Manage Group</ion-title>
+            <ion-buttons end>
+                <button ion-button icon-only (click)="createGroup()"> 
+                    <ion-icon ios="ios-checkbox-outline" md="md-checkbox-outline"></ion-icon> </button>
+            </ion-buttons>
+            <ion-buttons end>
+                    <button ion-button (click)="closeModal()">Close</button>
+            </ion-buttons>        
+    
+        </ion-navbar>
+</ion-header>
+        
+        
+        <ion-content padding>
+            
+          <ion-list>
+                <ion-item> 
+                        <ion-label>Group Name</ion-label>
+                        <ion-input type="text" [(ngModel)]="groupInfo.name"></ion-input>
+                </ion-item>    
+
+                <ion-item> 
+                        <ion-label>Guests</ion-label>
+                </ion-item>        
+                <ion-list>
+                        <ion-item *ngFor="let guest of availableGuests">
+
+                                <ion-label>{{guest.name}}</ion-label>
+                                <ion-checkbox [(ngModel)]="guest.guestSelected"></ion-checkbox>
+                             
+                        </ion-item>          
+                </ion-list>
+          </ion-list>    
+
+          <h3 text-center style="color:red" *ngIf="!loader && availableGuests.length==0">No Guest Available</h3>
+        </ion-content>

@@ -1,0 +1,41 @@
+
+<ion-header no-border>
+  <ion-navbar hideBackButton="true" color="secondary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+   <ion-title>Events</ion-title>
+ </ion-navbar>
+</ion-header>
+ 
+<ion-content fullscreen parallax-header>
+    <ion-searchbar [(ngModel)]="filter1"></ion-searchbar>
+     <div text-center *ngIf="loader">
+      <ion-spinner name="bubbles"></ion-spinner>
+     </div> 
+    <div class="main-content">
+        <ion-card *ngFor="let event of eventList | eventfilter:filter1" (click)="eventDetail(event)">
+          <ion-item>
+            <h2>{{event.name}}</h2>
+            <h3>{{event.venueName}}</h3>
+            
+            <p>{{event.date | date:'medium'}}</p>
+          </ion-item>
+          <div *ngIf="!event.imageUrl">
+            
+            <img src="assets/imgs/wedding-icon.png" />
+          </div>
+          <div *ngIf="event.imageUrl">
+            <img [src]="event.imageUrl" >
+          </div>    
+          
+          <ion-card-content>
+             {{event.description}}
+          </ion-card-content>
+ 
+        </ion-card>
+        <ion-card *ngIf="(eventList | eventfilter:filter1).length==0 && !loader">
+            <h2 style="color:red" text-center>No Match For Event</h2>
+        </ion-card>  
+    </div>
+</ion-content>

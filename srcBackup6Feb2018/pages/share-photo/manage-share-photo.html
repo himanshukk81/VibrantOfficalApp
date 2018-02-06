@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Share Image
+    </ion-title>
+    <ion-buttons end>
+        <button ion-button (click)="closeModal()">Close</button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+        <ion-list>
+            <ion-item end>
+                <!-- <button ion-button (click)="sharePhoto()" [disabled]="imageInfo.imagesArray.length==0 || loader">Shared</button> -->
+                <!-- <button ion-button (click)="sharePhoto()"  [disabled]="loader">Shared</button> -->
+                <button ion-button (click)="sharePhoto()" [disabled]="imageInfo.imagesArray.length==0 || loader">Shared</button>
+            </ion-item> 
+
+
+            <ion-item>
+                <ion-label>Share ImageType</ion-label>
+                <ion-select type="text" [(ngModel)]="imageInfo.imageType">  
+                        <ion-option  value="1">Individual</ion-option>
+                        <ion-option  value="2">Group</ion-option>
+                </ion-select>
+            </ion-item>    
+            <ion-item *ngIf="userInfo.userType==1 && imageInfo.imageType==1">
+                    <ion-label>Select Guest</ion-label>
+                    <ion-select type="text" [(ngModel)]="imageInfo.guestId">
+                        <ion-option  value="0">ALL</ion-option>  
+                        <ion-option *ngFor="let guest of guests"  value="{{guest.id}}">{{guest.name}}</ion-option> 
+                    </ion-select>
+            </ion-item> 
+
+
+            <ion-item *ngIf="imageInfo.imageType==2">
+                <ion-label>Select Group</ion-label>
+                 
+                <ion-select type="text" [(ngModel)]="imageInfo.groupId" (ionChange)="getGroupImages($event)"> 
+                        <!-- <ion-option  value="">Select Group</ion-option> -->
+                        <ion-option *ngFor="let group of groups"  value="{{group.id}}">{{group.name}}</ion-option> 
+                </ion-select>
+            </ion-item> 
+            <div text-center *ngIf="loader">
+                <ion-spinner name="circles" ></ion-spinner>
+            </div>
+            <ion-item>
+              <ion-input type="text" [(ngModel)]="imageInfo.message" placeholder="Enter Message"></ion-input> <br/>
+            </ion-item>  
+            <ion-item *ngFor="let image of imageInfo.imagesArray">      
+                <p><img src="{{image.imageUrl}}" *ngIf="image.imageUrl"></p>
+            </ion-item>
+        </ion-list>    
+</ion-content>
+
+
+<ion-footer>
+    <ion-toolbar>
+        <button ion-button (click)="chooseImages()">Choose Image</button>
+    </ion-toolbar>
+</ion-footer>

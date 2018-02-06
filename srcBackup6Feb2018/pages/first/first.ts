@@ -4,8 +4,6 @@ import { LoginPage } from '../../pages/Login/Login';
 import * as firebase from 'firebase';
 import { AngularFireDatabase, FirebaseListObservable,AngularFireDatabaseModule} from 'angularfire2/database-deprecated';
 import { SessionService } from '../../app/sessionservice';
-var moment = require('moment');
-
 
 /**
  * Generated class for the FirstPage page.
@@ -43,16 +41,6 @@ export class FirstPage {
   }
 
   ionViewDidLoad() {
-
-    // var day = moment(new Date());
-    // var tommorow= new Date().getMonth()
-    // moment().set('year', 2019);
-    var day=moment(new Date()).set('year', 2019).format('MMMM Do YYYY, h:mm:ss a');
-    console.log("Hour==="+moment().get('hour')); 
-    console.log("Day======="+day);
-
-
-    console.log("Unix time==="+moment(new Date()));
     this.userInfo.phoneNumber=9971672881;
     console.log('ionViewDidLoad FirstPage');
   }

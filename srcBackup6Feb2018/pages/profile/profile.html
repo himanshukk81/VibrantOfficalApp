@@ -1,0 +1,72 @@
+<style media="screen">
+    .plainText {
+        text-decoration: none;
+    }
+</style>
+
+
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Profile</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content class="home">
+    <ion-card>
+        <ion-card-content>
+            <ion-card-title>
+               <p *ngIf="user['email']">{{user.email}}</p>
+               <p *ngIf="user['mobile']">{{user.mobile}}</p>
+            </ion-card-title>
+            
+        </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+        <ion-card-header>
+            Detail
+        </ion-card-header>
+        <ion-card-content>
+        </ion-card-content>
+        <ion-list>
+            <button ion-item *ngIf="user['email']">
+                <ion-icon name="mail" item-left></ion-icon>
+                <a class="plainText" href="{{user.email}}">{{user.email}}</a>
+            </button>
+            <button ion-item *ngIf="user['name']">
+                <ion-icon name="mail" item-left></ion-icon>
+                <a class="plainText">{{user.name}}</a>
+            </button>
+            <!-- <button ion-item>
+                <ion-icon name="mail" item-left></ion-icon>
+                <a class="plainText" *ngIf="user.userType==1">Admin</a>
+                <a class="plainText" *ngIf="user.userType==2">Guests</a>
+            </button> -->
+
+            <button ion-item *ngIf="user['mobile']">
+                <ion-icon name="mail" item-left></ion-icon>
+                <a class="plainText">{{user.mobile}}</a>
+            </button>
+
+
+            <!-- <button ion-item *ngIf="user['name']">
+                <ion-icon name="call" item-left></ion-icon>
+                <a class="plainText" href="tel:+"+{{user.mobile}}>{{user.name}}</a>
+            </button> -->
+
+            <!-- <button ion-item *ngIf="user['mobile']" > 
+                <ion-icon name="call" item-left></ion-icon>
+                <a class="plainText" href="tel:+"+{{user.mobile}}>{{user.mobile}}</a>
+            </button>
+
+            <button ion-item *ngIf="user['address']" >
+                <ion-icon name="call" item-left></ion-icon>
+                <a class="plainText" href="tel:+"+{{user.mobile}}>{{user.address}}</a>
+            </button> -->
+        </ion-list>
+    </ion-card>
+</ion-content>
