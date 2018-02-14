@@ -24,7 +24,7 @@
     <ion-list> 
             <ion-item>
                 <ion-label>Message Type</ion-label>
-                <ion-select type="text" [(ngModel)]="groupInfo.messageTypeInfo">  
+                <ion-select type="text" [(ngModel)]="groupInfo.messageTypeInfo" (ionChange)="filterUser($event)">  
                         <ion-option  value="1">Individual</ion-option>
                         <ion-option  value="2">Group</ion-option>
                 </ion-select>
@@ -46,17 +46,36 @@
         </ion-segment>
     </ion-toolbar>
     <ion-list>
-        <ion-item *ngIf="filterInput.selectedUserType==2 && groupInfo.messageTypeInfo==1">
+        <!-- <ion-item *ngIf="filterInput.selectedUserType==2 && groupInfo.messageTypeInfo==1">
             <ion-label>Select Guest</ion-label>
-            <ion-select type="text" [(ngModel)]="filterInput.guestId" (click)="filterGuestImages()">
+            <ion-select type="text" [(ngModel)]="filterInput.guestId" (ionChange)="filterGuestImages($event)">
+                <ion-option  value="0">ALL</ion-option>  
+                <ion-option *ngFor="let guest of guests"  value="{{guest.id}}">{{guest.name}}</ion-option> 
+            </ion-select>
+        </ion-item>  -->
+
+        <ion-item *ngIf="groupInfo.messageTypeInfo==1 && userInfo.userType==1">
+            <ion-label>Select Guest</ion-label>
+            <ion-select type="text" [(ngModel)]="filterInput.guestId" (ionChange)="filterGuestImages($event)">
                 <ion-option  value="0">ALL</ion-option>  
                 <ion-option *ngFor="let guest of guests"  value="{{guest.id}}">{{guest.name}}</ion-option> 
             </ion-select>
         </ion-item> 
+
+        <ion-item *ngIf="filterInput.selectedUserType==2">
+            <ion-label>Approve Guest</ion-label>
+            <ion-select type="text" [(ngModel)]="filterInput.approveGuestId">
+                <ion-option  value="0">ALL</ion-option>  
+                <ion-option *ngFor="let guest of guests"  value="{{guest.id}}">{{guest.name}}</ion-option> 
+            </ion-select>
+        </ion-item> 
+
+
+       
         
         <!-- {{userInfo.userType}} -->
-        <ion-item *ngIf="filterInput.selectedUserType==2 && images.length>0">
-         <button ion-button (click)="approveImage1()">ApproveImages</button>
+        <ion-item *ngIf="groupInfo.messageTypeInfo==1 && filterInput.selectedUserType==2">
+         <button ion-button (click)="approveImage1()">Approve Images</button>
         </ion-item> 
 
         <ion-item *ngIf="groupInfo.messageTypeInfo==2 && groupImages.length>0 && userInfo.userType==1 ">
@@ -70,14 +89,14 @@
                     <!-- dfgdfhgjdfj -->
                 <!-- {{image.imagesArray}} -->
                 <!-- <p *ngIf="image.message">{{image.message}}</p><br/> -->
+                <span *ngIf="image.message">{{image.message}}</span><br/>    
+                <h2 *ngIf="image.senderName"><b>Sender Name</b> {{image.senderName}}</h2>
+                <h2 *ngIf="image.receiverName && groupInfo.messageTypeInfo==1 && userInfo.userType==1"><b>Receiver Name</b> {{image.receiverName}}</h2>
+                
+                <span *ngIf="image.userType==2"><b>User Type:-</b>Guest</span><br/>    
+                <span *ngIf="image.userType==1"><b>User Type:-</b>Admin</span><br/>   
                 <ion-item *ngFor="let obj of image.imagesArray">
-                    
-                    <!-- <span >{{obj.imageUrl}}</span> -->
-                    <span>{{image.message}}</span><br/>    
                     <span><img [src]="obj.imageUrl" style="width:50px;height:50px" imageViewer></span><br/>
-                    
-                     <!-- user type {{filterInput.selectedUserType}}   Status {{obj.status}} -->
-                    <!-- <span *ngIf="filterInput.selectedUserType==2 && obj.status=='P'"><ion-checkbox [(ngModel)]="obj.selected"></ion-checkbox></span>   -->
                     <span *ngIf="filterInput.selectedUserType==2 && obj.status=='P'" style="color:red">Pending<input type="checkbox" [(ngModel)]="obj.selected" /></span>
                     <span *ngIf="filterInput.selectedUserType==2 && obj.status=='A'" style="color:green">Approved</span>
                 </ion-item>
@@ -91,23 +110,32 @@
                 <div *ngIf="groupInfo.messageTypeInfo==2">
                     <div *ngFor="let groupImage of groupImages">  
                         <span>{{groupImage.message}}</span><br/>
+                        <h2 *ngIf="groupImage.senderName"><b>Sender Name</b> {{groupImage.senderName}}</h2>
+                        <h2 *ngIf="groupImage.receiverName && groupInfo.messageTypeInfo==1 &&  userInfo.userType==1"><b>Receiver Name</b> {{groupImage.receiverName}}</h2>
+                        <span *ngIf="groupImage.userType==2"><b>User Type </b>Guest</span>    
+                        <span *ngIf="groupImage.userType==1"><b>User Type </b>Admin</span>    
+                        
                         <div *ngFor="let obj of groupImage.imagesArray"> 
                             <div class="item row">                        
-                                <!-- <span align="right" class="col col-50" *ngIf="obj.sender"><img [src]="obj.imageUrl" style="width:50px;height:50px" imageViewer></span>   
-                                <span align="left" class="col col-50"  *ngIf="!obj.sender"><img [src]="obj.imageUrl" style="width:50px;height:50px" imageViewer>
-                                    <span *ngIf="obj.status=='P' && userInfo.userType==1"><ion-checkbox [(ngModel)]="obj.selected"></ion-checkbox><b style="color:red">Pending</b></span>
-                                    <span *ngIf="obj.status=='A' && userInfo.userType==1"><b style="color:green">Approve</b></span>                              
-                                </span>     -->
 
-                                <span align="right" class="col col-50" *ngIf="obj.sender"><span ><img [src]="obj.imageUrl" style="width:50px;height:50px" imageViewer></span><br/><span><b>Sender Name</b>{{obj.senderName}}</span> </span>   
-                                <span align="left" class="col col-50"  *ngIf="!obj.sender"><span ><img [src]="obj.imageUrl" style="width:50px;height:50px" imageViewer></span><br/>
-                                     
-                                    <span *ngIf="obj.status=='P' && userInfo.userType==1"><ion-checkbox [(ngModel)]="obj.selected"></ion-checkbox><b style="color:red">Pending</b></span>
-                                    <span *ngIf="obj.status=='A' && userInfo.userType==1"><b style="color:green">Approve</b></span><br/><br/>
-                                    <span><b>Sender Name</b>{{obj.senderName}}</span>
-                                    <span *ngIf="userInfo.userType==1 && obj.userType==2"><b>User Type:-</b>Guest</span>    
-                                    <span *ngIf="userInfo.userType==2 && obj.userType==1"><b>User Type:-</b>Admin</span>    
-                                    <span *ngIf="userInfo.userType==2 && obj.userType==2"><b>User Type:-</b>Guest</span>    
+                                <span align="right" class="col col-50" *ngIf="obj.sender"><img [src]="obj.imageUrl" style="width:50px;height:50px" imageViewer></span><br/><br/>   
+                                <span align="left" class="col col-50"  *ngIf="!obj.sender"><img [src]="obj.imageUrl" style="width:50px;height:50px" imageViewer><br/><br/>
+                                    <span *ngIf="obj.status=='P' && userInfo.userType==1"><ion-checkbox [(ngModel)]="obj.selected"></ion-checkbox><b style="color:red">Pending</b></span><br/><br/>
+                                    <span *ngIf="obj.status=='A' && userInfo.userType==1"><b style="color:green">Approve</b></span>
+                                        <!-- </span>  -->
+
+                                        <!-- <span align="right" class="col col-50" *ngIf="obj.sender"><span >{{obj.imageUrl}}</span><br/><span><b>Sender Name</b>{{obj.senderName}}</span> </span>   
+                                        <span align="left" class="col col-50"  *ngIf="!obj.sender"><span >{{obj.imageUrl}}</span><br/> -->
+
+                                        <!-- <span align="right" class="col col-50" *ngIf="obj.sender"><span ><img [src]="obj.imageUrl" style="width:50px;height:50px" ></span><br/><span *ngIf="obj.senderName"><b>Sender Name</b>{{obj.senderName}}</span> </span>   
+                                        <span align="left" class="col col-50"  *ngIf="!obj.sender"><span ><img [src]="obj.imageUrl" style="width:50px;height:50px"></span><br/> -->
+                                            
+                                            <!-- <span *ngIf="obj.status=='P' && userInfo.userType==1"><ion-checkbox [(ngModel)]="obj.selected"></ion-checkbox><b style="color:red">Pending</b></span>
+                                            <span *ngIf="obj.status=='A' && userInfo.userType==1"><b style="color:green">Approve</b></span><br/><br/> -->
+                                            <!-- <span *ngIf="obj.senderName"><b>Sender Name  </b>  {{obj.senderName}}</span>
+                                            <span *ngIf="userInfo.userType==1 && obj.userType==2"><b>User Type:-</b>Guest</span>    
+                                            <span *ngIf="userInfo.userType==2 && obj.userType==1"><b>User Type:-</b>Admin</span>    
+                                            <span *ngIf="userInfo.userType==2 && obj.userType==2"><b>User Type:-</b>Guest</span>     -->
                                 </span>    
                             </div>
                         </div>    
@@ -121,7 +149,15 @@
                     </ion-item>
                 </ion-item> -->
 
-                <h3 *ngIf="groupImages.length==0 && !loader && groupInfo.groupId" style="color:red">No Image Available</h3>
+
+                <div *ngIf="groupInfo.messageTypeInfo==2">
+                        <h3 *ngIf="groupImages.length==0 && !loader && groupInfo.groupId" style="color:red">No Image Available for group</h3>
+                </div>
+                
+                <div *ngIf="groupInfo.messageTypeInfo==1 && image">
+                        <h3 *ngIf="image.imagesArray.length==0 && !loader" style="color:red">No Image Available for Individual</h3>
+                </div>
+                
             <!-- </ion-list>    -->
         <!-- </ion-list>     -->
 

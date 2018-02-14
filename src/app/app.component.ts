@@ -34,6 +34,7 @@ export class MyApp {
   @ViewChild(Nav) nav: Nav;
   @ViewChild(NavController) navCtrl: NavController;
   rootPage: any=FirstPage ;
+  // rootPage: any;
   
   headers:any;
   pages: Array<{title: string, component: any}>;
@@ -86,7 +87,7 @@ export class MyApp {
         })
       });
       // rootPage: any=MessagesPage;
-      this.initializeApp();
+      // this.initializeApp();
 
   }
   
@@ -98,7 +99,7 @@ export class MyApp {
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
-      this.splashScreen.hide();
+      
 
       this.checkUserStatus();
       // this.initPushNotification();
@@ -171,7 +172,7 @@ export class MyApp {
                 else
                 {
                   this.service.showToast("No Data===");
-                  this.rootPage=LoginPage;
+                  this.rootPage=FirstPage;
                 }       
             },
             error =>{
@@ -181,6 +182,12 @@ export class MyApp {
               this.rootPage=FirstPage;
             }  
         );
+
+
+        setTimeout(()=>{
+          this.splashScreen.hide();
+        },1000)
+        
   }
 
   initLocalNotification()
@@ -257,8 +264,8 @@ export class MyApp {
             // console.log('Buy clicked');
             // this.native.clear()        
               // .then(()=>{
-                // this.service.setUser(null);
-                // this.nativeStorage.clear();
+                this.service.setUser(null);
+                this.nativeStorage.clear();
                 this.nav.setRoot(FirstPage);
                 this.nav.popToRoot();
               },

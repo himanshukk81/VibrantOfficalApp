@@ -62,7 +62,7 @@
                         <button ion-button (click)="approveMessage1()">Approve Message</button>
                 </ion-item>
                 
-                <ion-item *ngIf="userInfo.userType==1 && groupMessages.pending>0">
+                <ion-item *ngIf="userInfo.userType==1 && groupMessages.pending>0 && groupMessages.length>0">
                         <button ion-button (click)="approveGroupMessages()">Approve Group Message</button>
                 </ion-item>
                 <div *ngIf="messageTypeInfo==2">
@@ -87,7 +87,7 @@
                                     <span align="right" class="col col-50" *ngIf="message.sender">{{message.editorMsg}}</span>   
                                     <span align="left" class="col col-50"  *ngIf="!message.sender">{{message.editorMsg}}<br/>
                                         
-                                        sender {{message.senderName}}    
+                                        <b>sender</b> {{message.senderName}} <br/>
                                     <!-- user Type {{userInfo.userType}}     status {{groupMessage.status}}    -->
                                     <span *ngIf="message.status=='P' && userInfo.userType==1">Pending <ion-checkbox [(ngModel)]="message.selected"></ion-checkbox><b style="color:yellow">Pending</b></span>
                                     <span *ngIf="message.status=='A' && userInfo.userType==1">Approve <b style="color:green">Approve</b></span>                              

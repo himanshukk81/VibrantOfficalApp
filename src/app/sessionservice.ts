@@ -103,7 +103,7 @@ export class SessionService {
                 },
             error =>{
                 var message="stored location error="+error;
-                 this.showToast(message)
+                this.showToast(message)
             } 
         );
         this.userInfo=userLocation;
@@ -254,29 +254,29 @@ export class EventService{
     userEvents:any=[];
     guestList:any=[];
     eventInvitations:any=[];
-    eventList:any=[{id:1,userId:1,title:"Wedding 1", date:new Date(),venueName:"Hilton Prague Old Town",address:"Okhla",city:"New Delhi",
+    eventList:any=[{id:1,userId:1,title:"Wedding 1", date:new Date(),time:new Date(),venueName:"Hilton Prague Old Town",address:"Okhla",city:"New Delhi",
     State:"Delhi",zipCode:"110020",description:"this is best wedding",lat:28.5609534,lng:77.2748794,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
-    {id:2,userId:1,title:"Wedding 2", date:new Date(),venueName:"Card Wala",address:"Lajpat Nagar",city:"New Delhi",
+    {id:2,userId:1,title:"Wedding 2", date:new Date(),time:new Date(),venueName:"Card Wala",address:"Lajpat Nagar",city:"New Delhi",
     State:"Delhi",zipCode:"110024",description:"this is Excellent",lat:28.5697126,lng:77.2326572,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
-    {id:3,userId:1,title:"Wedding 3", date:new Date(),venueName:"Delhi Wedding Venue",address:"Malviya Nagar",city:"New Delhi",
+    {id:3,userId:1,title:"Wedding 3", date:new Date(),time:new Date(),venueName:"Delhi Wedding Venue",address:"Malviya Nagar",city:"New Delhi",
     State:"Delhi",zipCode:"110017",description:"this is best wedding",lat:28.5697078,lng:77.2063924,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
-    {id:4,userId:1,title:"Wedding 4", date:new Date(),venueName:"YSD Event Management",address:"Laxmi nagar",city:"New Delhi",
+    {id:4,userId:1,title:"Wedding 4", date:new Date(),time:new Date(),venueName:"YSD Event Management",address:"Laxmi nagar",city:"New Delhi",
     State:"Delhi",zipCode:"110092",description:"this is best wedding",lat:28.5696314,lng:77.1013261,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
-    {id:5,userId:2,title:"Wedding 5", date:new Date(),venueName:"Khushi Party Hall",address:"Pritam Pura",city:"New Delhi",
+    {id:5,userId:2,title:"Wedding 5", date:new Date(),time:new Date(),venueName:"Khushi Party Hall",address:"Pritam Pura",city:"New Delhi",
     State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.6632901,lng:77.1377298,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
-    {id:6,userId:2,title:"Wedding 6", date:new Date(),venueName:"Kumkum Marriage Hall",address:"Shalimar bagh",city:"New Delhi",
+    {id:6,userId:2,title:"Wedding 6", date:new Date(),time:new Date(),venueName:"Kumkum Marriage Hall",address:"Shalimar bagh",city:"New Delhi",
     State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.6632901,lng:77.1377298,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
-    {id:7,userId:2,title:"Wedding 7", date:new Date(),venueName:"abcd",address:"Punjabi bagh",city:"New Delhi",
+    {id:7,userId:2,title:"Wedding 7", date:new Date(),time:new Date(),venueName:"abcd",address:"Punjabi bagh",city:"New Delhi",
     State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.7609534,lng:77.2377298,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
-    {id:8,userId:3,title:"Wedding 8", date:new Date(),venueName:"xyz",address:"Laxmi nagar",city:"New Delhi",
+    {id:8,userId:3,title:"Wedding 8", date:new Date(),time:new Date(),venueName:"xyz",address:"Laxmi nagar",city:"New Delhi",
     State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.6832901,lng:77.1577298,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
-    {id:9,userId:3,title:"Wedding 9", date:new Date(),venueName:"poppp",address:"Jamia",city:"New Delhi",
+    {id:9,userId:3,title:"Wedding 9", date:new Date(),time:new Date(),venueName:"poppp",address:"Jamia",city:"New Delhi",
      State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.7232901,lng:77.1477298,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
-    {id:10,userId:4,title:"Wedding 10", date:new Date(),venueName:"koierur",address:"Sarita vihar",city:"New Delhi",
+    {id:10,userId:4,title:"Wedding 10", date:new Date(),time:new Date(),venueName:"koierur",address:"Sarita vihar",city:"New Delhi",
     State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.7832901,lng:77.2377298,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
-    {id:11,userId:4,title:"Wedding 11", date:new Date(),venueName:"kloper",address:"Badarpur",city:"New Delhi",
+    {id:11,userId:4,title:"Wedding 11", date:new Date(),time:new Date(),venueName:"kloper",address:"Badarpur",city:"New Delhi",
     State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.8032901,lng:77.2377298,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
-    {id:12,userId:1,title:"Wedding 12", date:new Date(),venueName:"wertryui",address:"Anand Vihar",city:"New Delhi",
+    {id:12,userId:1,title:"Wedding 12", date:new Date(),time:new Date(),venueName:"wertryui",address:"Anand Vihar",city:"New Delhi",
     State:"Delhi",zipCode:"110034",description:"this is best wedding",lat:28.8132901,lng:77.4377298,member:0,approve:0,reject:0,pending:0,guestInfos:[]},
     ]
     
@@ -454,7 +454,7 @@ export class GuestService{
         this.Guests=
         [{"id":1,"name":"Himanshu","mobile":"9971672881","guestTypeId":1,"userId":1,"uniqueId":"abcd","eventIds":[{"eventId":1,"status":"P"},{"eventId":2,"status":"P"}],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0},
         {"id":2,"name":"Shahid","mobile":"9891914661","guestTypeId":1,"userId":1,"uniqueId":"xyz","eventIds":[{"eventId":1,"status":"P"},{"eventId":5,"status":"P"},{"eventId":6,"status":"P"}],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0},
-        {"id":3,"name":"Manoj","mobile":"98745612312","guestTypeId":2,"userId":2,"uniqueId":"nma1","eventIds":[{"eventId":3,"status":"P"},{"eventId":4,"status":"P"},{"eventId":1,"status":"P"}],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0},
+        {"id":3,"name":"Manoj","mobile":"98745612312","guestTypeId":2,"userId":1,"uniqueId":"nma1","eventIds":[{"eventId":3,"status":"P"},{"eventId":4,"status":"P"},{"eventId":1,"status":"P"}],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0},
         {"id":4,"name":"Yash","mobile":"789456123123","guestTypeId":3,"userId":4,"uniqueId":"pot","eventIds":[{"eventId":10,"status":"P"},{"eventId":11,"status":"P"}],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0},
         {"id":5,"name":"Rahul","mobile":"78945612354","guestTypeId":1,"userId":3,"uniqueId":"nope","eventIds":[{"eventId":8,"status":"P"},{"eventId":9,"status":"P"}],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0},
         {"id":6,"name":"Abhinav","mobile":"98745612312","guestTypeId":2,"userId":2,"uniqueId":"abhi","eventIds":[{"eventId":3,"status":"P"},{"eventId":12,"status":"P"},{"eventId":1,"status":"P"}],"totalInvites":0,"totalApprove":0,"totalReject":0,"totalPending":0}
@@ -1102,21 +1102,24 @@ export class ShareImageService1{
         {
             for(var i=0;i<this.imageInfos.length;i++)
             {
-                if(this.imageInfos[i].userType==1 && info.selectedUserType==1)
+                if(this.imageInfos[i].userId==this.service.getUser().id)
+                {
+                    if(this.imageInfos[i].userType==1 && info.selectedUserType==1)
                     {
-                        imageList.push(this.imageInfos[i]);
+                            imageList.push(this.imageInfos[i]);     
                     }  
-                else if(this.imageInfos[i].userType==2 && info.selectedUserType==2)
+                    else if(this.imageInfos[i].userType==2 && info.selectedUserType==2)
                     {
-                        if(!info.guestId || info.guestId==0)
-                        {
-                            imageList.push(this.imageInfos[i]);  
-                        }
-                        else if(info.guestId==this.imageInfos[i].guestId)
-                        {
-                            imageList.push(this.imageInfos[i]); 
-                        }
-                    }          
+                           if(!info.guestId || info.guestId==0)
+                            {
+                                imageList.push(this.imageInfos[i]);  
+                            }
+                            else if(info.guestId==this.imageInfos[i].guestId)
+                            {
+                                imageList.push(this.imageInfos[i]); 
+                            } 
+                    }         
+                }
             } 
         }
         else if(this.service.getUser().userType==2)
@@ -1232,31 +1235,68 @@ export class ShareImageService{
         {
             for(var i=0;i<this.imageInfos.length;i++)
             {
-            // if(this.imageInfos[i].userType==1 && this.service.getUser().id==this.imageInfos[i].userId)
-                if(this.imageInfos[i].userType==1 && info.selectedUserType==this.imageInfos[i].userType)
-                // if(this.imageInfos[i].userType==1)
-        
+                if(this.imageInfos[i].userId==this.service.getUser().id )
                 {
-                    imageList.push(this.imageInfos[i]);
-                }  
-            
-                else if(this.imageInfos[i].userType==2 && info.selectedUserType==this.imageInfos[i].userType)
-                // else if(this.imageInfos[i].userType==2)
-                
-                {
-                    if(!info.guestId || info.guestId==0)
+                    if(this.imageInfos[i].userType==1 && info.selectedUserType==this.imageInfos[i].userType)
                     {
-                        imageList.push(this.imageInfos[i]);  
-                    }
-                    else if(info.guestId==this.imageInfos[i].guestId)
+                        if(info.guestId!=0)
+                        {
+                            if(this.imageInfos[i].guestId)
+                            {
+                                if(info.guestId==this.imageInfos[i].guestId)
+                                {
+                                    imageList.push(this.imageInfos[i]); 
+                                }
+                            }
+                            else
+                            {
+                                imageList.push(this.imageInfos[i]); 
+                            }
+                        }
+                        else 
+                        {
+                            imageList.push(this.imageInfos[i]);  
+                        }  
+                    }     
+                    else if(this.imageInfos[i].userType==2 && info.selectedUserType==this.imageInfos[i].userType)
                     {
-                        imageList.push(this.imageInfos[i]); 
-                    }
-                }          
+                       
+                                if(info.guestId!=0)
+                                {
+                                    if(this.imageInfos[i].guestId)
+                                    {
+                                        if(info.guestId==this.imageInfos[i].guestId)
+                                        {
+                                        imageList.push(this.imageInfos[i]); 
+                                        }
+                                    }
+                                    else
+                                    {
+                                        imageList.push(this.imageInfos[i]); 
+                                    }
+                                }
+                                else 
+                                {
+                                    imageList.push(this.imageInfos[i]);  
+                                }
+
+
+
+                            // if(!info.guestId || info.guestId==0)
+                            // {
+                            //     imageList.push(this.imageInfos[i]);  
+                            // }
+                            // else if(info.guestId==this.imageInfos[i].guestId)
+                            // {
+                            //     imageList.push(this.imageInfos[i]); 
+                            // } 
+                    }     
+                }                     
             } 
         }
         else if(this.service.getUser().userType==2)
         {
+            console.log("Current User======="+JSON.stringify(this.service.getUser()));
             for(var i=0;i<this.imageInfos.length;i++)
             {
                 if(this.imageInfos[i].userType==1 && this.service.getUser().userId==this.imageInfos[i].userId) 
@@ -1315,8 +1355,8 @@ export class ShareImageService{
                             {
                               if(this.imageInfos[i].imagesArray)
                               {
-                                if(this.imageInfos[i].imagesArray[l].guestId)
-                                {
+                                // if(this.imageInfos[i].imagesArray[l].sharedGuestId)
+                                // {
 
                                    if(this.imageInfos[i].imagesArray[l].sharedGuestId==0)
                                    {
@@ -1327,12 +1367,18 @@ export class ShareImageService{
                                    {
                                     newArray[0].imagesArray.push(this.imageInfos[i].imagesArray[l]); 
                                    }
-                                }  
+
+                                   
+                                // }  
                                 // else if(this.imageInfos[i].imagesArray[l].status=='A')
                                 // {
                                 //     newArray[0].imagesArray.push(this.imageInfos[i].imagesArray[l]);
                                 // }
                               }
+                            }
+                            if(newArray[0].imagesArray.length==0)
+                            {
+                                newArray=[]; 
                             }
                             imageList=imageList.concat(newArray); 
                         
@@ -1349,6 +1395,7 @@ export class ShareImageService{
     }
     approveImage(images,guestInfo)
     {
+        var selected=false;
         for(var i=0;i<images.length;i++)
         {
             for(var j=0;j<images[i].imagesArray.length;j++)
@@ -1362,16 +1409,22 @@ export class ShareImageService{
                             if(images[i].imagesArray[j].id==this.imageInfos[k].imagesArray[l].id)
                             {
                                 this.imageInfos[k].imagesArray [l].status="A";
-                                this.imageInfos[k].imagesArray [l].sharedGuestId=guestInfo.guestId;
+                                this.imageInfos[k].imagesArray [l].sharedGuestId=guestInfo.approveGuestId;
+
                             }
                         }
                     }
+                    selected=true;
                     images[i].imagesArray[j].selected=false;
                 }
             }
         }
         // this.events.publish('fetch:images',this.imageInfos);
-
+        if(!selected)
+        {
+            this.service.showToast2("Please Select At least one image");
+            return;     
+        }
         this.service.showToast2("Successfully approved");
         this.getFilterImages(guestInfo); 
     }
@@ -1479,6 +1532,11 @@ export class MessageService{
                         if(this.allMessages[i].userId==this.service.getUser().userId)
                         {
                             this.allMessages[i].sender=false;
+
+                            // if(this.allMessages[i].status=='P')
+                            // {
+                            
+                            // }
                             this.userMessages.push(this.allMessages[i]);  
                         }
                     } 

@@ -49,13 +49,20 @@ export class LoginPage {
       }
     },100);
     
-    
+    this.events.unsubscribe('login:success')
     this.events.subscribe('login:success', user => {
       this.loader=false;
       user.userType=this.userTypeId;
       this.events.publish('menu:load',user);
       this.service.setUser(user)
-      this.navCtrl.setRoot(HomePage);
+      if(this.service.getUser().userType==1)
+      {
+        this.navCtrl.setRoot(HomePage);
+      }
+      else 
+      {
+        this.navCtrl.setRoot(EventsPage);
+      }
       this.navCtrl.popToRoot();
     })
 

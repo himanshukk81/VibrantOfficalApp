@@ -67,7 +67,9 @@
             <ion-searchbar [(ngModel)]="autocomplete.input" (click)="openPlaces()"></ion-searchbar>
         </ion-list>
         
-        <div  id="map2" #map2 *ngIf="userInfo.userType==1 && modifyInvitation"></div>
+
+        <!-- {{modifyInvitation}} -->
+        <!-- <div  id="map2" #map2 *ngIf="userInfo.userType==1 && modifyInvitation"></div> -->
 
         <ion-list *ngIf="userInfo.userType==1 && modifyInvitation"> 
                 <ion-item>

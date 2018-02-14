@@ -164,6 +164,7 @@ export class MessagesPage {
     this.messageInfo.senderId=this.userInfo.id;
     this.messageInfo.senderType=this.userInfo.userType;
     this.messageInfo.sender=true;
+    this.messageInfo.senderName=this.userInfo.name;
     this.messageInfo.messageStatus=false;
     this.messageInfo.messageId=this.service.getRandomString(4);
     if(this.userInfo.userType=="2")

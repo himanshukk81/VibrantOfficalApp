@@ -1,5 +1,5 @@
 import { Component,ViewChild,ElementRef ,NgZone,Pipe} from '@angular/core';
-import { DatePipe} from '@angular/common';
+// import { DatePipe} from '@angular/common';
 import { IonicPage, NavController, NavParams,ModalController,ActionSheetController,ViewController,Events,Platform,AlertController} from 'ionic-angular';
 import { SessionService,EventService,ReminderService,BudgetService, GuestService } from '../../app/sessionservice';
 import { Camera, CameraOptions } from '@ionic-native/camera';
@@ -56,6 +56,7 @@ export class EventsPage {
     
   eventDetail(eventInfo)
   {
+    console.log("Event Detail Page.....................................");
     this.service.setEventInfo(eventInfo)
     this.navCtrl.push(ManageEventsPage);
   }
@@ -91,11 +92,13 @@ export class ManageEventsPage {
   geocoder:any;
   constructor(public guestService:GuestService,public zone:NgZone,public locationTracker:LocationTrackerProvider, public eventService:EventService,public platform:Platform,public service:SessionService, public events:Events,public modalCtrl:ModalController, public viewCtrl:ViewController,public camera: Camera,public actionCtrl:ActionSheetController,public navCtrl: NavController, public navParams: NavParams) {
     this.event=this.service.getEventInfo();
+    this.event.date=new Date(this.event.date).toISOString();
+    this.event.time=new Date(this.event.time).toISOString();
     console.log("event info======"+JSON.stringify(this.event));
     this.event.totalInvites=0;
     this.event.viewInfo="1";
     this.event.totalInvites=this.guestService.totalInvitationCount1();
-    this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
+    // this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
     this.userInfo=this.service.getUser();    
     
   }
@@ -491,8 +494,7 @@ export class Places {
   geocoder:any;
   filter:any={};
   constructor(public zone:NgZone,params: NavParams,public viewCtrl:ViewController,public events:Events) {
-   this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
-  
+    this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
     this.geocoder = new google.maps.Geocoder;
     console.log("sdfdsfdsfds"+this.autocompleteItems);
   }
@@ -519,8 +521,8 @@ export class Places {
    }
  
    selectSearchResult(item){
+     console.log("Selected Search Results============"+item);
      this.autocompleteItems = [];
-   
      this.geocoder.geocode({'placeId': item.place_id}, (results, status) => {
        if(status === 'OK' && results[0]){
          let position = {
@@ -532,13 +534,12 @@ export class Places {
          this.destination.lng=results[0].geometry.location.lng();
          this.destination.address=results[0].formatted_address;
          console.log("Items===="+JSON.stringify(item));
-
          var itemLength=item.length;
          
-         console.log("Address===="+item[item.length-itemLength].value)
-         console.log("city===="+item[itemLength-3].value)
-         console.log("State===="+item[itemLength-2].value)
-         console.log("country===="+item[itemLength-1].value)
+        //  console.log("Address===="+item[item.length-itemLength].value)
+        //  console.log("city===="+item[itemLength-3].value)
+        //  console.log("State===="+item[itemLength-2].value)
+        //  console.log("country===="+item[itemLength-1].value)
          
          
          console.log("Result addresss==="+JSON.stringify(results[0]));

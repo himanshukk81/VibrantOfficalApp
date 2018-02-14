@@ -29,9 +29,13 @@ export class SharePhotoPage {
   groupInfo:any={};
   groups:any=[];
   groupImagesIds:any=[];
+  GuestObj:any={};
   constructor(public groupImageService:GroupImageService,public groupMessageService:GroupMessageService,public guestservice:GuestService, public service:SessionService,public modalCtrl:ModalController,public events:Events,public imageService:ShareImageService,public imagePicker: ImagePicker,public navCtrl: NavController, public navParams: NavParams) {
     this.userInfo=this.service.getUser();
     this.groupInfo.messageTypeInfo=1;
+    this.filterInput.selectedUserType="1";
+    this.filterInput.guestId=0;
+    this.filterInput.approveGuestId=0;
   }
 
   ionViewDidLoad() {
@@ -84,8 +88,27 @@ export class SharePhotoPage {
 
     })  
     this.events.subscribe('refresh:images', images1=> {
+        this.filterInput.selectedUserType="1";
+        this.filterInput.guestId=0;
+        this.filterInput.approveGuestId=0;
         this.loader=true;
-        this.getGroupImages();
+
+        if(this.groupInfo.messageTypeInfo==1)
+        {
+          this.filterGuestImages();
+        }
+        else if(this.groupInfo.groupId)
+        {
+          this.getGroupImages();
+        }
+        else
+        {
+          this.filterUser();
+        }
+
+        
+
+        
     })  
     this.events.subscribe('fetch:images', images1=> {
       // this.service.showToast2("Successfully upload images");
@@ -121,6 +144,8 @@ export class SharePhotoPage {
 
   filterGuestImages()
   {
+
+    console.log("Data======="+JSON.stringify(this.GuestObj));
     this.imageService.getFilterImages(this.filterInput)
   }
 
@@ -181,6 +206,8 @@ export class SharePhotoPage {
     //     }
     //   }
     // }
+
+   
     this.imageService.approveImage(this.images,this.filterInput)
   }
 
@@ -216,7 +243,7 @@ export class ManageSharePhotoPage {
   }
   ionViewDidLoad() {
     // this.imageInfo.imagesArray=[];
-
+    console.log("Sender==="+JSON.stringify(this.service.getUser()));
     setTimeout(() => {  
       this.guestservice.getGuests();
     },100);
@@ -248,8 +275,10 @@ export class ManageSharePhotoPage {
       if(!this.imageInfo.guestId)
       {
         this.imageInfo.guestId=0;
+        // this.imageInfo.receiverName="All";
 
       }
+   
       // this.imageInfo.id=this.service.getUser().id;
       this.imageInfo.senderId=this.service.getUser().id;
       this.imageInfo.userId=this.service.getUser().id;
@@ -265,9 +294,15 @@ export class ManageSharePhotoPage {
       this.imageInfo.userId=this.service.getUser().userId;
       this.imageInfo.status="P";
     }
+
+
+   
+ 
+  
+    
     this.imageInfo.id=this.service.getRandomString(4);
     this.imageInfo.userType=this.service.getUser().userType;
-
+    this.imageInfo.senderName=this.service.getUser().name;
 
     console.log('ionViewDidLoad SharePhotoPage'+this.imageInfo);
 
@@ -283,66 +318,83 @@ export class ManageSharePhotoPage {
   chooseImages()
   { 
     console.log("User info====="+JSON.stringify(this.service.getUser()));
+    // this.imageInfo.imagesArray=[];
     // for(var i=0;i<3;i++)
     // {
-
     //   if(this.service.getUser().userType==1)
     //   {
-    //     this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"imageUrl":this.service.getRandomString(5),"status":'A',"groupId":this.imageInfo.groupId,"userId":this.service.getUser().id,"senderName":this.service.getUser().name});
+    //     this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"imageUrl":this.service.getRandomString(5),"status":'A',"groupId":this.imageInfo.groupId,"userId":this.service.getUser().id});
     //   }
-
     //   else
     //   {
-    //     this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"imageUrl":this.service.getRandomString(5),"status":'P',"groupId":this.imageInfo.groupId,"userId":this.service.getUser().userId,"senderName":this.service.getUser().name});
+    //     this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"imageUrl":this.service.getRandomString(5),"status":'P',"groupId":this.imageInfo.groupId,"userId":this.service.getUser().userId});
     //   }
-      
     // }
-    
-    this.imageInfo.imagesArray=[];
-    this.imageOptions= {
-      maximumImagesCount:50, 
-      quality: 100, 
-      width: 200, 
-      height: 200
-    };   
-    this.imagePicker.getPictures(this.imageOptions).then((results) => {
-      var base64File;
+        this.imageInfo.imagesArray=[];
+        this.imageOptions= {
+          maximumImagesCount:50, 
+          quality: 100, 
+          width: 200, 
+          height: 200
+        };   
+        this.imagePicker.getPictures(this.imageOptions).then((results) => {
+          var base64File;
 
-      if(this.imageInfo.imageType==1)
-      {
-        for (var i = 0; i < results.length; i++) {
-          this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"groupId":this.imageInfo.groupId,"imageUrl":results[i],"status":this.imageInfo.status,"guestId":this.imageInfo.guestId});      
-          console.log('Image URI: ' + base64File);
-        }
-      }
-      else
-      {
-        for (var i = 0; i < results.length; i++) {
-          if(this.service.getUser().userType==1)
+          if(this.imageInfo.imageType==1)
           {
-            this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"imageUrl":results[i],"status":'A',"groupId":this.imageInfo.groupId,"userId":this.service.getUser().id});
+            for (var i = 0; i < results.length; i++) {
+              this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"groupId":this.imageInfo.groupId,"imageUrl":results[i],"status":this.imageInfo.status,"guestId":this.imageInfo.guestId});      
+              console.log('Image URI: ' + base64File);
+            }
           }
           else
           {
-            this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"imageUrl":results[i],"status":'P',"groupId":this.imageInfo.groupId,"guestId":this.service.getUser().id});
-          }  
-          // this.imageInfo.imagesArray.push({"imageUrl":results[i]});
-          console.log('Image URI: ' + base64File);
-        }
-      }
-    
-    }, (err) => { 
-      alert("Error 68==="+JSON.stringify(err));
-      console.log("Failed to fetch images===="+JSON.stringify(err));
-    });
+            for (var i = 0; i < results.length; i++) {
+              if(this.service.getUser().userType==1)
+              {
+                this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"imageUrl":results[i],"status":'A',"groupId":this.imageInfo.groupId,"userId":this.service.getUser().id});
+              }
+              else
+              {
+                this.imageInfo.imagesArray.push({"id":this.service.getRandomString(5),"imageUrl":results[i],"status":'P',"groupId":this.imageInfo.groupId,"guestId":this.service.getUser().id});
+              }  
+              // this.imageInfo.imagesArray.push({"imageUrl":results[i]});
+              console.log('Image URI: ' + base64File);
+            }
+          }
+        
+        }, (err) => { 
+          alert("Error 68==="+JSON.stringify(err));
+          console.log("Failed to fetch images===="+JSON.stringify(err));
+        });
   }
 
- 
+  modifyGuest(data,dat2)
+  {
+    console.log("Data===="+data);
+    console.log("Dat2222=="+dat2);
+  }
   sharePhoto()
   {
     this.loader=true;
     console.log("image arrray==="+JSON.stringify(this.imageInfo));
     // this.groupImageService.shareGroupImages(this.imageInfo)
+
+    
+    if(this.imageInfo.guestId)
+    {
+        for(var i=0;i<this.guests.length;i++)
+        {
+          if(this.guests[i].id==this.imageInfo.guestId)
+          {
+            this.imageInfo.receiverName=this.guests[i].name;    
+          }
+        }
+    }
+    else
+    {
+      this.imageInfo.receiverName="All";
+    }
 
     if(this.imageCounter==this.imageInfo.imagesArray.length)
     {
@@ -363,6 +415,9 @@ export class ManageSharePhotoPage {
     else
     {
       console.log("Image counter=="+this.imageCounter);
+      // this.imageCounter++;
+      // this.sharePhoto();
+
       this.convertToBase64(this.imageInfo.imagesArray[this.imageCounter].imageUrl, 'image/png').then(
         data => {
           // alert("Base64 image===");
@@ -391,6 +446,9 @@ export class ManageSharePhotoPage {
     }
     else
     {
+      // this.imageCounter++;
+      // this.sharePhoto();
+      
       this.convertToBase64(this.imageInfo.imagesArray[this.imageCounter].imageUrl, 'image/png').then(
         data => {
           // alert("Base64 image===");

@@ -8,13 +8,11 @@ import { LoginPage } from '../Login/Login';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { map, filter, tap } from 'rxjs/operators';
 import { LocalNotifications } from '@ionic-native/local-notifications';
-
 import { BudgetsPage} from '../../pages/budgets/budgets';
 import { EventsPage} from '../../pages/events/events';
 import { MessagesPage} from '../../pages/messages/messages';
 import { SharePhotoPage} from '../../pages/share-photo/share-photo';
 import { GoogleMaps, GoogleMap,GoogleMapsEvent,GoogleMapOptions,CameraPosition,MarkerOptions,Marker } from '@ionic-native/google-maps';
-
 declare var google:any;
 declare var navigator: any;
 
