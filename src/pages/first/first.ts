@@ -4,9 +4,8 @@ import { LoginPage } from '../../pages/Login/Login';
 import * as firebase from 'firebase';
 import { AngularFireDatabase, FirebaseListObservable,AngularFireDatabaseModule} from 'angularfire2/database-deprecated';
 import { SessionService } from '../../app/sessionservice';
+import {Http, Response,RequestOptions,Headers} from '@angular/http';
 var moment = require('moment');
-
-
 /**
  * Generated class for the FirstPage page.
  *
@@ -34,7 +33,17 @@ export class FirstPage {
 
   otpReceived:boolean=false;
   currentDate:any;
-  constructor(public service:SessionService, public ngZone:NgZone, public db:AngularFireDatabase,public navCtrl: NavController, public navParams: NavParams,public alertCtrl:AlertController) {
+  //var messageInfo="Hi this is me";
+  headers:any;
+
+  constructor(public http:Http,public service:SessionService, public ngZone:NgZone, public db:AngularFireDatabase,public navCtrl: NavController, public navParams: NavParams,public alertCtrl:AlertController) {
+
+  this.headers = new Headers({'Content-Type':'application/json'});  
+  
+  
+  
+
+
    this.userButtonColor="light";
    this.joinneButtonColor="light"; 
    this.pushPage=LoginPage;
@@ -61,6 +70,9 @@ export class FirstPage {
   //  console.log("Time before load===="+this.userInfo.time);
   //  console.log("Date before Load===="+this.userInfo.date);
   }
+
+
+
 
   ionViewDidLoad() {
 

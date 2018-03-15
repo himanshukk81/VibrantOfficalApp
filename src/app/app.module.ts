@@ -48,9 +48,7 @@ import { LocationAccuracy } from '@ionic-native/location-accuracy';
 import { environment} from '../environments/environment';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabase, FirebaseListObservable,AngularFireDatabaseModule} from 'angularfire2/database-deprecated';
-
 import { EventFilterPipe } from '../filter/event-filter';
-
 
 @NgModule({
   declarations: [
@@ -85,7 +83,6 @@ import { EventFilterPipe } from '../filter/event-filter';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
     IonicImageViewerModule
-    
   ],
   bootstrap: [IonicApp],
   entryComponents: [

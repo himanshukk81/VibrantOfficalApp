@@ -134,18 +134,18 @@ export class SessionService {
     setUser(userInfo)
     {
        this.user=userInfo;
-        // this.nativeStorage.setItem('userInfo',userInfo)
-        // .then(
-        //     () =>
-        //         {
-        //             var message="stored";
-        //             this.showToast("stored user type")
-        //         },
-        //     error =>{
-        //         var message="stored error user type="+error;
-        //             this.showToast(message)
-        //     } 
-        // );   
+        this.nativeStorage.setItem('userInfo',userInfo)
+        .then(
+            () =>
+                {
+                    var message="stored";
+                    this.showToast("stored user type")
+                },
+            error =>{
+                var message="stored error user type="+error;
+                    this.showToast(message)
+            } 
+        );   
     }
 
     getUser()

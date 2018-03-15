@@ -42,9 +42,6 @@ export class MyApp {
   constructor(public locationAccuracy: LocationAccuracy,public events:Events, public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,public service:SessionService,public native:NativeStorage,public sharing:SocialSharing,public alertCtrl:AlertController  
     ,public nativeStorage:NativeStorage,public network:Network,public localNotifications:LocalNotifications,public http:Http) {
       this.events.subscribe('menu:load', user => {
-        
-        
-
         if(user.userType==1)
         {
           this.pages = [
@@ -72,7 +69,24 @@ export class MyApp {
             
           ];
         } 
+        branchInit();
       })
+
+      platform.resume.subscribe(() => {
+        branchInit();
+      });
+
+      const branchInit = () => {
+        // only on devices
+        if (!platform.is('cordova')) { return }
+        const Branch = window['Branch'];
+        Branch.initSession(data => {
+          if (data['+clicked_branch_link']) {
+            // read deep link data on click
+            alert('Deep Link Data: ' + JSON.stringify(data));
+          }
+        });
+      }
 
       this.platform.ready().then((readySource) => {
         this.localNotifications.on('click', (notification, state) => {
@@ -87,7 +101,7 @@ export class MyApp {
         })
       });
       // rootPage: any=MessagesPage;
-      // this.initializeApp();
+      //this.initializeApp();
 
   }
   

@@ -157,33 +157,6 @@ export class ManageRemindersPage {
   
   constructor(public events:Events,public reminderService:ReminderService,public platform: Platform,public alertCtrl:AlertController,public localNotifications:
     LocalNotifications,public viewCtrl:ViewController,public service:SessionService,public navCtrl: NavController, public navParams: NavParams) {
-      
-
-
-
-      // console.log("Converted in our format==============="+this.reminder.time);
-
-    // this.reminder.time=new Date()
-    // this.platform.ready().then((readySource) => {
-      // this.localNotifications.on('click', (notification, state) => {
-      //   // let json = JSON.parse(notification.data);
-      //   let alert = alertCtrl.create({
-      //     title: notification.title,
-      //     subTitle:notification.text
-      //   });
-      //   alert.present();
-      // })
-      // this.remindersList=this.db.list('/reminders');
-
-      
-      // this.remindersList.forEach(element => {
-        
-      //         alert(element);
-      //         console.log(element);
-      //        });
-    // });
-    // console.log("date:::"+this.myDate);
-    // this.reminder.time=(new Date(Date.now() - this.tzoffset)).toISOString().slice(0,-1);
   }
 
   ionViewWillLeave()
